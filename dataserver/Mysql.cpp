@@ -27,16 +27,16 @@ bool CMysqlConnection::Init(const char* szHost, int nPort, const char* szUser, c
 	
 	// 设置自动重连
 	char cAuto = 1;
-	if (!mysql_options(m_pMysql, MYSQL_OPT_RECONNECT, &cAuto))
+	if (mysql_options(m_pMysql, MYSQL_OPT_RECONNECT, &cAuto) != 0)
 	{
-		TRACELOG("mysql_options MYSQL_OPT_RECONNECT failed.");
+		TRACELOG("mysql_options MYSQL_OPT_RECONNECT failed, error=[" << mysql_error(m_pMysql) << "]");
 	}
 
 	// 设置超时时间
 	unsigned int uTimeout = 3;
-	if (!mysql_options(m_pMysql, MYSQL_OPT_CONNECT_TIMEOUT, &uTimeout))
+	if (mysql_options(m_pMysql, MYSQL_OPT_CONNECT_TIMEOUT, &uTimeout) != 0)
 	{
-		TRACELOG("mysql_options MYSQL_OPT_CONNECT_TIMEOUT failed.");
+		TRACELOG("mysql_options MYSQL_OPT_CONNECT_TIMEOUT failed, error=[" << mysql_error(m_pMysql) << "]");
 	}
 
 	if (mysql_real_connect(m_pMysql, szHost, szUser, szPasswd, szDb, nPort, NULL, 0) == NULL)
