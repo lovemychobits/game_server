@@ -1,8 +1,8 @@
 ﻿#ifndef DATASERVER_WORKTHREAD_H
 #define DATASERVER_WORKTHREAD_H
 
-#include "../network/header.h"
-#include "../utils/ProtoTemplate.hpp"
+#include "../../network/header.h"
+#include "../../utils/ProtoTemplate.hpp"
 #include "PlayerDataMng.h"
 using namespace cpnet;
 

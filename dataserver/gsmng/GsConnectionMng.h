@@ -1,7 +1,7 @@
 ﻿#ifndef DATASERVER_GSCONNECTIONMNG_H
 #define DATASERVER_GSCONNECTIONMNG_H
 
-#include "header.h"
+#include "../header.h"
 
 /*
 	管理DataServer和GameServer之间的连接，如果以后需要多GameServer架构，这里也方便扩展

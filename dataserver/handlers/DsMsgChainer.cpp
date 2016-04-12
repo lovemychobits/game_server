@@ -1,6 +1,6 @@
 #include "DsMsgChainer.h"
-#include "../network/IConnection.h"
-#include "../network/MsgBuffer.h"
+#include "../../network/IConnection.h"
+#include "../../network/MsgBuffer.h"
 
 ClientMsgDecoder::~ClientMsgDecoder()
 {

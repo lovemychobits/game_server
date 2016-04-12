@@ -1,11 +1,11 @@
 ﻿#ifndef DATASERVER_DATASERVER_H
 #define DATASERVER_DATASERVER_H
 
-#include "ServerConfig.h"
+#include "config/ServerConfig.h"
 #include "../network/INetCluster.h"
 #include "../network/header.h"
-#include "DataThread.h"
-#include "CmdHandler.h"
+#include "mysql/DataThread.h"
+#include "handlers/CmdHandler.h"
 
 class GsHandler;
 class GsMsgParser;

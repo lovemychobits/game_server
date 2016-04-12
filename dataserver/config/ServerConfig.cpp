@@ -1,4 +1,4 @@
-﻿#include "../network/header.h"
+﻿#include "../../network/header.h"
 #include "ServerConfig.h"
 
 bool ServerConfig::LoadServerConf(const char* pFilePath)

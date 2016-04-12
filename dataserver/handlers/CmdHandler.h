@@ -1,11 +1,11 @@
 ﻿#ifndef DATASERVER_CMDHANDLER_H
 #define DATASERVER_CMDHANDLER_H
 
-#include "header.h"
-#include "../network/header.h"
-#include "../network/IMsgParser.h"
-#include "../network/IConnection.h"
-#include "../network/IMsgHandler.h"
+#include "../header.h"
+#include "../../network/header.h"
+#include "../../network/IMsgParser.h"
+#include "../../network/IConnection.h"
+#include "../../network/IMsgHandler.h"
 using namespace cpnet;
 
 /*

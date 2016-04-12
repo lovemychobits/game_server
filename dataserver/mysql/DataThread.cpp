@@ -1,6 +1,6 @@
-﻿#include "header.h"
+﻿#include "../header.h"
 #include "DataThread.h"
-#include "ServerConfig.h"
+#include "../config/ServerConfig.h"
 
 DataThread::DataThread() : m_bRun(true)
 {

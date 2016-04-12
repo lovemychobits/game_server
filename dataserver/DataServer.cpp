@@ -1,8 +1,8 @@
 ﻿#include "header.h"
 #include "DataServer.h"
-#include "GsHandler.h"
-#include "PlayerDataMng.h"
-#include "DsMsgChainer.h"
+#include "handlers/GsHandler.h"
+#include "mysql/PlayerDataMng.h"
+#include "handlers/DsMsgChainer.h"
 
 bool DataServer::Init(const char* pConfPath)
 {

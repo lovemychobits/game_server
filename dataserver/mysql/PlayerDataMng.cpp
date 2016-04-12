@@ -1,7 +1,7 @@
 ﻿#include "PlayerDataMng.h"
-#include "header.h"
-#include "GsConnectionMng.h"
-#include "ServerConfig.h"
+#include "../header.h"
+#include "../gsmng/GsConnectionMng.h"
+#include "../config/ServerConfig.h"
 
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/split.hpp>

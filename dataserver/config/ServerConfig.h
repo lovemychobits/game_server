@@ -1,7 +1,7 @@
 ﻿#ifndef DATASERVER_SERVERCONFIG_H
 #define DATASERVER_SERVERCONFIG_H
 
-#include "../tinyxml/tinyxml.h"
+#include "../../tinyxml/tinyxml.h"
 #include <boost/lexical_cast.hpp>
 
 class ServerConfig

@@ -1,8 +1,8 @@
 #ifndef DATASERVER_DSMSGCHAINER_H
 #define DATASERVER_DSMSGCHAINER_H
 
-#include "header.h"
-#include "../network/IMsgChainer.h"
+#include "../header.h"
+#include "../../network/IMsgChainer.h"
 
 class ClientMsgDecoder : public IMsgDecoder
 {

@@ -1,7 +1,7 @@
 ﻿#ifndef DATASTORE_MYSQL_H
 #define DATASTORE_MYSQL_H
 
-#include "header.h"
+#include "../header.h"
 
 #ifdef _MSC_VER
 	#include<windows.h>

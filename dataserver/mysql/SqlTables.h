@@ -1,7 +1,7 @@
 ﻿#ifndef	DATASEVER_SQLTABLES_H
 #define DATASEVER_SQLTABLES_H
 
-#include "header.h"
+#include "../header.h"
 #include "Mysql.h"
 #include <iostream>
 using namespace std;

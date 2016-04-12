@@ -1,12 +1,12 @@
 ﻿#ifndef DATASERVER_GSHANDLER_H
 #define DATASERVER_GSHANDLER_H
 
-#include "../utils/Utility.h"
-#include "../network/header.h"
-#include "../network/IMsgParser.h"
-#include "../network/IConnection.h"
-#include "../network/IMsgHandler.h"
-#include "../utils/ProtoTemplate.hpp"
+#include "../../utils/Utility.h"
+#include "../../network/header.h"
+#include "../../network/IMsgParser.h"
+#include "../../network/IConnection.h"
+#include "../../network/IMsgHandler.h"
+#include "../../utils/ProtoTemplate.hpp"
 using namespace cpnet;
 /*
 	负责处理消息包头和包体的数据解析

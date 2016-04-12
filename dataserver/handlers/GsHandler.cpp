@@ -1,9 +1,9 @@
 ﻿#include "GsHandler.h"
-#include "PlayerDataMng.h"
-#include "header.h"
-#include "DataServer.h"
-#include "DataThread.h"
-#include "GsConnectionMng.h"
+#include "../mysql/PlayerDataMng.h"
+#include "../header.h"
+#include "../DataServer.h"
+#include "../mysql/DataThread.h"
+#include "../gsmng/GsConnectionMng.h"
 
 
 GsHandler::GsHandler(DataServer* pDataServer) : m_pDataServer(pDataServer)

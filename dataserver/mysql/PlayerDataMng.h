@@ -1,12 +1,12 @@
 ﻿#ifndef	DATASERVER_PLAYERDATAMNG_H
 #define DATASERVER_PLAYERDATAMNG_H
 
-#include "../utils/Utility.h"
+#include "../../utils/Utility.h"
 #include <string>
 #include "SqlTables.h"
 #include "Mysql.h"
-#include "../network/IConnection.h"
-#include "../utils/ProtoTemplate.hpp"
+#include "../../network/IConnection.h"
+#include "../../utils/ProtoTemplate.hpp"
 using namespace std;
 
 #define MAX_BLOB_SIZE 255*1024
