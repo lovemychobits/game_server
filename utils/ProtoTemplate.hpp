@@ -1,7 +1,6 @@
 #ifndef NETWORK_PROTOTEMPLATE_HPP
 #define NETWORK_PROTOTEMPLATE_HPP
 
-#include "header.h"
 #include "../network/MessageHeader.h"
 #include <string>
 #include <set>
