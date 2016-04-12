@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="handlers">
+      <UniqueIdentifier>{d4d88480-8be7-4d4c-be73-073474d27095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mysql">
+      <UniqueIdentifier>{c6ea7ab6-cea1-40f1-8f2a-495d7ffc1414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{2b210d2b-b5da-4b4e-a5bd-2089672b0942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gsmng">
+      <UniqueIdentifier>{cf322623-6e11-4241-a6f4-1651b29ca9f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dataserver\DataServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\CmdHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\GsHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\DsMsgChainer.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\Mysql.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\PlayerDataMng.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\ServerConfig.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\GsConnectionMng.cpp">
+      <Filter>gsmng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\DataThread.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dataserver\DataServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\header.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\CmdHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\GsHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\DsMsgChainer.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\Mysql.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\SqlTables.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\PlayerDataMng.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\ServerConfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\GsConnectionMng.h">
+      <Filter>gsmng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\DataThread.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

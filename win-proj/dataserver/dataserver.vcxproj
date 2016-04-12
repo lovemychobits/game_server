@@ -11,19 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{027929D4-DA72-45AB-9797-A652242397B0}</ProjectGuid>
+    <ProjectGuid>{63FFE433-DECD-4EB5-B3DF-6F011923B83A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>network</RootNamespace>
+    <RootNamespace>dataserver</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -41,9 +41,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\boost_1_58_0;E:\git\game_server\log4cplus-1.1.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost_1_58_0\stage\lib;E:\git\game_server\libs;$(LibraryPath)</LibraryPath>
-    <OutDir>../../libs/</OutDir>
+    <IncludePath>D:\boost_1_58_0;D:\Program Files (x86)\MySQL\MySQL Server 5.6\include;../../log4cplus-1.1.3/include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost_1_58_0\stage\lib;D:\Program Files (x86)\MySQL\MySQL Server 5.6\lib;../../libs;$(LibraryPath)</LibraryPath>
+    <OutDir>../../bin/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,14 +54,12 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NETWORK_EXPORTS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>log4cplusD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4cplusD.lib;tinyxml.lib;utils.lib;network.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,37 +70,39 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;NETWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\network\ClientSession.hpp" />
-    <ClInclude Include="..\..\network\Connection.h" />
-    <ClInclude Include="..\..\network\header.h" />
-    <ClInclude Include="..\..\network\IConnection.h" />
-    <ClInclude Include="..\..\network\IMsgChainer.h" />
-    <ClInclude Include="..\..\network\IMsgHandler.h" />
-    <ClInclude Include="..\..\network\IMsgParser.h" />
-    <ClInclude Include="..\..\network\INetCluster.h" />
-    <ClInclude Include="..\..\network\ITimerTrigger.h" />
-    <ClInclude Include="..\..\network\MessageHeader.h" />
-    <ClInclude Include="..\..\network\MsgBuffer.h" />
-    <ClInclude Include="..\..\network\MsgChainer.h" />
-    <ClInclude Include="..\..\network\NetCluster.h" />
-    <ClInclude Include="..\..\network\ServerSession.hpp" />
-    <ClInclude Include="..\..\network\TimerTrigger.h" />
+    <ClCompile Include="..\..\dataserver\CmdHandler.cpp" />
+    <ClCompile Include="..\..\dataserver\DataServer.cpp" />
+    <ClCompile Include="..\..\dataserver\DataThread.cpp" />
+    <ClCompile Include="..\..\dataserver\DsMsgChainer.cpp" />
+    <ClCompile Include="..\..\dataserver\GsConnectionMng.cpp" />
+    <ClCompile Include="..\..\dataserver\GsHandler.cpp" />
+    <ClCompile Include="..\..\dataserver\main.cpp" />
+    <ClCompile Include="..\..\dataserver\Mysql.cpp" />
+    <ClCompile Include="..\..\dataserver\PlayerDataMng.cpp" />
+    <ClCompile Include="..\..\dataserver\ServerConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\network\Connection.cpp" />
-    <ClCompile Include="..\..\network\MsgChainer.cpp" />
-    <ClCompile Include="..\..\network\NetCluster.cpp" />
+    <ClInclude Include="..\..\dataserver\CmdHandler.h" />
+    <ClInclude Include="..\..\dataserver\DataServer.h" />
+    <ClInclude Include="..\..\dataserver\DataThread.h" />
+    <ClInclude Include="..\..\dataserver\DsMsgChainer.h" />
+    <ClInclude Include="..\..\dataserver\GsConnectionMng.h" />
+    <ClInclude Include="..\..\dataserver\GsHandler.h" />
+    <ClInclude Include="..\..\dataserver\header.h" />
+    <ClInclude Include="..\..\dataserver\Mysql.h" />
+    <ClInclude Include="..\..\dataserver\PlayerDataMng.h" />
+    <ClInclude Include="..\..\dataserver\ServerConfig.h" />
+    <ClInclude Include="..\..\dataserver\SqlTables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

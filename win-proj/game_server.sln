@@ -7,6 +7,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network", "network\network.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxproj", "{DD94668C-0C5D-4F39-BE94-8868033DD8A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dataserver", "dataserver\dataserver.vcxproj", "{63FFE433-DECD-4EB5-B3DF-6F011923B83A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD94668C-0C5D-4F39-BE94-8868033DD8A9} = {DD94668C-0C5D-4F39-BE94-8868033DD8A9}
+		{027929D4-DA72-45AB-9797-A652242397B0} = {027929D4-DA72-45AB-9797-A652242397B0}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +27,10 @@ Global
 		{DD94668C-0C5D-4F39-BE94-8868033DD8A9}.Debug|Win32.Build.0 = Debug|Win32
 		{DD94668C-0C5D-4F39-BE94-8868033DD8A9}.Release|Win32.ActiveCfg = Release|Win32
 		{DD94668C-0C5D-4F39-BE94-8868033DD8A9}.Release|Win32.Build.0 = Release|Win32
+		{63FFE433-DECD-4EB5-B3DF-6F011923B83A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{63FFE433-DECD-4EB5-B3DF-6F011923B83A}.Debug|Win32.Build.0 = Debug|Win32
+		{63FFE433-DECD-4EB5-B3DF-6F011923B83A}.Release|Win32.ActiveCfg = Release|Win32
+		{63FFE433-DECD-4EB5-B3DF-6F011923B83A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
