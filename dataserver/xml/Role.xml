@@ -1,7 +1,0 @@
-<root>
-	<Role>
-		<subRole ArmorPenetration="0" CehuaLook="大锤萝莉" DesID="大锤萝莉" Dex="30" DexAdd="1" Dodge="0" FaceID="ailisi_lv1" HP="1000" HpRecover="50" InitEquip="1,7,13,19,25,31" Int="20" IntAdd="0.8" Interval="1" ModelID="player001" NameID="大锤" Price="200" RoleId="101" SkillList="1021,1022,1026,1027" Speed="8" Str="50" StrAdd="1.5" Suckblood="0" Type="1" VoiceID="0" skill="8,9,10,11" />
-		<subRole ArmorPenetration="0" CehuaLook="双剑精灵" DesID="双剑精灵" Dex="50" DexAdd="1.5" Dodge="0" FaceID="kelaode_lv1" HP="1000" HpRecover="50" InitEquip="37,43,49,55,61,67" Int="20" IntAdd="0.8" Interval="1" ModelID="player005" NameID="双剑" Price="200" RoleId="102" SkillList="1001,1002,1006,1007" Speed="12" Str="30" StrAdd="1" Suckblood="0" Type="2" VoiceID="0" skill="8,9,10,11" />
-		<subRole ArmorPenetration="0" CehuaLook="镰刀御姐" DesID="镰刀御姐" Dex="30" DexAdd="1" Dodge="0" FaceID="laola_lv1" HP="1000" HpRecover="50" InitEquip="73,79,85,91,97,103" Int="50" IntAdd="1.5" Interval="1" ModelID="player027" NameID="镰刀" Price="200" RoleId="103" SkillList="1011,1012,1016,1017" Speed="9" Str="20" StrAdd="0.8" Suckblood="0" Type="3" VoiceID="0" skill="8,9,10,11" />
-	</Role>
-</root>
