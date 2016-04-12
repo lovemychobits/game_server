@@ -2,7 +2,7 @@
 #define NETWORK_PROTOTEMPLATE_HPP
 
 #include "header.h"
-#include "MessageHeader.h"
+#include "../network/MessageHeader.h"
 #include <string>
 #include <set>
 
