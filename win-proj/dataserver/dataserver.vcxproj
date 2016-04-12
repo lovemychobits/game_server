@@ -80,29 +80,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\dataserver\CmdHandler.cpp" />
+    <ClCompile Include="..\..\dataserver\config\ServerConfig.cpp" />
     <ClCompile Include="..\..\dataserver\DataServer.cpp" />
-    <ClCompile Include="..\..\dataserver\DataThread.cpp" />
-    <ClCompile Include="..\..\dataserver\DsMsgChainer.cpp" />
-    <ClCompile Include="..\..\dataserver\GsConnectionMng.cpp" />
-    <ClCompile Include="..\..\dataserver\GsHandler.cpp" />
+    <ClCompile Include="..\..\dataserver\gsmng\GsConnectionMng.cpp" />
+    <ClCompile Include="..\..\dataserver\handlers\CmdHandler.cpp" />
+    <ClCompile Include="..\..\dataserver\handlers\DsMsgChainer.cpp" />
+    <ClCompile Include="..\..\dataserver\handlers\GsHandler.cpp" />
     <ClCompile Include="..\..\dataserver\main.cpp" />
-    <ClCompile Include="..\..\dataserver\Mysql.cpp" />
-    <ClCompile Include="..\..\dataserver\PlayerDataMng.cpp" />
-    <ClCompile Include="..\..\dataserver\ServerConfig.cpp" />
+    <ClCompile Include="..\..\dataserver\mysql\DataThread.cpp" />
+    <ClCompile Include="..\..\dataserver\mysql\Mysql.cpp" />
+    <ClCompile Include="..\..\dataserver\mysql\PlayerDataMng.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\dataserver\CmdHandler.h" />
+    <ClInclude Include="..\..\dataserver\config\ServerConfig.h" />
     <ClInclude Include="..\..\dataserver\DataServer.h" />
-    <ClInclude Include="..\..\dataserver\DataThread.h" />
-    <ClInclude Include="..\..\dataserver\DsMsgChainer.h" />
-    <ClInclude Include="..\..\dataserver\GsConnectionMng.h" />
-    <ClInclude Include="..\..\dataserver\GsHandler.h" />
+    <ClInclude Include="..\..\dataserver\gsmng\GsConnectionMng.h" />
+    <ClInclude Include="..\..\dataserver\handlers\CmdHandler.h" />
+    <ClInclude Include="..\..\dataserver\handlers\DsMsgChainer.h" />
+    <ClInclude Include="..\..\dataserver\handlers\GsHandler.h" />
     <ClInclude Include="..\..\dataserver\header.h" />
-    <ClInclude Include="..\..\dataserver\Mysql.h" />
-    <ClInclude Include="..\..\dataserver\PlayerDataMng.h" />
-    <ClInclude Include="..\..\dataserver\ServerConfig.h" />
-    <ClInclude Include="..\..\dataserver\SqlTables.h" />
+    <ClInclude Include="..\..\dataserver\mysql\DataThread.h" />
+    <ClInclude Include="..\..\dataserver\mysql\Mysql.h" />
+    <ClInclude Include="..\..\dataserver\mysql\PlayerDataMng.h" />
+    <ClInclude Include="..\..\dataserver\mysql\SqlTables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

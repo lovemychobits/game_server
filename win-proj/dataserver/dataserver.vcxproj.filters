@@ -33,28 +33,28 @@
     <ClCompile Include="..\..\dataserver\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\dataserver\CmdHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dataserver\GsHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dataserver\DsMsgChainer.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dataserver\Mysql.cpp">
-      <Filter>mysql</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dataserver\PlayerDataMng.cpp">
-      <Filter>mysql</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\dataserver\ServerConfig.cpp">
+    <ClCompile Include="..\..\dataserver\config\ServerConfig.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\dataserver\GsConnectionMng.cpp">
+    <ClCompile Include="..\..\dataserver\gsmng\GsConnectionMng.cpp">
       <Filter>gsmng</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\dataserver\DataThread.cpp">
+    <ClCompile Include="..\..\dataserver\handlers\CmdHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\handlers\DsMsgChainer.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\handlers\GsHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\mysql\DataThread.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\mysql\Mysql.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dataserver\mysql\PlayerDataMng.cpp">
       <Filter>mysql</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,31 +65,31 @@
     <ClInclude Include="..\..\dataserver\header.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\dataserver\CmdHandler.h">
-      <Filter>handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\GsHandler.h">
-      <Filter>handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\DsMsgChainer.h">
-      <Filter>handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\Mysql.h">
-      <Filter>mysql</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\SqlTables.h">
-      <Filter>mysql</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\PlayerDataMng.h">
-      <Filter>mysql</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\ServerConfig.h">
+    <ClInclude Include="..\..\dataserver\config\ServerConfig.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\dataserver\GsConnectionMng.h">
+    <ClInclude Include="..\..\dataserver\gsmng\GsConnectionMng.h">
       <Filter>gsmng</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\dataserver\DataThread.h">
+    <ClInclude Include="..\..\dataserver\handlers\CmdHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\handlers\DsMsgChainer.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\handlers\GsHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\mysql\DataThread.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\mysql\Mysql.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\mysql\PlayerDataMng.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dataserver\mysql\SqlTables.h">
       <Filter>mysql</Filter>
     </ClInclude>
   </ItemGroup>
