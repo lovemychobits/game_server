@@ -21,11 +21,6 @@ bool DataServer::Init(const char* pConfPath)
 		ERRORLOG("init server app fail!");
 		return false;
 	}
-	if (!InitListenCmd())
-	{
-		ERRORLOG("init cmd fail!");
-		return false;
-	}
 	if (!InitDataThread())
 	{
 		ERRORLOG("init data thread fail!");
@@ -74,28 +69,6 @@ bool DataServer::InitServerApp()
 
 	m_pServerSession->SetHeadLen(12);
 	m_pServerSession->Listen(gpServerConfig->GetBindIp(), gpServerConfig->GetListenPort());
-	return true;
-}
-
-bool DataServer::InitListenCmd()
-{
-	m_pCmdSession = m_pNetCluster->CreateServerSession();
-	if (!m_pCmdSession)
-	{
-		return false;
-	}
-
-	m_pCmdHandler = new CmdHandler();
-	m_pCmdHandler->SetDataServer(this);
-	m_pCmdSession->SetMsgHandler(m_pCmdHandler);
-
-	IMsgChainer* pMsgChainer = m_pNetCluster->CreateMsgChainer();
-	pMsgChainer->AddDecodeLast(new ClientMsgDecoder());
-	pMsgChainer->AddEncodeLast(new ClientMsgEncoder());
-	m_pCmdSession->SetMsgChainer(pMsgChainer);
-
-	m_pCmdSession->SetHeadLen(12);
-	m_pCmdSession->Listen(gpServerConfig->GetCmdIp(), gpServerConfig->GetCmdPort());
 	return true;
 }
 

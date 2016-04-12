@@ -38,19 +38,6 @@ bool ServerConfig::LoadServerConf(const char* pFilePath)
 		m_uListenPort = boost::lexical_cast<uint32_t>(pServerPort);
 	}
 
-	TiXmlElement* pCmdServer = pRoot->FirstChildElement("CmdListen");
-	if (!pCmdServer)
-	{
-		return false;
-	}
-	TiXmlElement* pCmdInfo = pCmdServer->FirstChildElement("bind");
-	if (!pCmdInfo)
-	{
-		return false;
-	}
-	m_strCmdIp = pCmdInfo->Attribute("ip");
-	m_uCmdPort = boost::lexical_cast<uint32_t>(pCmdInfo->Attribute("port"));
-
 	TiXmlElement* pWorkThread = pRoot->FirstChildElement("WorkThread");
 	if (!pWorkThread)
 	{

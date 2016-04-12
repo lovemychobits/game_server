@@ -65,7 +65,6 @@ private:
 	bool InitLog4cpp();
 	bool InitServerConf(const char* pConfPath);
 	bool InitServerApp();
-	bool InitListenCmd();
 	bool InitDataThread();
 
 private:

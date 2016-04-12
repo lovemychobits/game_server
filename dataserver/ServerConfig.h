@@ -29,16 +29,6 @@ public:
 		return m_szBindIp;
 	}
 
-	uint32_t GetCmdPort()
-	{
-		return m_uCmdPort;
-	}
-
-	const char* GetCmdIp()
-	{
-		return m_strCmdIp.c_str();
-	}
-
 	int GetThreadNum()
 	{
 		return m_uThreadNum;
@@ -81,9 +71,6 @@ private:
 
 	uint32_t m_uListenPort;
 	char m_szBindIp[32];
-
-	uint32_t m_uCmdPort;
-	string m_strCmdIp;
 
 	uint32_t m_uThreadNum;
 
