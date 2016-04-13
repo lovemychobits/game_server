@@ -35,49 +35,9 @@ bool PlayerDataMng::Init()
 
 bool PlayerDataMng::InitTables()
 {
-	if (!m_sqlTables.CreatePlayerInfo())
+	if (!m_sqlTables.CreateTables("sql/create_global_table.sql"))
 	{
 		ERRORLOG("create table playerinfo failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateMailTable())
-	{
-		ERRORLOG("create table mail failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreatePlayerSnapshot())
-	{
-		ERRORLOG("create table snapshot failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateArenaInfo())
-	{
-		ERRORLOG("create table arenainfo failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateRankListInfo())
-	{
-		ERRORLOG("create table rankinfo failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateScoreArenaInfo())
-	{
-		ERRORLOG("create table scorearenainfo failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateChatMessage())
-	{
-		ERRORLOG("create table chatmessage failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateSociatyMessage())
-	{
-		ERRORLOG("create table chatmessage failed.");
-		return false;
-	}
-	if (!m_sqlTables.CreateEventRecord())
-	{
-		ERRORLOG("create table event record failed.");
 		return false;
 	}
 	return true;

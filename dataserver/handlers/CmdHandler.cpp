@@ -26,6 +26,7 @@ void CmdHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uLen)
 	if (!pBuf || uLen == 0)
 	{
 		ERRORLOG("message error");
+		return;
 	}
 
 	MessageHeader* pMsgHeader = (MessageHeader*)pBuf;
@@ -37,4 +38,6 @@ void CmdHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uLen)
 	default:
 		break;
 	}
+
+	return;
 }

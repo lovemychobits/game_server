@@ -4,7 +4,7 @@
 #include "../../utils/Utility.h"
 #include <string>
 #include "SqlTables.h"
-#include "Mysql.h"
+#include "../../utils/Mysql.h"
 #include "../../network/IConnection.h"
 #include "../../utils/ProtoTemplate.hpp"
 using namespace std;

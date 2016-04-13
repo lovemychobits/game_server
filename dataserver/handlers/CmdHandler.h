@@ -17,7 +17,6 @@ class CmdHandler : public IMsgHandler
 public:
 	CmdHandler()
 	{
-
 	}
 
 	~CmdHandler()
