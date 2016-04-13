@@ -4,9 +4,10 @@
 #include "mysql/PlayerDataMng.h"
 #include "handlers/DsMsgChainer.h"
 
+// 服务器初始化
 bool DataServer::Init(const char* pConfPath)
 {
-	if (!InitLog4cpp())
+	if (!InitLog4cplus())
 	{
 		ERRORLOG("init log fail!");
 		return false;
@@ -29,19 +30,21 @@ bool DataServer::Init(const char* pConfPath)
 	return true;
 }
 
-
-bool DataServer::InitLog4cpp()
+// 初始化log4cplus
+bool DataServer::InitLog4cplus()
 {
 	PropertyConfigurator::doConfigure(LOG4CPLUS_TEXT("./ds.properties"));
 	Logger root = Logger::getRoot();
 	return true;
 }
 
+// 载入服务器配置
 bool DataServer::InitServerConf(const char* pConfPath)
 {
 	return gpServerConfig->LoadServerConf(pConfPath);
 }
 
+// 服务器开始监听
 bool DataServer::InitServerApp()
 {
 	m_pNetCluster = CreateNetCluster();
@@ -72,6 +75,7 @@ bool DataServer::InitServerApp()
 	return true;
 }
 
+// 设置数据处理线程
 bool DataServer::InitDataThread()
 {
 	int nThreadNum = gpServerConfig->GetThreadNum();

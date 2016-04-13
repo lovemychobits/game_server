@@ -8,7 +8,6 @@
 #include "handlers/CmdHandler.h"
 
 class GsHandler;
-class GsMsgParser;
 class DataServer
 {
 public:
@@ -62,19 +61,19 @@ public:
 	}
 
 private:
-	bool InitLog4cpp();
+	bool InitLog4cplus();
 	bool InitServerConf(const char* pConfPath);
 	bool InitServerApp();
 	bool InitDataThread();
 
 private:
-	IServerSession* m_pServerSession;
-	IServerSession* m_pCmdSession;
-	INetCluster* m_pNetCluster;
-	DataThread** m_pDataThread;
-	boost::thread** m_pThread;
-	GsHandler* m_pGsHandler;
-	CmdHandler* m_pCmdHandler;
+	IServerSession		*m_pServerSession;
+	IServerSession		*m_pCmdSession;
+	INetCluster			*m_pNetCluster;
+	DataThread			**m_pDataThread;
+	boost::thread		**m_pThread;
+	GsHandler			*m_pGsHandler;
+	CmdHandler			*m_pCmdHandler;
 };
 
 #endif
