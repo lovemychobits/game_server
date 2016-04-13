@@ -7,6 +7,7 @@
 #include "../../network/IConnection.h"
 #include "../../network/IMsgHandler.h"
 #include "../../utils/ProtoTemplate.hpp"
+
 using namespace cpnet;
 
 /*

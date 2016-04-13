@@ -1,6 +1,8 @@
 #include "ClientHandler.h"
 #include "../header.h"
 #include "../LoginServer.h"
+#include "../../protocol/login.pb.h"
+#include "../login/LoginMng.h"
 
 ClientHandler::ClientHandler(LoginServer* pLoginServer) : m_pLoginServer(pLoginServer)
 {
@@ -35,9 +37,20 @@ void ClientHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uL
 	MessageHeader* pMsgHeader = (MessageHeader*)pBuf;
 	switch (pMsgHeader->uMsgCmd)
 	{
-		// TODO
-	case 0:
-		break;
+	case login::LoginProtocol::REQ_LOGIN:				// 处理登陆请求
+	{
+		login::LoginReq loginReq;
+		loginReq.ParseFromArray(pBuf + sizeof(MessageHeader), uLen - sizeof(MessageHeader));
+		LoginMng::getInstance()->ReqLogin(pConn, loginReq);
+	}
+	break;
+	case login::LoginProtocol::REQ_REGISTER:			// 处理注册请求
+	{
+		login::RegisterReq registerReq;
+		registerReq.ParseFromArray(pBuf + sizeof(MessageHeader), uLen - sizeof(MessageHeader));
+
+	}
+	break;
 	default:
 		break;
 	}
