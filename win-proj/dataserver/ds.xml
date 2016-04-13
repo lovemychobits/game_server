@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root version="1.0">
-  <!--gameserver监听端口-->
+  <!--dataserver监听端口-->
 	<HostServer type="1" id="1">
 	  <bind ip="127.0.0.1" port="8600" type="0"/>
 	</HostServer>

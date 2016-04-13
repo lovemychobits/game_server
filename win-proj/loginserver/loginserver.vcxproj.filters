@@ -28,6 +28,9 @@
     <Filter Include="register">
       <UniqueIdentifier>{b7857c64-554f-4092-97cd-aadebe6db581}</UniqueIdentifier>
     </Filter>
+    <Filter Include="protocol">
+      <UniqueIdentifier>{5ea36703-7741-438b-a61a-df4fbe27151e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\loginserver\header.h">
@@ -45,6 +48,15 @@
     <ClInclude Include="..\..\loginserver\handlers\ClientHandler.h">
       <Filter>handlers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\loginserver\login\LoginMng.h">
+      <Filter>login</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\loginserver\mysql\DBMng.h">
+      <Filter>mysql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\login.pb.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\loginserver\LoginServer.cpp">
@@ -61,6 +73,15 @@
     </ClCompile>
     <ClCompile Include="..\..\loginserver\handlers\ClientHandler.cpp">
       <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\loginserver\login\LoginMng.cpp">
+      <Filter>login</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\loginserver\mysql\DBMng.cpp">
+      <Filter>mysql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\login.pb.cc">
+      <Filter>protocol</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
