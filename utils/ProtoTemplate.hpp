@@ -34,7 +34,7 @@ namespace cpnet
 		MessageHeader msgHeader; 
 		msgHeader.uMsgSize = sizeof(MessageHeader) + strOutput.size();
 		msgHeader.uMsgCmd = uMsgCmd;
-		msgHeader.uMsgReserved = 0xA1B2C3D4;
+		msgHeader.uMsgReserved = MAGIC_CODE;
 		strBuffer.append((char*)&msgHeader, sizeof(MessageHeader));
 		strBuffer.append(strOutput);
 		return;
@@ -51,7 +51,7 @@ namespace cpnet
 		MessageHeader msgHeader; 
 		msgHeader.uMsgSize = sizeof(MessageHeader) + strOutput.size();
 		msgHeader.uMsgCmd = uMsgCmd;
-		msgHeader.uMsgReserved = 0xA1B2C3D4;
+		msgHeader.uMsgReserved = MAGIC_CODE;
 		strBuffer.append((char*)&msgHeader, sizeof(MessageHeader));
 		strBuffer.append(strOutput);
 		return;
