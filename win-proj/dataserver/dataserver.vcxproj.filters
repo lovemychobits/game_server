@@ -51,9 +51,6 @@
     <ClCompile Include="..\..\dataserver\mysql\DataThread.cpp">
       <Filter>mysql</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\dataserver\mysql\Mysql.cpp">
-      <Filter>mysql</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\dataserver\mysql\PlayerDataMng.cpp">
       <Filter>mysql</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
       <Filter>handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\dataserver\mysql\DataThread.h">
-      <Filter>mysql</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\dataserver\mysql\Mysql.h">
       <Filter>mysql</Filter>
     </ClInclude>
     <ClInclude Include="..\..\dataserver\mysql\PlayerDataMng.h">

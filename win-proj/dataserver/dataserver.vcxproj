@@ -55,6 +55,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,7 +90,6 @@
     <ClCompile Include="..\..\dataserver\handlers\GsHandler.cpp" />
     <ClCompile Include="..\..\dataserver\main.cpp" />
     <ClCompile Include="..\..\dataserver\mysql\DataThread.cpp" />
-    <ClCompile Include="..\..\dataserver\mysql\Mysql.cpp" />
     <ClCompile Include="..\..\dataserver\mysql\PlayerDataMng.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +101,6 @@
     <ClInclude Include="..\..\dataserver\handlers\GsHandler.h" />
     <ClInclude Include="..\..\dataserver\header.h" />
     <ClInclude Include="..\..\dataserver\mysql\DataThread.h" />
-    <ClInclude Include="..\..\dataserver\mysql\Mysql.h" />
     <ClInclude Include="..\..\dataserver\mysql\PlayerDataMng.h" />
     <ClInclude Include="..\..\dataserver\mysql\SqlTables.h" />
   </ItemGroup>
