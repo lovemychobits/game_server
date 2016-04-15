@@ -25,9 +25,6 @@
     <Filter Include="login">
       <UniqueIdentifier>{e894effe-e917-4b8e-8a73-f5a22fba4bc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="register">
-      <UniqueIdentifier>{b7857c64-554f-4092-97cd-aadebe6db581}</UniqueIdentifier>
-    </Filter>
     <Filter Include="protocol">
       <UniqueIdentifier>{5ea36703-7741-438b-a61a-df4fbe27151e}</UniqueIdentifier>
     </Filter>

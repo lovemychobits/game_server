@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{e4885ea0-4060-4afd-bccb-02520170f3ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="handlers">
+      <UniqueIdentifier>{9935ae2a-0344-4885-a935-87579bc2f9c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="protocol">
+      <UniqueIdentifier>{45c2f821-8a9b-477f-a634-861a63cad753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gsgroup">
+      <UniqueIdentifier>{11a264b6-40c6-4391-8fc7-013715e99b2a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\lobbyserver\config\ServerConfig.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\handlers\ClientMsgHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\handlers\GameServerHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\handlers\LobbyMsgChainer.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\gsgroup\GameGroupMng.cpp">
+      <Filter>gsgroup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lobbyserver\LobbyServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lobbyserver\config\ServerConfig.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\handlers\ClientMsgHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\handlers\GameServerHandler.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\handlers\LobbyMsgChainer.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\gsgroup\GameGroupMng.h">
+      <Filter>gsgroup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\header.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lobbyserver\LobbyServer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

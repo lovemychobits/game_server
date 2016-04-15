@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loginserver", "loginserver\
 		{027929D4-DA72-45AB-9797-A652242397B0} = {027929D4-DA72-45AB-9797-A652242397B0}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lobbyserver", "lobbyserver\lobbyserver.vcxproj", "{3C500B9C-771D-423B-A00F-1FF65503A908}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +43,10 @@ Global
 		{E4F3EF57-7C25-424A-B44A-B4965ED63A27}.Debug|Win32.Build.0 = Debug|Win32
 		{E4F3EF57-7C25-424A-B44A-B4965ED63A27}.Release|Win32.ActiveCfg = Release|Win32
 		{E4F3EF57-7C25-424A-B44A-B4965ED63A27}.Release|Win32.Build.0 = Release|Win32
+		{3C500B9C-771D-423B-A00F-1FF65503A908}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3C500B9C-771D-423B-A00F-1FF65503A908}.Debug|Win32.Build.0 = Debug|Win32
+		{3C500B9C-771D-423B-A00F-1FF65503A908}.Release|Win32.ActiveCfg = Release|Win32
+		{3C500B9C-771D-423B-A00F-1FF65503A908}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
