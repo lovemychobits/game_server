@@ -5,7 +5,6 @@
 
 CMysqlConnection::CMysqlConnection() : m_pMysql(NULL)
 {
-
 }
 
 CMysqlConnection::~CMysqlConnection()

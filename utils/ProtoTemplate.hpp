@@ -14,7 +14,7 @@
 #endif
 
 
-namespace cpnet
+namespace cputil
 {
 	template <typename T>
 	string GetProtoData(T* pMsgHeader)
