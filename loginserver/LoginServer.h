@@ -32,6 +32,7 @@ private:
 	bool InitLog4cplus();
 	bool InitServerConf(const char* pConfPath);
 	bool InitServerApp();
+	bool InitDB();
 
 private:
 	IServerSession		*m_pServerSession;

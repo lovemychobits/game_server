@@ -17,6 +17,10 @@ public:
 
 public:
 	void ReqLogin(IConnection* pConn, const login::LoginReq& loginReq);							// Íæ¼ÒÇëÇóµÇÂ½
+	void ReqRegister(IConnection* pConn, const login::RegisterReq& registerReq);				// Íæ¼ÒÇëÇó×¢²á
+
+private:
+	uint32_t GenLoginToken();
 
 private:
 	LoginMng();

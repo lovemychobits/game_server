@@ -3,6 +3,7 @@
 #include "config/ServerConfig.h"
 #include "handlers/MsgChainer.h"
 #include "handlers/ClientHandler.h"
+#include "mysql/DBMng.h"
 
 // 服务器初始化
 bool LoginServer::Init(const char* pConfPath)
@@ -20,6 +21,11 @@ bool LoginServer::Init(const char* pConfPath)
 	if (!InitServerApp())
 	{
 		ERRORLOG("init server app fail!");
+		return false;
+	}
+	if (!InitDB())
+	{
+		ERRORLOG("init db fail");
 		return false;
 	}
 	return true;
@@ -68,4 +74,10 @@ bool LoginServer::InitServerApp()
 	m_pServerSession->SetHeadLen(12);
 	m_pServerSession->Listen(gpServerConfig->GetBindIp(), gpServerConfig->GetListenPort());
 	return true;
+}
+
+// 初始化DB连接
+bool LoginServer::InitDB()
+{
+	return DBMng::getInstance()->init();
 }
