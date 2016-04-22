@@ -3,16 +3,20 @@
 #include "handlers/ClientHandler.h"
 #include "handlers/DsHandler.h"
 #include "handlers/GsMsgChainer.h"
+#include "scenemng-alpha/SceneMng.h"
 
 GameServer::~GameServer()
 {
 
 	// 清理内存
 	if (m_pClientHandler)
+	{
 		delete m_pClientHandler;
+	}	
 	if (m_pDsHandler)
+	{
 		delete m_pDsHandler;
-
+	}
 	if (m_pServerSession)
 	{
 		m_pServerSession->Stop();
@@ -38,6 +42,12 @@ GameServer::~GameServer()
 
 bool GameServer::Init(const char* pConfPath)
 {
+	if (!_InitModules())
+	{
+		ERRORLOG("init modules failed.");
+		return false;
+	}
+
 	if (!_InitLog4cpp())
 	{
 		return false;
@@ -147,9 +157,8 @@ bool GameServer::_InitServerApp()
 	}
 
 	IMsgChainer* pMsgChainer = m_pNetCluster->CreateMsgChainer();
-	//pMsgChainer->AddDecodeLast(m_pCryptDecoder);
-	//pMsgChainer->AddDecodeLast(m_pMsgDecoder);
-	//pMsgChainer->AddEncodeLast(m_pMsgEncoder);
+	pMsgChainer->AddDecodeLast(m_pMsgDecoder);
+	pMsgChainer->AddEncodeLast(m_pMsgEncoder);
 
 	m_pServerSession->SetMsgHandler(m_pClientHandler);
 	m_pServerSession->SetMsgChainer(pMsgChainer);
@@ -168,8 +177,8 @@ bool GameServer::_InitDataServer()
 	}
 
 	IMsgChainer* pMsgChainer = m_pNetCluster->CreateMsgChainer();
-	//pMsgChainer->AddDecodeLast(m_pMsgDecoder);
-	//pMsgChainer->AddEncodeLast(m_pMsgEncoder);
+	pMsgChainer->AddDecodeLast(m_pMsgDecoder);
+	pMsgChainer->AddEncodeLast(m_pMsgEncoder);
 
 	m_pDsSession->SetMsgChainer(pMsgChainer);
 	m_pDsSession->SetMsgHandler(m_pDsHandler);
@@ -198,5 +207,26 @@ bool GameServer::_InitLoadConf()
 	//{
 	//	return false;
 	//}
+	return true;
+}
+
+bool GameServer::_InitModules()
+{
+	scene_alpha::SceneMng::getInstance()->Init();
+	//float startpos[] = { -16.8693466, -2.36812592, 24.6918983 }; // m_spos = 0x08618340 {-16.8693466, -2.36812592, 24.6918983}
+	//float endpos[] = { -16.8693466, -2.36812592, 17.6918983 };					 // m_epos = 0x0861834c {17.6115112, -2.37033081, -22.8771439}
+
+	float startpos[] = { -16.8693466, -2.36812592, 24.6918983 }; // m_spos = 0x08618340 {-16.8693466, -2.36812592, 24.6918983}
+	float endpos[] = { -16.8693466, -2.36812592, 17.6918983 };					 // m_epos = 0x0861834c {17.6115112, -2.37033081, -22.8771439}
+
+
+	DWORD dwStart = ::GetTickCount();
+	for (int i = 0; i < 100000; ++i)
+	{
+		scene_alpha::SceneMng::getInstance()->findPath(startpos, endpos);
+	}
+	DWORD dwEnd = ::GetTickCount();
+	cout << "Time cost, 10000times, time=[" << (dwEnd - dwStart) / 1000.0 << "]" << endl;
+	
 	return true;
 }

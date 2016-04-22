@@ -5,6 +5,7 @@
 #include "config/ServerConfig.h"
 #include "../network/INetCluster.h"
 #include "../network/ITimerTrigger.h"
+#include "handlers/GsMsgChainer.h"
 
 class ClientHandler;
 class ClientMsgParser;
@@ -65,6 +66,8 @@ private:
 	// handler 对象
 	ClientHandler* m_pClientHandler;					// 客户端处理类
 	DsHandler* m_pDsHandler;							// DataServer处理类
+	ClientMsgDecoder* m_pMsgDecoder;
+	ClientMsgEncoder* m_pMsgEncoder;		
 
 private:
 	boost::mutex m_mutex;

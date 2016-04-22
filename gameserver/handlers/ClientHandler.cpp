@@ -1,6 +1,7 @@
 ﻿#include "../header.h"
 #include "ClientHandler.h"
 #include "../../utils/Utility.h"
+#include "../../protocol/client.pb.h"
 
 
 void ClientHandler::HandleConnect(IConnection* pConn)
@@ -67,6 +68,7 @@ void ClientHandler::_RegisterAllCmd()
 {
 	// 网络基本功能测试
 	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
+	_RegisterCmd(client::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
 
 	return;
 }
@@ -74,5 +76,19 @@ void ClientHandler::_RegisterAllCmd()
 void ClientHandler::_RequestTestPingPong(IConnection* pConn, MessageHeader* pMsgHeader)
 {
 	pConn->SendMsg((char*)pMsgHeader, pMsgHeader->uMsgSize);
+}
+
+void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader)
+{
+	if (!pConn || !pMsgHeader)
+	{
+		return;
+	}
+
+	client::EnterGameReq enterGameReq;
+	const char* pBuf = (const char*)pMsgHeader;
+	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+
+	return;
 }
 
