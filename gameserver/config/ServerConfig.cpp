@@ -197,42 +197,42 @@ bool ServerConfig::LoadServerConf(const char* pFilePath)
 	m_nRedisPort = boost::lexical_cast<int>(pRedisPort);
 	m_nRedisIndex = boost::lexical_cast<int>(pRedisIndex);
 
-	// pvp server list
-	TiXmlElement* pPvpServerList = pRoot->FirstChildElement("PvpServer");
-	if (!pPvpServerList)
-	{
-		return false;
-	}
+	//// pvp server list
+	//TiXmlElement* pPvpServerList = pRoot->FirstChildElement("PvpServer");
+	//if (!pPvpServerList)
+	//{
+	//	return false;
+	//}
 
-	TiXmlElement* pPvpServer = pPvpServerList->FirstChildElement("pvp");
-	while (pPvpServer)
-	{
-		ServerIpConf ipConf;
-		ipConf.strIp = pPvpServer->Attribute("ip");
-		ipConf.uPort = boost::lexical_cast<int>(pPvpServer->Attribute("port"));
-		m_pvpServerList.push_back(ipConf);
+	//TiXmlElement* pPvpServer = pPvpServerList->FirstChildElement("pvp");
+	//while (pPvpServer)
+	//{
+	//	ServerIpConf ipConf;
+	//	ipConf.strIp = pPvpServer->Attribute("ip");
+	//	ipConf.uPort = boost::lexical_cast<int>(pPvpServer->Attribute("port"));
+	//	m_pvpServerList.push_back(ipConf);
 
-		pPvpServer = pPvpServer->NextSiblingElement();
-	}
+	//	pPvpServer = pPvpServer->NextSiblingElement();
+	//}
 
-	// pvp redis list
-	TiXmlElement* pPvpRedisList = pRoot->FirstChildElement("PvpRedis");
-	if (!pPvpRedisList)
-	{
-		return false;
-	}
+	//// pvp redis list
+	//TiXmlElement* pPvpRedisList = pRoot->FirstChildElement("PvpRedis");
+	//if (!pPvpRedisList)
+	//{
+	//	return false;
+	//}
 
-	TiXmlElement* pPvpRedis = pPvpRedisList->FirstChildElement("redis");
-	while (pPvpRedis)
-	{
-		ServerIpConf ipConf;
-		ipConf.strIp = pPvpRedis->Attribute("ip");
-		ipConf.uPort = boost::lexical_cast<int>(pPvpRedis->Attribute("port"));
-		ipConf.uIndex = boost::lexical_cast<int>(pPvpRedis->Attribute("index"));
-		m_pvpRedisList.push_back(ipConf);
+	//TiXmlElement* pPvpRedis = pPvpRedisList->FirstChildElement("redis");
+	//while (pPvpRedis)
+	//{
+	//	ServerIpConf ipConf;
+	//	ipConf.strIp = pPvpRedis->Attribute("ip");
+	//	ipConf.uPort = boost::lexical_cast<int>(pPvpRedis->Attribute("port"));
+	//	ipConf.uIndex = boost::lexical_cast<int>(pPvpRedis->Attribute("index"));
+	//	m_pvpRedisList.push_back(ipConf);
 
-		pPvpRedis = pPvpRedis->NextSiblingElement();
-	}
+	//	pPvpRedis = pPvpRedis->NextSiblingElement();
+	//}
 
 	// recvbuffer
 	TiXmlElement* pRecvBuffer = pRoot->FirstChildElement("RecvBuffer");

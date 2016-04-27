@@ -96,6 +96,78 @@ namespace scene_alpha {
 		return true;
 	}
 
+	bool NavMeshLoader::load_cai(const char* path) {
+		FILE* fp = fopen(path, "rb");
+		if (!fp) return false;
+
+		// Read header.
+		NavMeshSetHeader_CAI header;
+		size_t readLen = fread(&header, sizeof(NavMeshSetHeader_CAI), 1, fp);
+		if (readLen != 1)
+		{
+			fclose(fp);
+			return false;
+		}
+
+		if (header.version != NAVMESHSET_VERSION)
+		{
+			fclose(fp);
+			return false;
+		}
+
+		dtNavMesh* mesh = dtAllocNavMesh();
+		if (!mesh)
+		{
+			fclose(fp);
+			return false;
+		}
+		dtStatus status = mesh->init(&header.params);
+		if (dtStatusFailed(status))
+		{
+			fclose(fp);
+			return false;
+		}
+
+		// Read tiles.
+		for (int i = 0; i < header.tileCount; ++i)
+		{
+			NavMeshTileHeader tileHeader;
+			readLen = fread(&tileHeader, sizeof(tileHeader), 1, fp);
+			if (readLen != 1)
+			{
+				fclose(fp);
+				return false;
+			}
+
+			if (!tileHeader.tileRef || !tileHeader.dataSize)
+				break;
+
+			unsigned char* data = (unsigned char*)dtAlloc(tileHeader.dataSize, DT_ALLOC_PERM);
+			if (!data) break;
+			memset(data, 0, tileHeader.dataSize);
+			readLen = fread(data, tileHeader.dataSize, 1, fp);
+			if (readLen != 1)
+			{
+				fclose(fp);
+				return false;
+			}
+
+			mesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef, 0);
+		}
+
+		fclose(fp);
+		m_navMesh = mesh;
+		m_navQuery = dtAllocNavMeshQuery();
+
+		status = m_navQuery->init(m_navMesh, 2048);
+		if (dtStatusFailed(status))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	Object::Object()
 	{
@@ -121,7 +193,7 @@ namespace scene_alpha {
 	}
 
 	bool SceneMng::Init() {
-		if (!m_navMeshLoader.load("./all_tiles_navmesh.bin")) {
+		if (!m_navMeshLoader.load_cai("./srv_CAIBakedNavmesh.navmesh")) {
 			return false;
 		}
 		return true;
@@ -287,7 +359,7 @@ namespace scene_alpha {
 	}
 
 
-	void SceneMng::findPath(float* startPos, float* endPos) {
+	int SceneMng::findPath(float* startPos, float* endPos) {
 		dtPolyRef startRef;
 		dtPolyRef endRef;
 		dtQueryFilter filter;
@@ -295,14 +367,13 @@ namespace scene_alpha {
 
 		static const int MAX_POLYS = 256;
 		static const int MAX_SMOOTH = 2048;
-		dtPolyRef polys[MAX_POLYS];
-		float m_smoothPath[MAX_SMOOTH * 3];
+		dtPolyRef m_polys[MAX_POLYS];
 
 		m_navMeshLoader.getNavMeshQuery()->findNearestPoly(startPos, polyPickExt, &filter, &startRef, 0);
 		m_navMeshLoader.getNavMeshQuery()->findNearestPoly(endPos, polyPickExt, &filter, &endRef, 0);
 
 		int m_npolys = 0;
-		m_navMeshLoader.getNavMeshQuery()->findPath(startRef, endRef, startPos, endPos, &filter, polys, &m_npolys, MAX_POLYS);
+		m_navMeshLoader.getNavMeshQuery()->findPath(startRef, endRef, startPos, endPos, &filter, m_polys, &m_npolys, MAX_POLYS);
 
 		int nsmoothPath = 0;
 
@@ -310,7 +381,7 @@ namespace scene_alpha {
 		{
 			// Iterate over the path to find smooth path on the detail mesh surface.
 			dtPolyRef polys[MAX_POLYS];
-			memcpy(polys, polys, sizeof(dtPolyRef)*m_npolys);
+			memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
 			int npolys = m_npolys;
 
 			float iterPos[3], targetPos[3];
@@ -429,5 +500,6 @@ namespace scene_alpha {
 				}
 			}
 		}
+		return nsmoothPath;
 	}
 }

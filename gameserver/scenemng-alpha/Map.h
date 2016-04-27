@@ -3,6 +3,7 @@
 #include "../header.h"
 
 namespace scene_alpha {
+#define MAP_GRID_SIZE 100
 	class Map
 	{
 	public:
@@ -10,6 +11,6 @@ namespace scene_alpha {
 		~Map();
 
 	private:
-		uint8_t scene[20][20];						// 20 * 20
+		uint8_t scene[MAP_GRID_SIZE][MAP_GRID_SIZE];
 	};
 }

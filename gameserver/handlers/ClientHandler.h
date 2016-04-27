@@ -39,6 +39,7 @@ private:
 	void _RequestTestPingPong(IConnection* pConn, MessageHeader* pMsgHeader);
 
 	void _RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader);
+	void _RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHeader);
 
 private:
 	template<typename T>

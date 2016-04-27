@@ -16,6 +16,13 @@ namespace scene_alpha {
 		dtNavMeshParams params;
 	};
 
+	struct NavMeshSetHeader_CAI
+	{
+		int version;
+		int tileCount;
+		dtNavMeshParams params;
+	};
+
 	struct NavMeshTileHeader
 	{
 		dtTileRef tileRef;
@@ -27,6 +34,7 @@ namespace scene_alpha {
 		NavMeshLoader();
 		~NavMeshLoader();
 		bool load(const char* path);
+		bool load_cai(const char* path);
 
 		dtNavMesh* getNavMesh() {
 			return m_navMesh;
@@ -76,10 +84,16 @@ namespace scene_alpha {
 	public:
 		void enter(Object* object);
 		void move(Object* object, Vector3D& newPos);
-		void findPath(float* startPos, float* endPos);
+		int findPath(float* startPos, float* endPos);
+		float* getPath() {
+			return m_smoothPath;
+		}
 
 	private:
 		Map m_map;
 		NavMeshLoader m_navMeshLoader;
+
+		static const int MAX_SMOOTH = 2048;
+		float m_smoothPath[MAX_SMOOTH * 3];
 	};
 }
