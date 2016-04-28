@@ -5,6 +5,7 @@
 #include <list>
 using namespace std;
 #include "../../network/header.h"
+#include "QuadTree.h"
 
 namespace plane_shooting {
 	class Bullet;
@@ -20,6 +21,8 @@ namespace plane_shooting {
 
 		void OnTimer(const boost::system::error_code&);
 
+		void TestQuadTree();
+
 	public:
 		void AddPlane(uint16_t uPlaneId, Vector2D pos, int8_t nOrientation);
 		void PlaneMove(Plane* pPlane, uint32_t uAction);
@@ -31,6 +34,7 @@ namespace plane_shooting {
 	private:
 		list<Plane*> m_planeList;
 		list<Bullet*> m_bulletList;
+		QuadTree* m_pQuadTree;
 	};
 }
 #endif

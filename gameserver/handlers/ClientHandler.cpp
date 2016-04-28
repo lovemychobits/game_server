@@ -3,7 +3,7 @@
 #include "../../utils/Utility.h"
 #include "../../protocol/client.pb.h"
 #include "../scenemng-alpha/SceneMng.h"
-#include "plane_shooting/SceneMng2.h"
+#include "../plane_shooting/SceneMng2.h"
 
 void ClientHandler::HandleConnect(IConnection* pConn)
 {

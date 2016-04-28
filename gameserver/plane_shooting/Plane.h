@@ -7,7 +7,6 @@
 using namespace cpnet;
 
 namespace plane_shooting {
-	
 
 	enum PlaneStatus {
 		ALIVE = 0,					// 存活的
@@ -27,7 +26,7 @@ namespace plane_shooting {
 	{
 	public:
 		Plane();
-		Plane(uint16_t uPlaneId, Vector2D& pos, int8_t orientation, IConnection* pConn);
+		Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation);
 		~Plane();
 
 	public:
@@ -51,10 +50,10 @@ namespace plane_shooting {
 			return m_orientation;
 		}
 
-		bool NeedNotify(Object* pObj);					// 是否需要通知自己
+		bool NeedNotify(Object* pObj);					// 是否需要通知
 
 	private:
-		bool IsInViewRange(Vector2D& pos);				// 是否在视野内
+		bool IsInViewRange(const Rectangle& rect);		// 是否在视野内
 
 	private:
 		IConnection* m_pConn;

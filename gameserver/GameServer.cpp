@@ -200,7 +200,7 @@ bool GameServer::_InitTimerTrigger()
 		return false;
 	}
 	//gpTimerMng->SetTimerTigger(m_pTimerTrigger);
-	m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 50);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 5000);
 	return true;
 }
 
@@ -217,20 +217,6 @@ bool GameServer::_InitLoadConf()
 bool GameServer::_InitModules()
 {
 	scene_alpha::SceneMng::getInstance()->Init();
-	//float startpos[] = { -16.8693466, -2.36812592, 24.6918983 }; // m_spos = 0x08618340 {-16.8693466, -2.36812592, 24.6918983}
-	//float endpos[] = { -16.8693466, -2.36812592, 17.6918983 };					 // m_epos = 0x0861834c {17.6115112, -2.37033081, -22.8771439}
-
-	//float startpos[] = { -9.2f, -2.5f, 21.3f }; 
-	//float endpos[] = { 10.5f, -1.4f, 28.0f };
-
-
-	//DWORD dwStart = ::GetTickCount();
-	//for (int i = 0; i < 1; ++i)
-	//{
-	//	scene_alpha::SceneMng::getInstance()->findPath(startpos, endpos);
-	//}
-	//DWORD dwEnd = ::GetTickCount();
-	//cout << "Time cost, 10000times, time=[" << (dwEnd - dwStart) / 1000.0 << "]" << endl;
-	
+	plane_shooting::SceneMng::GetInstance()->TestQuadTree();
 	return true;
 }

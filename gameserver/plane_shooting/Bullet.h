@@ -13,7 +13,7 @@ namespace plane_shooting {
 	{
 	public:
 		Bullet();
-		Bullet(uint16_t uBulletId, Plane* pOwner, Vector2D& pos, uint16_t uAngle, uint16_t uSpeed);
+		Bullet(uint16_t uBulletId, Plane* pOwner, const Rectangle& rect, uint16_t uAngle, uint16_t uSpeed);
 		~Bullet();
 
 	public:
