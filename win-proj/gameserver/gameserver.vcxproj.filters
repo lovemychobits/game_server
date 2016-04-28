@@ -84,6 +84,9 @@
     <ClCompile Include="..\..\gameserver\plane_shooting\SceneMng2.cpp">
       <Filter>plane_shooting</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp">
+      <Filter>plane_shooting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\gameserver\config\ServerConfig.h">
@@ -141,6 +144,9 @@
       <Filter>plane_shooting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\plane_shooting\Object.h">
+      <Filter>plane_shooting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\plane_shooting\QuadTree.h">
       <Filter>plane_shooting</Filter>
     </ClInclude>
   </ItemGroup>
