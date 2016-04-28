@@ -35,6 +35,16 @@ void ClientHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uL
 	}
 
 	MessageHeader* pMsgHeader = (MessageHeader*)pBuf;
+
+	// TODO, using handler array like
+	/*
+		const Handlers table[] =
+		{
+		{ REQ_LOGIN,     &ClientHandler::_HandleLogin    },
+		{ REQ_REGISTER,  &ClientHandler::_HandleRegister },
+		};
+	*/
+
 	switch (pMsgHeader->uMsgCmd)
 	{
 	case login::LoginProtocol::REQ_LOGIN:				// ´¦ÀíµÇÂ½ÇëÇó
@@ -48,7 +58,7 @@ void ClientHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uL
 	{
 		login::RegisterReq registerReq;
 		registerReq.ParseFromArray(pBuf + sizeof(MessageHeader), uLen - sizeof(MessageHeader));
-
+		LoginMng::getInstance()->ReqRegister(pConn, registerReq);
 	}
 	break;
 	default:
