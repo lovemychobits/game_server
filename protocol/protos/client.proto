@@ -1,0 +1,67 @@
+package client;
+
+/////////////////////////////////////////////////////////////协议号///////////////////////////////////////////////////////////////////
+enum ClientProtocol
+{
+	REQ_ENTER_GAME		= 2000;					// 请求进入游戏
+	REQ_MOVE			= 2001;					// 请求移动
+	REQ_QUERY_PATH		= 2002;					// 请求路径查询
+	NTY_OBJS			= 2003;					// 通知物体（飞机或者子弹）相关信息
+}
+
+/////////////////////////////////////////////////////////////错误码///////////////////////////////////////////////////////////////////
+enum LoginError
+{
+	SUCCESS 		= 0;						// 操作成功
+}
+
+/////////////////////////////////////////////////////////////协议///////////////////////////////////////////////////////////////////
+message PBVector
+{
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message PBVector2D
+{
+	optional float x = 1;
+	optional float y = 2;	
+}
+
+message EnterGameReq
+{
+	optional string userName 	= 1;		// 用户名
+	optional string passwd		= 2;		// 密码
+}
+
+message EnterGameAck
+{
+	optional uint32 errorCode	= 1;		// 错误码
+	optional PBVector pos 		= 2;		// 进入游戏后的场景位置
+}
+
+message QueryPathReq
+{
+	optional PBVector startPos	= 1;		// 起始点	
+	optional PBVector endPos	= 2;		// 终点
+}
+
+message QueryPathAck
+{
+	repeated PBVector path		= 1;		// 路径
+}
+
+message PBObject
+{
+	optional uint32 objId		= 1;		// 物体id
+	optional PBVector2D pos 	= 2;		// 坐标位置
+	optional uint32 speed		= 3;		// 当前速度
+	optional uint32 orientation = 4;		// 朝向
+	optional uint32 angle		= 5;		// 角度 
+}
+
+message NotifyObjs 
+{
+	repeated PBObject objList	= 1;		// 物体信息列表
+}
