@@ -12,7 +12,7 @@ using namespace std;
 class QuadTree
 {
 #define NODE_SIZE 4
-#define NODE_MAX_BOJS 10
+#define NODE_MAX_BOJS 5
 
 public:
 	QuadTree(plane_shooting::Rectangle bounds);
@@ -20,6 +20,7 @@ public:
 
 public:
 	void insert(Object* pObj);
+	void remove(Object* pObj);
 	void retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList);
 
 private:

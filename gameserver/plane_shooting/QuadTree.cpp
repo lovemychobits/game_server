@@ -107,6 +107,36 @@ void QuadTree::insert(Object* pObj) {
 	}
 }
 
+// 从死叉树中删除物体
+void QuadTree::remove(Object* pObj) {
+	if (!pObj) {
+		return;
+	}
+
+	const plane_shooting::Rectangle& rect = pObj->GetRect();
+	if (nodes[0] != NULL) {					// 去查找子树
+		int16_t index = GetIndex(rect);
+		
+		if (index != -1) {
+			nodes[index]->remove(pObj);
+			return;
+		}
+	}
+
+	// 删除物体
+	list<Object*>::iterator objIt = m_objects.begin();
+	list<Object*>::iterator objItEnd = m_objects.end();
+	for (; objIt != objItEnd; objIt++) {
+		if (pObj == *objIt) {
+			m_objects.erase(objIt);
+			return;
+		}
+	}
+
+	return;
+}
+
+
 void QuadTree::retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList) {
 	int16_t index = GetIndex(rect);
 	if (index != -1 && nodes[0] != NULL) {

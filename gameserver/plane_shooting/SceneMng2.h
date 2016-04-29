@@ -3,6 +3,7 @@
 
 #include "Plane.h"
 #include <list>
+#include <map>
 using namespace std;
 #include "../../network/header.h"
 #include "QuadTree.h"
@@ -24,17 +25,21 @@ namespace plane_shooting {
 		void TestQuadTree();
 
 	public:
-		void AddPlane(uint16_t uPlaneId, Vector2D pos, int8_t nOrientation);
+		void PlayerEnter(IConnection* pConn);
 		void PlaneMove(Plane* pPlane, uint32_t uAction);
 		void PlaneShoot(Plane* pPlane);
+		Plane* GetPlaneByConn(IConnection* pConn);
 
 	private:
+		void AddPlane(IConnection* pConn, uint16_t uPlaneId, Vector2D pos, int8_t nOrientation);
 		void Broadcast(Object* pObject);											// ¹ã²¥
 
 	private:
 		list<Plane*> m_planeList;
 		list<Bullet*> m_bulletList;
+		map<IConnection*, Plane*> m_connToPlaneMap;
 		QuadTree* m_pQuadTree;
+		uint32_t m_uPlaneId;
 	};
 }
 #endif

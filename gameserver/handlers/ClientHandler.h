@@ -40,6 +40,7 @@ private:
 
 	void _RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader);
 	void _RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHeader);
+	void _RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHeader);
 
 private:
 	template<typename T>

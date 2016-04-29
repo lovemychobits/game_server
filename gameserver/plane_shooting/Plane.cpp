@@ -15,8 +15,8 @@ namespace plane_shooting {
 
 	}
 
-	Plane::Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation) :
-		Object(uPlaneId, rect), m_orientation(orientation), m_curSpeed(1) {
+	Plane::Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation, IConnection* pConn) :
+		Object(uPlaneId, rect), m_pConn(pConn), m_orientation(orientation), m_curSpeed(1) {
 
 		// 设置默认的视野范围，以飞机自身的中心点
 		m_viewRange.uWidth = 10;
@@ -88,5 +88,10 @@ namespace plane_shooting {
 
 		return true;
 	}
-}
 
+	void Plane::SendMsg(const char* pData, uint32_t uLen) {
+		if (m_pConn) {
+			m_pConn->SendMsg(pData, uLen);
+		}
+	}
+}

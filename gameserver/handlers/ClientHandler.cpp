@@ -90,6 +90,7 @@ void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHea
 	const char* pBuf = (const char*)pMsgHeader;
 	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
 
+	plane_shooting::SceneMng::GetInstance()->PlayerEnter(pConn);
 	return;
 }
 
@@ -129,6 +130,22 @@ void ClientHandler::_RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHea
 	string strResponse;
 	cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
 	pConn->SendMsg(strResponse.c_str(), strResponse.size());
+
+	return;
+}
+
+void ClientHandler::_RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHeader) 
+{
+	if (!pConn || !pMsgHeader) {
+		return;
+	}
+
+	client::PlaneMoveReq planeMoveReq;
+	const char* pBuf = (const char*)pMsgHeader;
+	planeMoveReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+
+	Plane* pPlane = plane_shooting::SceneMng::GetInstance()->GetPlaneByConn(pConn);
+	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, planeMoveReq.movetype());
 
 	return;
 }

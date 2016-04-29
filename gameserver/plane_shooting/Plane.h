@@ -26,7 +26,7 @@ namespace plane_shooting {
 	{
 	public:
 		Plane();
-		Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation);
+		Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation, IConnection* pConn);
 		~Plane();
 
 	public:
@@ -36,10 +36,15 @@ namespace plane_shooting {
 		void Up(uint32_t uUpTimes = 1);						// …œ“∆
 		void Down(uint32_t uDownTimes = 1);					// œ¬“∆
 		void TurnAround();									// µÙÕ∑
+		void SendMsg(const char* pData, uint32_t uLen);
 
 	public:
 		void SetSpeed(uint16_t uSpeed) {
 			m_curSpeed = uSpeed;
+		}
+
+		uint16_t GetSpeed() {
+			return m_curSpeed;
 		}
 
 		PlaneStatus GetStatus() {
