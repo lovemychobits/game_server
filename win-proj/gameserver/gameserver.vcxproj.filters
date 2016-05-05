@@ -87,6 +87,9 @@
     <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp">
       <Filter>plane_shooting</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp">
+      <Filter>plane_shooting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\gameserver\config\ServerConfig.h">
@@ -103,9 +106,6 @@
     </ClInclude>
     <ClInclude Include="..\..\gameserver\header.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\handlers\GsMsgChainer.h">
-      <Filter>handlers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\handlers\LobbyHandler.h">
       <Filter>handlers</Filter>
@@ -147,6 +147,12 @@
       <Filter>plane_shooting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\plane_shooting\QuadTree.h">
+      <Filter>plane_shooting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\handlers\GsMsgChainer.h">
+      <Filter>handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h">
       <Filter>plane_shooting</Filter>
     </ClInclude>
   </ItemGroup>

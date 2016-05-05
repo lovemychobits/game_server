@@ -96,6 +96,7 @@
     <ClCompile Include="..\..\gameserver\handlers\LobbyHandler.cpp" />
     <ClCompile Include="..\..\gameserver\main.cpp" />
     <ClCompile Include="..\..\gameserver\plane_shooting\Bullet.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp" />
     <ClCompile Include="..\..\gameserver\plane_shooting\Plane.cpp" />
     <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp" />
     <ClCompile Include="..\..\gameserver\plane_shooting\SceneMng2.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="..\..\gameserver\handlers\LobbyHandler.h" />
     <ClInclude Include="..\..\gameserver\header.h" />
     <ClInclude Include="..\..\gameserver\plane_shooting\Bullet.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h" />
     <ClInclude Include="..\..\gameserver\plane_shooting\Map.h" />
     <ClInclude Include="..\..\gameserver\plane_shooting\Object.h" />
     <ClInclude Include="..\..\gameserver\plane_shooting\Plane.h" />
