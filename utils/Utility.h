@@ -12,6 +12,7 @@ namespace cputil
 {
 	// range in [uMin, uMax], not [uMin, uMax)
 	uint32_t GenRandom(uint32_t uMin, uint32_t uMax);
+	float GenFloatRandom(float fMin, float fMax);
 
 	// 生成指定个数的不重复随机数
 	void GenUniRandVec(uint32_t uStart, uint32_t uEnd, uint32_t uNum, vector<uint32_t>& randVec);
