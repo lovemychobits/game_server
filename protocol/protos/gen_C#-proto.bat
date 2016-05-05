@@ -1,3 +1,3 @@
-E:\git\game_server\proto-net-gen\protogen.exe -i:E:\git\game_server\protocol\protos\client.proto  -o:E:\git\game_server\protocol\client.cs
+E:\git\game_server\proto-net-gen\protogen.exe -i:E:\git\game_server\protocol\protos\client.proto  -o:E:\git\game_server\protocol\client_proto.cs
 
 pause()
