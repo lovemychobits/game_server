@@ -19,7 +19,7 @@ namespace cpnet
 
 		virtual BoostTimer* AddCircleTimer(TriggerCallback triggerCallback , size_t nMicroSeconds)
 		{
-			BoostTimer* timer = new BoostTimer(*m_pIoService, boost::posix_time::microsec(nMicroSeconds));
+			BoostTimer* timer = new BoostTimer(*m_pIoService, boost::posix_time::millisec(nMicroSeconds));
 			m_timerList.push_back(timer);
 			m_triggerCallbackMap.insert(make_pair(timer, triggerCallback));
 			m_intervalTimeMap.insert(make_pair(timer, nMicroSeconds));
@@ -120,7 +120,7 @@ namespace cpnet
 
 			TriggerCallback& triggerCallback = callbackIt->second;
 			triggerCallback(errCode);
-			pTimer->expires_at(pTimer->expires_at() + boost::posix_time::microsec(timeIt->second));
+			pTimer->expires_at(pTimer->expires_at() + boost::posix_time::millisec(timeIt->second));
 			pTimer->async_wait(m_pStrand->wrap(boost::bind(&TimerTrigger::HandleCircleTimer, this, boost::asio::placeholders::error, pTimer)));
 		}
 
