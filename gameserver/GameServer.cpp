@@ -200,7 +200,7 @@ bool GameServer::_InitTimerTrigger()
 		return false;
 	}
 	//gpTimerMng->SetTimerTigger(m_pTimerTrigger);
-	m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 5000);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 50);
 	return true;
 }
 
@@ -217,6 +217,6 @@ bool GameServer::_InitLoadConf()
 bool GameServer::_InitModules()
 {
 	scene_alpha::SceneMng::getInstance()->Init();
-	plane_shooting::SceneMng::GetInstance()->TestQuadTree();
+	//plane_shooting::SceneMng::GetInstance()->TestQuadTree();
 	return true;
 }

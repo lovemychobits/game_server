@@ -17,7 +17,7 @@ void ClientHandler::HandleDisconnect(IConnection* pConn, const BoostErrCode& err
 	{
 		ERRORLOG("handle disconnect error, error=[" << boost::system::system_error(error).what() << "]");
 	}
-	//gpPlayerMng->ClientDisconnect(pConn);
+	plane_shooting::SceneMng::GetInstance()->PlaneDisconnect(pConn);
 }
 
 void ClientHandler::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred) 
@@ -70,7 +70,9 @@ void ClientHandler::_RegisterAllCmd()
 	// 网络基本功能测试
 	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
 	_RegisterCmd(client::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
-	_RegisterCmd(client::ClientProtocol::REQ_QUERY_PATH,	&ClientHandler::_RequestQueryPath);
+	//_RegisterCmd(client::ClientProtocol::REQ_QUERY_PATH,	&ClientHandler::_RequestQueryPath);
+	_RegisterCmd(client::ClientProtocol::REQ_PLANE_MOVE,	&ClientHandler::_RequestPlaneMove);
+	_RegisterCmd(client::ClientProtocol::REQ_PLANE_SHOOT,	&ClientHandler::_RequestPlaneShoot);
 	return;
 }
 
@@ -128,7 +130,7 @@ void ClientHandler::_RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHea
 	}
 
 	string strResponse;
-	cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
+	//cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
 	pConn->SendMsg(strResponse.c_str(), strResponse.size());
 
 	return;
@@ -145,7 +147,28 @@ void ClientHandler::_RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHea
 	planeMoveReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
 
 	Plane* pPlane = plane_shooting::SceneMng::GetInstance()->GetPlaneByConn(pConn);
-	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, planeMoveReq.movetype());
+	if (!pPlane) {
+		return;
+	}
+	plane_shooting::Vector2D newPos;
+	newPos.x = planeMoveReq.newpos().x();
+	newPos.y = planeMoveReq.newpos().y();
+	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, newPos, planeMoveReq.angle());
 
 	return;
+}
+
+void ClientHandler::_RequestPlaneShoot(IConnection* pConn, MessageHeader* pMsgHeader) 
+{ 
+	if (!pConn || !pMsgHeader) {
+		return;
+	}
+
+	Plane* pPlane = plane_shooting::SceneMng::GetInstance()->GetPlaneByConn(pConn);
+	if (!pPlane)
+	{
+		return;
+	}
+
+	plane_shooting::SceneMng::GetInstance()->PlaneShoot(pPlane);
 }

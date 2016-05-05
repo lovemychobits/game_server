@@ -8,18 +8,13 @@ using namespace cpnet;
 
 namespace plane_shooting {
 
-	enum PlaneStatus {
-		ALIVE = 0,					// 存活的
-		DEAD = 1,					// 死亡
-	};
-
 #define MOVE_STEP 1
 
 	// 飞机视野范围，也就是如果有其他飞机，或者子弹进入这个范围了，就需要通知飞机
 	struct PlaneViewRange
 	{
-		uint16_t uWidth;			// 长度
-		uint16_t uHeight;			// 宽度
+		float fWidth;			// 长度
+		float fHeight;			// 宽度
 	};
 
 	class Plane : public Object
@@ -39,20 +34,32 @@ namespace plane_shooting {
 		void SendMsg(const char* pData, uint32_t uLen);
 
 	public:
-		void SetSpeed(uint16_t uSpeed) {
-			m_curSpeed = uSpeed;
+		void SetSpeed(float fSpeed) {
+			m_curSpeed = fSpeed;
 		}
 
-		uint16_t GetSpeed() {
+		float GetSpeed() {
 			return m_curSpeed;
-		}
-
-		PlaneStatus GetStatus() {
-			return m_status;
 		}
 
 		int8_t GetOrientation() {
 			return m_orientation;
+		}
+
+		void SetAngle(uint16_t uAngle) {
+			m_uAngle = uAngle;
+		}
+
+		uint16_t GetAngle() {
+			return m_uAngle;
+		}
+
+		void SetStatus(ObjectStatus status) {
+			m_status = status;
+		}
+
+		ObjectStatus GetStatus() {
+			return m_status;
 		}
 
 		bool NeedNotify(Object* pObj);					// 是否需要通知
@@ -63,8 +70,9 @@ namespace plane_shooting {
 	private:
 		IConnection* m_pConn;
 		int8_t m_orientation;							// 朝向，1为朝上，-1为朝下
-		uint16_t m_curSpeed;							// 当前速度
-		PlaneStatus m_status;							// 飞机当前状态
+		float m_curSpeed;								// 当前速度
+		uint16_t m_uAngle;								// 角度
+		ObjectStatus m_status;							// 飞机当前状态
 		PlaneViewRange m_viewRange;						// 视野范围
 	};
 }

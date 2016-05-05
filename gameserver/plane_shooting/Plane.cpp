@@ -16,11 +16,11 @@ namespace plane_shooting {
 	}
 
 	Plane::Plane(uint16_t uPlaneId, const Rectangle& rect, int8_t orientation, IConnection* pConn) :
-		Object(uPlaneId, rect), m_pConn(pConn), m_orientation(orientation), m_curSpeed(1) {
+		Object(uPlaneId, rect, Plane_Type), m_pConn(pConn), m_orientation(orientation), m_curSpeed(1) {
 
 		// 设置默认的视野范围，以飞机自身的中心点
-		m_viewRange.uWidth = 10;
-		m_viewRange.uHeight = 15;
+		m_viewRange.fWidth = 10;
+		m_viewRange.fHeight = 15;
 	}
 
 	void Plane::Left(uint32_t uLeftTimes) {
@@ -72,12 +72,12 @@ namespace plane_shooting {
 		x3y3-----------x4y4
 		*/
 
-		uint16_t x1, y1, x2, y2, x3, y3, x4, y4;
-		x3 = x1 = m_rect.x - m_viewRange.uWidth / 2;
-		x4 = x2 = m_rect.x + m_viewRange.uWidth / 2;
+		float x1, y1, x2, y2, x3, y3, x4, y4;
+		x3 = x1 = m_rect.x - m_viewRange.fWidth / 2;
+		x4 = x2 = m_rect.x + m_viewRange.fWidth / 2;
 
-		y2 = y1 = m_rect.y + m_viewRange.uHeight / 2;
-		y4 = y3 = m_rect.y - m_viewRange.uHeight / 2;
+		y2 = y1 = m_rect.y + m_viewRange.fHeight / 2;
+		y4 = y3 = m_rect.y - m_viewRange.fHeight / 2;
 
 		if (rect.x < x1 || rect.x > x2) {
 			return false;
@@ -90,7 +90,7 @@ namespace plane_shooting {
 	}
 
 	void Plane::SendMsg(const char* pData, uint32_t uLen) {
-		if (m_pConn) {
+		if (m_pConn && m_pConn->IsConnected()) {
 			m_pConn->SendMsg(pData, uLen);
 		}
 	}

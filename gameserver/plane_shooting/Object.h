@@ -6,12 +6,18 @@
 
 namespace plane_shooting {
 	struct Vector2D {
-		uint16_t x;
-		uint16_t y;
+		float x;
+		float y;
 
 		Vector2D() : x(0), y(0) {
 		}
 	};
+
+	enum ObjectStatus {
+		ALIVE = 0,					// 存活的
+		DEAD = 1,					// 死亡
+	};
+
 
 	/*
 	width
@@ -22,17 +28,17 @@ namespace plane_shooting {
 	x3y3-----------x4y4
 	*/
 	struct Rectangle {
-		uint16_t x;				// 矩形中心点x
-		uint16_t y;				// 矩形中心点y
-		uint16_t uHeight;		// 矩形长度
-		uint16_t uWidth;		// 矩形宽度
+		float x;			// 矩形中心点x
+		float y;			// 矩形中心点y
+		float fHeight;		// 矩形长度
+		float fWidth;		// 矩形宽度
 
 		Rectangle() {
 			init();
 		}
 
-		Rectangle(uint16_t _x, uint16_t _y, uint16_t _uWidth, uint16_t _uHeight) :
-			x(_x), y(_y), uWidth(_uWidth), uHeight(_uHeight){
+		Rectangle(float _x, float _y, float _uWidth, float _uHeight) :
+			x(_x), y(_y), fWidth(_uWidth), fHeight(_uHeight){
 		}
 
 		void init() {
@@ -40,13 +46,17 @@ namespace plane_shooting {
 		}
 	};
 
+	enum ObjectType {
+		Plane_Type = 1,
+		Bullet_Type = 2,
+	};
 
 	class Object
 	{
 	public:
 		Object() {
 		}
-		Object(uint16_t uObjId, const Rectangle& rect) : m_uObjId(uObjId), m_rect(rect) {
+		Object(uint16_t uObjId, const Rectangle& rect, ObjectType type) : m_uObjId(uObjId), m_rect(rect), m_uObjType(type) {
 		}
 		~Object() {
 		}
@@ -60,8 +70,24 @@ namespace plane_shooting {
 			return m_rect;
 		}
 
+		Vector2D GetPos() {
+			Vector2D pos;
+			pos.x = m_rect.x;
+			pos.y = m_rect.y;
+			return pos;
+		}
+
+		ObjectType GetType() {
+			return (ObjectType)m_uObjType;
+		}
+
+		void SetPos(Vector2D pos) {
+			m_rect.x = pos.x;
+			m_rect.y = pos.y;
+		}
 	protected:
 		uint16_t m_uObjId;						// 物体ID
+		uint16_t m_uObjType;					// 物体类型
 		Rectangle m_rect;						// 物体所在矩形
 	};
 }

@@ -8,17 +8,14 @@ QuadTree::QuadTree(plane_shooting::Rectangle bounds) {
 }
 
 QuadTree::~QuadTree() {
-	m_objects.clear();
-	for (int i = 0; i < NODE_SIZE; ++i) {
-		nodes[i] = NULL;
-	}
+	// to do clear
 }
 
 void QuadTree::Split() {
-	int16_t uSubWidth = m_bounds.uWidth / 2;
-	int16_t uSubHeight = m_bounds.uHeight / 2;
-	uint16_t x = m_bounds.x;
-	uint16_t y = m_bounds.y;
+	float fSubWidth = m_bounds.fWidth / 2;
+	float fSubHeight = m_bounds.fHeight / 2;
+	float x = m_bounds.x;
+	float y = m_bounds.y;
 
 	/*
 		  width
@@ -29,10 +26,10 @@ void QuadTree::Split() {
 	-----------------
 	*/
 
-	nodes[0] = new QuadTree(plane_shooting::Rectangle(x - uSubWidth / 2, y + uSubHeight / 2, uSubWidth, uSubHeight));
-	nodes[1] = new QuadTree(plane_shooting::Rectangle(x + uSubWidth / 2, y + uSubHeight / 2, uSubWidth, uSubHeight));
-	nodes[2] = new QuadTree(plane_shooting::Rectangle(x - uSubWidth / 2, y - uSubHeight / 2, uSubWidth, uSubHeight));
-	nodes[3] = new QuadTree(plane_shooting::Rectangle(x + uSubWidth / 2, y - uSubHeight / 2, uSubWidth, uSubHeight));
+	nodes[0] = new QuadTree(plane_shooting::Rectangle(x - fSubWidth / 2, y + fSubHeight / 2, fSubWidth, fSubHeight));
+	nodes[1] = new QuadTree(plane_shooting::Rectangle(x + fSubWidth / 2, y + fSubHeight / 2, fSubWidth, fSubHeight));
+	nodes[2] = new QuadTree(plane_shooting::Rectangle(x - fSubWidth / 2, y - fSubHeight / 2, fSubWidth, fSubHeight));
+	nodes[3] = new QuadTree(plane_shooting::Rectangle(x + fSubWidth / 2, y - fSubHeight / 2, fSubWidth, fSubHeight));
 
 	return;
 }
@@ -41,13 +38,11 @@ void QuadTree::Split() {
 int16_t QuadTree::GetIndex(const Rectangle& rect) {
 	int16_t index = -1;
 
-	//bool topQuadrant = (rect.y < m_bounds.y) && (rect.y - rect.uHeight > horizontal_mid);
-	bool topQuadrant = (rect.y + rect.uHeight / 2 < m_bounds.y + m_bounds.uHeight / 2) && (rect.y - rect.uHeight / 2 > m_bounds.y);
-	//bool bottomQuadrant = (rect.y < horizontal_mid) && (rect.y - rect.uHeight > m_bounds.y - m_bounds.uHeight);
-	bool bottomQuadrant = (rect.y + rect.uHeight/2 < m_bounds.y) && (rect.y - rect.uHeight / 2 > m_bounds.y - m_bounds.uHeight / 2);
+	bool topQuadrant = (rect.y + rect.fHeight / 2 < m_bounds.y + m_bounds.fHeight / 2) && (rect.y - rect.fHeight / 2 > m_bounds.y);
+	bool bottomQuadrant = (rect.y + rect.fHeight/2 < m_bounds.y) && (rect.y - rect.fHeight / 2 > m_bounds.y - m_bounds.fHeight / 2);
 
 	// left quadrant
-	if ((rect.x - rect.uWidth/2 > m_bounds.x - m_bounds.uWidth/2) && (rect.x + rect.uWidth/2 < m_bounds.x)) {
+	if ((rect.x - rect.fWidth/2 > m_bounds.x - m_bounds.fWidth/2) && (rect.x + rect.fWidth/2 < m_bounds.x)) {
 		if (topQuadrant) {
 			index = 0;
 		}
@@ -57,7 +52,7 @@ int16_t QuadTree::GetIndex(const Rectangle& rect) {
 	}
 
 	// right quadrant
-	if ((rect.x - rect.uWidth/2 > m_bounds.x) && (rect.x + rect.uWidth/2 < m_bounds.x + m_bounds.uWidth/2)) {
+	if ((rect.x - rect.fWidth/2 > m_bounds.x) && (rect.x + rect.fWidth/2 < m_bounds.x + m_bounds.fWidth/2)) {
 		if (topQuadrant) {
 			index = 1;
 		}
