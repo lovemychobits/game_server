@@ -27,6 +27,7 @@ namespace cpnet
 			try 
 			{
 				m_sock.close();					// 关闭套接字对象
+				DoDisconnect(BoostErrCode());	// 通知逻辑层网络连接关闭了，确保逻辑层没有保存被释放了的IConnection指针
 			}
 			catch(boost::system::system_error& err)
 			{
