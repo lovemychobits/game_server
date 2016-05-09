@@ -11,13 +11,15 @@ namespace plane_shooting {
 
 		Vector2D() : x(0), y(0) {
 		}
+
+		Vector2D(float _x, float _y) : x(_x), y(_y) {
+		}
 	};
 
 	enum ObjectStatus {
 		ALIVE = 0,					// 存活的
 		DEAD = 1,					// 死亡
 	};
-
 
 	/*
 	width
@@ -56,39 +58,43 @@ namespace plane_shooting {
 	public:
 		Object() {
 		}
-		Object(uint16_t uObjId, const Rectangle& rect, ObjectType type) : m_uObjId(uObjId), m_rect(rect), m_uObjType(type) {
+		Object(uint16_t uObjId, const Rectangle& rect, ObjectType type) : m_uObjId(uObjId), m_rect(rect), m_objType(type) {
 		}
 		~Object() {
 		}
 
 	public:
+		// 获取物体ID
 		uint16_t GetObjId() {
 			return m_uObjId;
 		}
 
+		// 获取物体的碰撞矩形
 		Rectangle& GetRect() {
 			return m_rect;
 		}
 
+		// 获取物体的中心点
 		Vector2D GetPos() {
-			Vector2D pos;
-			pos.x = m_rect.x;
-			pos.y = m_rect.y;
+			Vector2D pos(m_rect.x, m_rect.y);
 			return pos;
 		}
 
-		ObjectType GetType() {
-			return (ObjectType)m_uObjType;
-		}
-
+		// 设置物体中心点
 		void SetPos(Vector2D pos) {
 			m_rect.x = pos.x;
 			m_rect.y = pos.y;
 		}
+
+		// 获取物体类型
+		ObjectType GetType() {
+			return m_objType;
+		}
+
 	protected:
 		uint16_t m_uObjId;						// 物体ID
-		uint16_t m_uObjType;					// 物体类型
-		Rectangle m_rect;						// 物体所在矩形
+		ObjectType m_objType;					// 物体类型
+		Rectangle m_rect;						// 物体碰撞矩形
 	};
 }
 

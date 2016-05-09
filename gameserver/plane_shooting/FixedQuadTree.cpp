@@ -79,14 +79,14 @@ bool FixedQuadTree::IsLeafNode()
 	return true;
 }
 
-void FixedQuadTree::insert(Object* pObj) {
+void FixedQuadTree::Insert(Object* pObj) {
 	if (!pObj) {
 		return;
 	}
 	const plane_shooting::Rectangle& rect = pObj->GetRect();
 	int16_t index = GetIndex(rect);
 	if (index != -1 && nodes[0] != NULL) {
-		nodes[index]->insert(pObj);
+		nodes[index]->Insert(pObj);
 		return;
 	}
 
@@ -96,7 +96,7 @@ void FixedQuadTree::insert(Object* pObj) {
 }
 
 // 从死叉树中删除物体
-void FixedQuadTree::remove(Object* pObj) {
+void FixedQuadTree::Remove(Object* pObj) {
 	if (!pObj) {
 		return;
 	}
@@ -104,7 +104,7 @@ void FixedQuadTree::remove(Object* pObj) {
 	const plane_shooting::Rectangle& rect = pObj->GetRect();
 	int16_t index = GetIndex(rect);
 	if (index != -1 && nodes[0] != NULL) {					// 去查找子树
-		nodes[index]->remove(pObj);
+		nodes[index]->Remove(pObj);
 		return;
 	}
 
@@ -122,14 +122,15 @@ void FixedQuadTree::remove(Object* pObj) {
 	return;
 }
 
-
-void FixedQuadTree::retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList) {
+// 获取矩形所在四叉树的所有物体
+void FixedQuadTree::Retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList) {
 	int16_t index = GetIndex(rect);
 	if (index != -1 && nodes[0] != NULL) {
-		nodes[index]->retrieve(rect, objList);
+		nodes[index]->Retrieve(rect, objList);
 		return;
 	}
 
+	// TODO , 改成直接返回list<Object*>列表指针
 	list<Object*>::iterator objIt = m_objects.begin();
 	list<Object*>::iterator objItEnd = m_objects.end();
 	for (; objIt != objItEnd; objIt++) {
@@ -139,6 +140,24 @@ void FixedQuadTree::retrieve(const plane_shooting::Rectangle& rect, list<Object*
 	}
 
 	return;
+}
+
+// 获取矩形范围内，所有四叉树的所有物体
+// 如果这个矩形是完全处于一个四叉树中的，那么跟Retrieve返回的结果一样
+// 如果这个矩形处于多个四叉树中，那么需要获取它所在的四叉树，以及它四个点所在四叉树的物体
+void FixedQuadTree::RetrieveArea(const plane_shooting::Rectangle& rect, list<Object*>& objList) {
+	Retrieve(rect, objList);
+
+	// 左上顶点
+	Rectangle topLeft(rect.x - rect.fWidth / 2, rect.y + rect.fHeight / 2, 0, 1);
+	// 右上顶点
+	Rectangle topRight(rect.x + rect.fWidth / 2, rect.y + rect.fHeight / 2, 0, 1);
+	// 左下顶点
+	Rectangle bottomLeft(rect.x - rect.fWidth / 2, rect.y - rect.fHeight / 2, 0, 1);
+	// 右下顶点
+	Rectangle bottomRight(rect.x + rect.fWidth / 2, rect.y - rect.fHeight / 2, 0, 1);
+
+	// TODO , 改成直接返回list<Object*>列表指针
 }
 
 void FixedQuadTree::Clear(FixedQuadTree* pQuadTree) 
@@ -199,11 +218,11 @@ void ObjectInNodeMng::CheckUpdate(Object* pObject, const Vector2D& oldPos)
 
 	// 先从原来的树中删除
 	pObject->SetPos(oldPos);
-	pQuadTree->remove(pObject);
+	pQuadTree->Remove(pObject);
 
 	// 然后再插入
 	pObject->SetPos(newPos);
-	m_pHeadNode->insert(pObject);
+	m_pHeadNode->Insert(pObject);
 
 	return;
 }

@@ -25,15 +25,11 @@ namespace plane_shooting {
 		~Plane();
 
 	public:
-		// 行为，操作
-		void Left(uint32_t uLeftTimes = 1);					// 左移
-		void Right(uint32_t uRightTimes = 1);				// 右移
-		void Up(uint32_t uUpTimes = 1);						// 上移
-		void Down(uint32_t uDownTimes = 1);					// 下移
-		void TurnAround();									// 掉头
+		// 发送消息
 		void SendMsg(const char* pData, uint32_t uLen);
 
 	public:
+		// 设置属性
 		void SetSpeed(float fSpeed) {
 			m_curSpeed = fSpeed;
 		}
@@ -46,12 +42,20 @@ namespace plane_shooting {
 			return m_orientation;
 		}
 
-		void SetAngle(uint16_t uAngle) {
-			m_uAngle = uAngle;
+		void SetFireAngle(uint16_t uAngle) {
+			m_uFireAngle = uAngle;
 		}
 
-		uint16_t GetAngle() {
-			return m_uAngle;
+		uint16_t GetFireAngle() {
+			return m_uFireAngle;
+		}
+
+		void SetFlyAngle(uint16_t uAngle) {
+			m_uFlyAngle = uAngle;
+		}
+
+		uint16_t GetFlyAngle() {
+			return m_uFlyAngle;
 		}
 
 		void SetStatus(ObjectStatus status) {
@@ -60,6 +64,11 @@ namespace plane_shooting {
 
 		ObjectStatus GetStatus() {
 			return m_status;
+		}
+
+		Rectangle GetViewRect() {
+			Rectangle viewRect(m_rect.x, m_rect.y, m_viewRange.fWidth, m_viewRange.fHeight);
+			return viewRect;
 		}
 
 		bool NeedNotify(Object* pObj);					// 是否需要通知
@@ -71,7 +80,8 @@ namespace plane_shooting {
 		IConnection* m_pConn;
 		int8_t m_orientation;							// 朝向，1为朝上，-1为朝下
 		float m_curSpeed;								// 当前速度
-		uint16_t m_uAngle;								// 角度
+		uint16_t m_uFireAngle;							// 射击角度
+		uint16_t m_uFlyAngle;							// 飞行角度
 		ObjectStatus m_status;							// 飞机当前状态
 		PlaneViewRange m_viewRange;						// 视野范围
 	};

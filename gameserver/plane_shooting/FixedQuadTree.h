@@ -20,9 +20,10 @@ public:
 	~FixedQuadTree();
 
 public:
-	void insert(Object* pObj);
-	void remove(Object* pObj);
-	void retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList);
+	void Insert(Object* pObj);
+	void Remove(Object* pObj);
+	void Retrieve(const plane_shooting::Rectangle& rect, list<Object*>& objList);
+	void RetrieveArea(const plane_shooting::Rectangle& rect, list<Object*>& objList);
 	int16_t GetIndex(const plane_shooting::Rectangle& rect);
 	bool IsLeafNode();
 

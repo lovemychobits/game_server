@@ -5,6 +5,7 @@
 #include "../../protocol/client.pb.h"
 #include <vector>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 namespace plane_shooting {
@@ -12,6 +13,9 @@ namespace plane_shooting {
 		Rectangle rect(250, 250, 500, 500);
 		m_pFixedQuadTree = new FixedQuadTree(rect, 5);
 		ObjectInNodeMng::GetInstance()->SetHeadNode(m_pFixedQuadTree);
+
+		// 测试
+		TestCheckIntersect();
 	}
 
 	SceneMng::~SceneMng() {
@@ -40,15 +44,16 @@ namespace plane_shooting {
 			}
 
 			Vector2D oldPos = pBullet->GetPos();
-			pBullet->fly();
+			pBullet->Fly();
 			ObjectInNodeMng::GetInstance()->CheckUpdate(pBullet, oldPos);
 
 			// 和飞机的碰撞检测 
-			m_pFixedQuadTree->retrieve(pBullet->GetRect(), objList);
+			m_pFixedQuadTree->Retrieve(pBullet->GetRect(), objList);
 			list<Object*>::iterator objIt = objList.begin();
 			for (; objIt != objList.end(); objIt++) {
-				if (CheckCollision(pBullet->GetPos(), *objIt)) {
+				if (CheckIntersect(oldPos, pBullet->GetPos(), (*objIt)->GetRect())) {
 					pBullet->SetStatus(DEAD);
+					BroadcastCollision(pBullet, *objIt);					// 通知发生碰撞了
 				}
 			}
 
@@ -68,43 +73,12 @@ namespace plane_shooting {
 		//cout << "time cost=[" << dwEnd - dwStart << "]" << endl;
 	}
 
-	void SceneMng::TestQuadTree() {
-		Rectangle rect;
-		rect.fWidth = 3;
-		rect.fHeight = 3;
-
-		// test insert
-		vector<Plane*> planeList;
-		for (int i = 0; i < 100; i++)
-		{
-			rect.x = (float)cputil::GenRandom(1, 500);
-			rect.y = (float)cputil::GenRandom(1, 500);
-
-			Plane* pPlane = new Plane(i, rect, 1, NULL);
-			planeList.push_back(pPlane);
-			m_pFixedQuadTree->insert(pPlane);
-		}
-
-		for (int i = 0; i < 100; i++) {
-			Plane* pPlane = planeList.at(i / 20);
-			Rectangle& rect = pPlane->GetRect();
-			rect.fWidth = 0;
-			rect.fHeight = 0;
-			rect.x = (float)cputil::GenRandom(1, 500);
-			rect.y = (float)cputil::GenRandom(1, 500);
-
-			Bullet* pBullet = new Bullet(1, pPlane, pPlane->GetRect(), pPlane->GetOrientation(), 3);
-			m_bulletList.push_back(pBullet);
-		}
-
-		return;
-	}
-
 	void SceneMng::PlayerEnter(IConnection* pConn) {
 		if (!pConn) {
 			return;
 		}
 
+		// 随机初始化起始点
 		Vector2D pos;
 		pos.x = (float)cputil::GenFloatRandom(1.0, 5.0);
 		pos.y = (float)cputil::GenFloatRandom(1.0, 5.0);
@@ -125,6 +99,7 @@ namespace plane_shooting {
 	}
 
 	Plane* SceneMng::AddPlane(IConnection* pConn, uint16_t uPlaneId, Vector2D pos, int8_t nOrientation) {
+		// 初始化飞机碰撞矩形信息
 		Rectangle rect;
 		rect.x = pos.x;
 		rect.y = pos.y;
@@ -132,9 +107,13 @@ namespace plane_shooting {
 		rect.fHeight = 1;
 
 		Plane* pPlane = new Plane(uPlaneId, rect, nOrientation, pConn);
+		if (!pPlane) {
+			return NULL;
+		}
+
 		m_planeList.push_back(pPlane);
 		m_connToPlaneMap.insert(make_pair(pConn, pPlane));
-		m_pFixedQuadTree->insert(pPlane);
+		m_pFixedQuadTree->Insert(pPlane);							// 加入到四叉树中
 
 		// 将新加入的飞机通知其他玩家
 		Broadcast(pPlane);
@@ -144,14 +123,15 @@ namespace plane_shooting {
 		return pPlane;
 	}
 
-	void SceneMng::PlaneMove(Plane* pPlane, Vector2D newPos, uint32_t uNewAngle) {
+	void SceneMng::PlaneMove(Plane* pPlane, Vector2D newPos, uint32_t uFireAngle, uint32_t uFlyAngle) {
 		if (!pPlane) {
 			return;
 		}
 
 		Vector2D oldPos = pPlane->GetPos();
 		pPlane->SetPos(newPos);
-		pPlane->SetAngle(uNewAngle);
+		pPlane->SetFireAngle(uFireAngle);
+		pPlane->SetFlyAngle(uFlyAngle);
 
 		ObjectInNodeMng::GetInstance()->CheckUpdate(pPlane, oldPos);
 		
@@ -160,11 +140,15 @@ namespace plane_shooting {
 	}
 
 	void SceneMng::PlaneShoot(Plane* pPlane) {
-		Bullet* pBullet = new Bullet(1, pPlane, pPlane->GetRect(), pPlane->GetAngle(), 0.5);
+		Bullet* pBullet = new Bullet(1, pPlane, pPlane->GetRect(), pPlane->GetFireAngle(), 0.5);
+		if (!pBullet) {
+			return;
+		}
 		m_bulletList.push_back(pBullet);
-		m_pFixedQuadTree->insert(pBullet);
+		m_pFixedQuadTree->Insert(pBullet);								// 将子弹加入四叉树
 	}
 
+	// 将物体信息通知所有其他玩家
 	void SceneMng::Broadcast(Object* pObject) {
 		string strResponse;
 
@@ -176,15 +160,26 @@ namespace plane_shooting {
 				continue;
 			}
 
-			// Notify other player
+			// 通知其他玩家pObject的信息
 			client::NotifyObjs objsNty;
 			client::PBObject* pPBObject = objsNty.add_objlist();
 			pPBObject->set_objid(pObject->GetObjId());
 			pPBObject->set_type((client::ObjectType)pObject->GetType());
 			pPBObject->mutable_pos()->set_x(pObject->GetRect().x);
 			pPBObject->mutable_pos()->set_y(pObject->GetRect().y);
-			pPBObject->set_speed(pPlane->GetSpeed());
-			
+
+			if (pObject->GetType() == Plane_Type) {
+				Plane* pTmpPlane = (Plane*)pObject;
+				pPBObject->set_speed(pTmpPlane->GetSpeed());
+				pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
+				pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
+			}
+			else if (pObject->GetType() == Bullet_Type) {
+				Bullet* pTmpBullet = (Bullet*)pObject;
+				pPBObject->set_speed(pTmpBullet->GetSpeed());
+				pPBObject->set_flyangle(pTmpBullet->GetAngle());
+			}
+
 			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
 			pPlane->SendMsg(strResponse.c_str(), strResponse.size());
 		}
@@ -192,29 +187,47 @@ namespace plane_shooting {
 		return;
 	}
 
+	// 将其他玩家及子弹信息同步给自己
 	void SceneMng::NotifyOthers(Plane* pSelf) {
 		if (!pSelf)
 		{
 			return;
 		}
 
-		string strResponse;
+		// 获取飞机所在视野内的所有物体
+		list<Object*> objList;
+		m_pFixedQuadTree->RetrieveArea(pSelf->GetViewRect(), objList);
 
-		list<Plane*>::iterator planeIt = m_planeList.begin();
-		list<Plane*>::iterator planeItEnd = m_planeList.end();
-		for (; planeIt != planeItEnd; planeIt++) {
-			Plane* pPlane = *planeIt;
-			if (!pPlane || !pSelf->NeedNotify(pPlane)) {
+		// 通知所有物体信息
+		string strResponse;
+		list<Object*>::iterator objIt = objList.begin();
+		list<Object*>::iterator objItEnd = objList.end();
+		for (; objIt != objItEnd; objIt++) {
+			Object* pObject = *objIt;
+			if (!pObject || !pSelf->NeedNotify(pObject)) {
 				continue;
 			}
 
 			// Notify other player
 			client::NotifyObjs objsNty;
 			client::PBObject* pPBObject = objsNty.add_objlist();
-			pPBObject->set_objid(pPlane->GetObjId());
-			pPBObject->mutable_pos()->set_x(pPlane->GetRect().x);
-			pPBObject->mutable_pos()->set_y(pPlane->GetRect().y);
-			pPBObject->set_speed(pPlane->GetSpeed());
+			pPBObject->set_objid(pObject->GetObjId());
+			pPBObject->set_type((client::ObjectType)pObject->GetType());
+			pPBObject->mutable_pos()->set_x(pObject->GetRect().x);
+			pPBObject->mutable_pos()->set_y(pObject->GetRect().y);
+			if (pObject->GetType() == Plane_Type)
+			{
+				Plane* pTmpPlane = (Plane*)pObject;
+				pPBObject->set_speed(pTmpPlane->GetSpeed());
+				pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
+				pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
+			}
+			else if (pObject->GetType() == Bullet_Type)
+			{
+				Bullet* pTmpBullet = (Bullet*)pObject;
+				pPBObject->set_speed(pTmpBullet->GetSpeed());
+				pPBObject->set_flyangle(pTmpBullet->GetAngle());
+			}
 
 			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
 			pSelf->SendMsg(strResponse.c_str(), strResponse.size());
@@ -236,6 +249,27 @@ namespace plane_shooting {
 		return true;
 	}
 
+	// 判断线段与矩形是否相交
+	// 将线段矩形化，也就是说给线段人为的加上一个宽度，不过这个宽度非常小
+	bool SceneMng::CheckIntersect(Vector2D oldPos, Vector2D newPos, Rectangle rect) {
+		float fLength = sqrt(((oldPos.x - newPos.x) * (oldPos.x - newPos.x) + (oldPos.y - newPos.y) * (oldPos.y - newPos.y)));
+		Rectangle lineRect((oldPos.x + newPos.x) / 2, (newPos.y + newPos.y) / 2, fLength, 0.01f);
+		return CheckIntersect(lineRect, rect);
+	}
+
+	// 判断两个矩形是否相交
+	bool SceneMng::CheckIntersect(Rectangle rect1, Rectangle rect2) {
+		if (   min(rect1.x - rect1.fWidth / 2, rect1.x + rect1.fWidth / 2) <= max(rect2.x - rect2.fWidth / 2, rect2.x + rect2.fWidth / 2)
+			&& min(rect2.x - rect2.fWidth / 2, rect2.x + rect2.fWidth / 2) <= max(rect1.x - rect1.fWidth / 2, rect1.x + rect1.fWidth / 2)
+			&& min(rect1.y - rect1.fHeight / 2, rect1.y + rect1.fHeight / 2) <= max(rect2.y - rect2.fHeight / 2, rect2.y + rect2.fHeight / 2)
+			&& min(rect2.y - rect2.fHeight / 2, rect2.y + rect2.fHeight / 2) <= max(rect1.y - rect1.fHeight / 2, rect1.y + rect1.fHeight / 2)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	// 获取飞机对于的网络连接
 	Plane* SceneMng::GetPlaneByConn(IConnection* pConn) {
 		if (!pConn) {
 			return NULL;
@@ -249,6 +283,7 @@ namespace plane_shooting {
 		return NULL;
 	}
 
+	// 玩家断开连接
 	void SceneMng::PlaneDisconnect(IConnection* pConn) {
 		map<IConnection*, Plane*>::iterator mapIt = m_connToPlaneMap.find(pConn);
 		if (mapIt != m_connToPlaneMap.end()) {
@@ -261,5 +296,27 @@ namespace plane_shooting {
 				}
 			}
 		}
+	}
+
+	// 广播发生了碰撞
+	void SceneMng::BroadcastCollision(Object* pObject, Object* pTarget) {
+		if (!pObject || !pTarget) {
+			return;
+		}
+
+		// to do
+		client::NotifyCollision collisionNty;
+
+	}
+
+	// 测试矩形相交功能
+	void SceneMng::TestCheckIntersect() {
+		Rectangle rect1(30, 20, 30, 20);
+		Rectangle rect2(60, 15, 10, 10);
+
+		bool bRet = CheckIntersect(rect1, rect2);
+		bRet = CheckIntersect(Vector2D(10, 10), Vector2D(25, 15), rect1);
+		bRet = CheckIntersect(Vector2D(10, 10), Vector2D(25, 15), rect2);
+		return;
 	}
 }

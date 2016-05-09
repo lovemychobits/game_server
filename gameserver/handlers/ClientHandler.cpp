@@ -153,7 +153,7 @@ void ClientHandler::_RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHea
 	plane_shooting::Vector2D newPos;
 	newPos.x = planeMoveReq.newpos().x();
 	newPos.y = planeMoveReq.newpos().y();
-	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, newPos, planeMoveReq.angle());
+	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, newPos, planeMoveReq.fireangle(), planeMoveReq.flyangle());
 
 	return;
 }

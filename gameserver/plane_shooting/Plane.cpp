@@ -23,34 +23,6 @@ namespace plane_shooting {
 		m_viewRange.fHeight = 15;
 	}
 
-	void Plane::Left(uint32_t uLeftTimes) {
-		if (m_rect.x > 0) {
-			m_rect.x -= MOVE_STEP * m_curSpeed;
-		}
-	}
-
-	void Plane::Right(uint32_t uRightTimes) {
-		if (m_rect.x < MAP_GRID_SIZE) {
-			m_rect.x += MOVE_STEP * m_curSpeed;
-		}
-	}
-
-	void Plane::Up(uint32_t uUpTimes) {
-		if (m_rect.y < MAP_GRID_SIZE) {
-			m_rect.y += MOVE_STEP * m_curSpeed;
-		}
-	}
-
-	void Plane::Down(uint32_t uDownTimes) {
-		if (m_rect.y > 0) {
-			m_rect.y -= MOVE_STEP * m_curSpeed;
-		}
-	}
-
-	void Plane::TurnAround() {
-		m_orientation = -m_orientation;
-	}
-
 	bool Plane::NeedNotify(Object* pObj) {
 		if (pObj == NULL || pObj == this) {				// 空对象和自己本身不用通知
 			return false;
