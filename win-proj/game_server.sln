@@ -21,6 +21,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "loginserver", "loginserver\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lobbyserver", "lobbyserver\lobbyserver.vcxproj", "{3C500B9C-771D-423B-A00F-1FF65503A908}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gameserver", "gameserver\gameserver.vcxproj", "{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD94668C-0C5D-4F39-BE94-8868033DD8A9} = {DD94668C-0C5D-4F39-BE94-8868033DD8A9}
+		{027929D4-DA72-45AB-9797-A652242397B0} = {027929D4-DA72-45AB-9797-A652242397B0}
+		{B6C1FDE9-E782-4204-860A-F7DEAB0095AC} = {B6C1FDE9-E782-4204-860A-F7DEAB0095AC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redisclient", "redisclient\redisclient.vcxproj", "{B6C1FDE9-E782-4204-860A-F7DEAB0095AC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestQuadTree", "TestQuadTree\TestQuadTree.vcxproj", "{A71C3AD9-6D60-49DD-ABC3-E6FE34286D0B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD94668C-0C5D-4F39-BE94-8868033DD8A9} = {DD94668C-0C5D-4F39-BE94-8868033DD8A9}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -47,8 +61,23 @@ Global
 		{3C500B9C-771D-423B-A00F-1FF65503A908}.Debug|Win32.Build.0 = Debug|Win32
 		{3C500B9C-771D-423B-A00F-1FF65503A908}.Release|Win32.ActiveCfg = Release|Win32
 		{3C500B9C-771D-423B-A00F-1FF65503A908}.Release|Win32.Build.0 = Release|Win32
+		{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}.Debug|Win32.Build.0 = Debug|Win32
+		{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}.Release|Win32.ActiveCfg = Release|Win32
+		{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}.Release|Win32.Build.0 = Release|Win32
+		{B6C1FDE9-E782-4204-860A-F7DEAB0095AC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B6C1FDE9-E782-4204-860A-F7DEAB0095AC}.Debug|Win32.Build.0 = Debug|Win32
+		{B6C1FDE9-E782-4204-860A-F7DEAB0095AC}.Release|Win32.ActiveCfg = Release|Win32
+		{B6C1FDE9-E782-4204-860A-F7DEAB0095AC}.Release|Win32.Build.0 = Release|Win32
+		{A71C3AD9-6D60-49DD-ABC3-E6FE34286D0B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A71C3AD9-6D60-49DD-ABC3-E6FE34286D0B}.Debug|Win32.Build.0 = Debug|Win32
+		{A71C3AD9-6D60-49DD-ABC3-E6FE34286D0B}.Release|Win32.ActiveCfg = Release|Win32
+		{A71C3AD9-6D60-49DD-ABC3-E6FE34286D0B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,112 @@
+package client;
+
+/////////////////////////////////////////////////////////////协议号///////////////////////////////////////////////////////////////////
+enum ClientProtocol
+{
+	REQ_ENTER_GAME		= 2000;					// 请求进入游戏
+	REQ_PLANE_MOVE		= 2001;					// 请求移动
+	REQ_PLANE_SHOOT		= 2003;					// 飞机射击
+	NTY_OBJS			= 2004;					// 通知物体（飞机或者子弹）相关信息
+}
+
+/////////////////////////////////////////////////////////////错误码///////////////////////////////////////////////////////////////////
+enum LoginError
+{
+	SUCCESS 		= 0;						// 操作成功
+}
+
+enum MoveType
+{
+	MOVE_LEFT = 1;				// 
+	MOVE_RIGHT = 2;
+	MOVE_UP = 3;
+	MOVE_DOWN = 4;
+	TURN_AROUND = 5;
+}
+
+enum ObjectType
+{
+	PLANE = 1;					// 飞机
+	BULLET = 2;					// 子弹
+}
+
+enum ObjectStatus
+{
+	ALIVE = 1;					// 存活的
+	DESTROY = 2;				// 销毁
+}
+
+/////////////////////////////////////////////////////////////协议///////////////////////////////////////////////////////////////////
+message PBVector
+{
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message PBVector2D
+{
+	optional float x = 1;
+	optional float y = 2;	
+}
+
+message EnterGameReq
+{
+	optional uint32 userId 		= 1;		// 用户Id
+}
+
+message EnterGameAck
+{
+	optional uint32 errorCode	= 1;		// 错误码
+	optional PBVector2D pos 	= 2;		// 进入游戏后的场景位置
+	optional int32 angle		= 3;		// 当前角度
+}
+
+message PlaneMoveReq
+{
+	optional PBVector2D newPos  = 1;		// 新的位置
+	optional int32 angle		= 2;		// 新的角度
+}
+
+message PlaneMoveAck
+{
+	optional uint32 errorCode	= 1;		// 错误码
+	optional PBVector2D realPos	= 2;		// 当前真实的位置
+}
+
+message QueryPathReq
+{
+	optional PBVector startPos	= 1;		// 起始点	
+	optional PBVector endPos	= 2;		// 终点
+}
+
+message QueryPathAck
+{
+	repeated PBVector path		= 1;		// 路径
+}
+
+message PBObject
+{
+	optional uint32 objId			= 1;	// 物体id
+	optional ObjectType type    	= 2;	// 物体类型
+	optional PBVector2D pos 		= 3;	// 坐标位置
+	optional float speed			= 4;	// 当前速度
+	optional uint32 angle			= 5;	// 角度
+	optional ObjectStatus status 	= 6;	// 物体状态
+}
+
+message NotifyObjs 
+{
+	repeated PBObject objList	= 1;		// 物体信息列表
+}
+
+// 飞机射击请求
+message PlaneShootReq
+{
+	// NOTHING
+}
+
+message PlaneShootAck
+{
+	optional uint32 errorCode 	= 1;		// 错误码
+}

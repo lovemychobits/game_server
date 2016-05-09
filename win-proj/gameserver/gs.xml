@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root version="1.0">
+  <!--gameserver监听端口-->
+	<HostServer type="1" id="1">
+	  <bind ip="0.0.0.0" port="8500" type="0"/>
+	  <register ip="192.168.3.21" />
+	</HostServer>
+
+  <!--命令监听端口-->
+  <CmdListen>
+	 <bind ip="192.168.3.21" port="8501" type="0" />
+  </CmdListen>
+
+  <!--连接datacenter的端口-->
+  <DataServer>
+    <connect ip="127.0.0.1" port="8600" type="0" />
+  </DataServer>
+
+   <!--连接lobbyserver的端口-->
+  <LobbyServer>
+    <connect ip="192.168.3.21" port="8700" type="0" />
+  </LobbyServer>
+  
+   <!--连接loginserveragent的端口-->
+  <LoginServerAgent>
+    <connect ip="127.0.0.1" port="9100" type="0" />
+  </LoginServerAgent>
+  
+  <!--连接loginserveragent的端口-->
+  <PayServerAgent>
+    <connect ip="127.0.0.1" port="9200" type="0" />
+  </PayServerAgent>
+
+  <Redis>
+	<connect ip="127.0.0.1" port="6379" index="0" />
+  </Redis>
+  
+  <RecvBuffer>
+	<buf msgHeadLen="12" clientBuf="40960" serverBuf="1024000" />
+  </RecvBuffer>
+</root>
+

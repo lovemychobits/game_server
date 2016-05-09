@@ -4,6 +4,7 @@
 #include "handlers/DsHandler.h"
 #include "handlers/GsMsgChainer.h"
 #include "scenemng-alpha/SceneMng.h"
+#include "plane_shooting/SceneMng2.h"
 
 GameServer::~GameServer()
 {
@@ -42,12 +43,6 @@ GameServer::~GameServer()
 
 bool GameServer::Init(const char* pConfPath)
 {
-	if (!_InitModules())
-	{
-		ERRORLOG("init modules failed.");
-		return false;
-	}
-
 	if (!_InitLog4cpp())
 	{
 		return false;
@@ -67,19 +62,24 @@ bool GameServer::Init(const char* pConfPath)
 		ERRORLOG("init server app failed.");
 		return false;
 	}
-	if (!_InitDataServer())
-	{
-		ERRORLOG("init data server failed.");
-		return false;
-	}
+	//if (!_InitDataServer())
+	//{
+	//	ERRORLOG("init data server failed.");
+	//	return false;
+	//}
 	if (!_InitTimerTrigger())
 	{
 		ERRORLOG("init timer trigger failed.");
 		return false;
 	}
-	if (!_InitLoadConf())
+	//if (!_InitLoadConf())
+	//{
+	//	ERRORLOG("init configure failed.");
+	//	return false;
+	//}
+	if (!_InitModules())
 	{
-		ERRORLOG("init configure failed.");
+		ERRORLOG("init modules failed.");
 		return false;
 	}
 	return true;
@@ -119,6 +119,9 @@ bool GameServer::_InitObjects()
 	{
 		return false;
 	}
+
+	m_pMsgDecoder = new ClientMsgDecoder();
+	m_pMsgEncoder = new ClientMsgEncoder();
 
 	return true;
 }
@@ -197,6 +200,7 @@ bool GameServer::_InitTimerTrigger()
 		return false;
 	}
 	//gpTimerMng->SetTimerTigger(m_pTimerTrigger);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 50);
 	return true;
 }
 
@@ -213,20 +217,6 @@ bool GameServer::_InitLoadConf()
 bool GameServer::_InitModules()
 {
 	scene_alpha::SceneMng::getInstance()->Init();
-	//float startpos[] = { -16.8693466, -2.36812592, 24.6918983 }; // m_spos = 0x08618340 {-16.8693466, -2.36812592, 24.6918983}
-	//float endpos[] = { -16.8693466, -2.36812592, 17.6918983 };					 // m_epos = 0x0861834c {17.6115112, -2.37033081, -22.8771439}
-
-	float startpos[] = { -16.8693466, -2.36812592, 24.6918983 }; // m_spos = 0x08618340 {-16.8693466, -2.36812592, 24.6918983}
-	float endpos[] = { -16.8693466, -2.36812592, 17.6918983 };					 // m_epos = 0x0861834c {17.6115112, -2.37033081, -22.8771439}
-
-
-	DWORD dwStart = ::GetTickCount();
-	for (int i = 0; i < 100000; ++i)
-	{
-		scene_alpha::SceneMng::getInstance()->findPath(startpos, endpos);
-	}
-	DWORD dwEnd = ::GetTickCount();
-	cout << "Time cost, 10000times, time=[" << (dwEnd - dwStart) / 1000.0 << "]" << endl;
-	
+	//plane_shooting::SceneMng::GetInstance()->TestQuadTree();
 	return true;
 }

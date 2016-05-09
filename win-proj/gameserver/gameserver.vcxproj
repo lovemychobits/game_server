@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5763B12C-111E-4EC2-A03D-067B2DCD3BB8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>gameserver</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\boost_1_58_0;../../log4cplus-1.1.3/include;../../protobuf/include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost_1_58_0\stage\lib;../../libs;E:\git\game_server\protobuf\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\boost_1_58_0;../../log4cplus-1.1.3/include;../../protobuf/include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost_1_58_0\stage\lib;../../libs;E:\git\game_server\protobuf\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>log4cplusD.lib;tinyxml.lib;utils.lib;network.lib;libprotobuf.lib;redisclient.lib;Detour.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>log4cplusD.lib;tinyxml.lib;utils.lib;network.lib;libprotobuf.lib;redisclient.lib;Detour.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\gameserver\config\ServerConfig.cpp" />
+    <ClCompile Include="..\..\gameserver\fsm\State.cpp" />
+    <ClCompile Include="..\..\gameserver\fsm\StateImpls.cpp" />
+    <ClCompile Include="..\..\gameserver\GameServer.cpp" />
+    <ClCompile Include="..\..\gameserver\handlers\ClientHandler.cpp" />
+    <ClCompile Include="..\..\gameserver\handlers\DsHandler.cpp" />
+    <ClCompile Include="..\..\gameserver\handlers\GsMsgChainer.cpp" />
+    <ClCompile Include="..\..\gameserver\handlers\LobbyHandler.cpp" />
+    <ClCompile Include="..\..\gameserver\main.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\Bullet.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\Plane.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp" />
+    <ClCompile Include="..\..\gameserver\plane_shooting\SceneMng2.cpp" />
+    <ClCompile Include="..\..\gameserver\scenemng-alpha\Map.cpp" />
+    <ClCompile Include="..\..\gameserver\scenemng-alpha\SceneMng.cpp" />
+    <ClCompile Include="..\..\protocol\client.pb.cc" />
+    <ClCompile Include="..\..\protocol\login.pb.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\gameserver\config\ServerConfig.h" />
+    <ClInclude Include="..\..\gameserver\fsm\State.h" />
+    <ClInclude Include="..\..\gameserver\fsm\StateImpls.h" />
+    <ClInclude Include="..\..\gameserver\GameServer.h" />
+    <ClInclude Include="..\..\gameserver\handlers\ClientHandler.h" />
+    <ClInclude Include="..\..\gameserver\handlers\DsHandler.h" />
+    <ClInclude Include="..\..\gameserver\handlers\GsMsgChainer.h" />
+    <ClInclude Include="..\..\gameserver\handlers\LobbyHandler.h" />
+    <ClInclude Include="..\..\gameserver\header.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\Bullet.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\Map.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\Object.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\Plane.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\QuadTree.h" />
+    <ClInclude Include="..\..\gameserver\plane_shooting\SceneMng2.h" />
+    <ClInclude Include="..\..\gameserver\playermng\PlayerMng.h" />
+    <ClInclude Include="..\..\gameserver\scenemng-alpha\Map.h" />
+    <ClInclude Include="..\..\gameserver\scenemng-alpha\SceneMng.h" />
+    <ClInclude Include="..\..\protocol\client.pb.h" />
+    <ClInclude Include="..\..\protocol\login.pb.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
