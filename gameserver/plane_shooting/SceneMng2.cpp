@@ -171,13 +171,13 @@ namespace plane_shooting {
 			if (pObject->GetType() == Plane_Type) {
 				Plane* pTmpPlane = (Plane*)pObject;
 				pPBObject->set_speed(pTmpPlane->GetSpeed());
-				pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
-				pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
+				//pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
+				//pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
 			}
 			else if (pObject->GetType() == Bullet_Type) {
 				Bullet* pTmpBullet = (Bullet*)pObject;
 				pPBObject->set_speed(pTmpBullet->GetSpeed());
-				pPBObject->set_flyangle(pTmpBullet->GetAngle());
+				//pPBObject->set_flyangle(pTmpBullet->GetAngle());
 			}
 
 			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
@@ -219,14 +219,14 @@ namespace plane_shooting {
 			{
 				Plane* pTmpPlane = (Plane*)pObject;
 				pPBObject->set_speed(pTmpPlane->GetSpeed());
-				pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
-				pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
+				//pPBObject->set_fireangle(pTmpPlane->GetFireAngle());
+				//pPBObject->set_flyangle(pTmpPlane->GetFlyAngle());
 			}
 			else if (pObject->GetType() == Bullet_Type)
 			{
 				Bullet* pTmpBullet = (Bullet*)pObject;
 				pPBObject->set_speed(pTmpBullet->GetSpeed());
-				pPBObject->set_flyangle(pTmpBullet->GetAngle());
+				//pPBObject->set_flyangle(pTmpBullet->GetAngle());
 			}
 
 			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
@@ -305,7 +305,7 @@ namespace plane_shooting {
 		}
 
 		// to do
-		client::NotifyCollision collisionNty;
+		//client::NotifyCollision collisionNty;
 
 	}
 

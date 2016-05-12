@@ -2,8 +2,11 @@
 #include "ClientHandler.h"
 #include "../../utils/Utility.h"
 #include "../../protocol/client.pb.h"
+#include "../../protocol/slither_client.pb.h"
 #include "../scenemng-alpha/SceneMng.h"
 #include "../plane_shooting/SceneMng2.h"
+#include "../slither/Scene.h"
+#include "../slither/PlayerMng.h"
 
 void ClientHandler::HandleConnect(IConnection* pConn)
 {
@@ -17,7 +20,7 @@ void ClientHandler::HandleDisconnect(IConnection* pConn, const BoostErrCode& err
 	{
 		ERRORLOG("handle disconnect error, error=[" << boost::system::system_error(error).what() << "]");
 	}
-	plane_shooting::SceneMng::GetInstance()->PlaneDisconnect(pConn);
+	slither::PlayerMng::GetInstance()->PlayerDisconnect(pConn);
 }
 
 void ClientHandler::HandleWrite(const boost::system::error_code& error, size_t bytes_transferred) 
@@ -69,10 +72,9 @@ void ClientHandler::_RegisterAllCmd()
 {
 	// 网络基本功能测试
 	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
-	_RegisterCmd(client::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
-	//_RegisterCmd(client::ClientProtocol::REQ_QUERY_PATH,	&ClientHandler::_RequestQueryPath);
-	_RegisterCmd(client::ClientProtocol::REQ_PLANE_MOVE,	&ClientHandler::_RequestPlaneMove);
-	_RegisterCmd(client::ClientProtocol::REQ_PLANE_SHOOT,	&ClientHandler::_RequestPlaneShoot);
+	_RegisterCmd(slither::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
+	//_RegisterCmd(slither::ClientProtocol::REQ_DIRECT,		&ClientHandler::_RequestNewDirect);
+	
 	return;
 }
 
@@ -92,7 +94,7 @@ void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHea
 	const char* pBuf = (const char*)pMsgHeader;
 	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
 
-	plane_shooting::SceneMng::GetInstance()->PlayerEnter(pConn);
+	slither::Scene::GetInstance()->PlayerEnter(pConn, enterGameReq.userid());
 	return;
 }
 
@@ -134,41 +136,4 @@ void ClientHandler::_RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHea
 	pConn->SendMsg(strResponse.c_str(), strResponse.size());
 
 	return;
-}
-
-void ClientHandler::_RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHeader) 
-{
-	if (!pConn || !pMsgHeader) {
-		return;
-	}
-
-	client::PlaneMoveReq planeMoveReq;
-	const char* pBuf = (const char*)pMsgHeader;
-	planeMoveReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
-
-	Plane* pPlane = plane_shooting::SceneMng::GetInstance()->GetPlaneByConn(pConn);
-	if (!pPlane) {
-		return;
-	}
-	plane_shooting::Vector2D newPos;
-	newPos.x = planeMoveReq.newpos().x();
-	newPos.y = planeMoveReq.newpos().y();
-	plane_shooting::SceneMng::GetInstance()->PlaneMove(pPlane, newPos, planeMoveReq.fireangle(), planeMoveReq.flyangle());
-
-	return;
-}
-
-void ClientHandler::_RequestPlaneShoot(IConnection* pConn, MessageHeader* pMsgHeader) 
-{ 
-	if (!pConn || !pMsgHeader) {
-		return;
-	}
-
-	Plane* pPlane = plane_shooting::SceneMng::GetInstance()->GetPlaneByConn(pConn);
-	if (!pPlane)
-	{
-		return;
-	}
-
-	plane_shooting::SceneMng::GetInstance()->PlaneShoot(pPlane);
 }

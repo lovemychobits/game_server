@@ -38,10 +38,13 @@ private:
 	// 网络基本功能测试	
 	void _RequestTestPingPong(IConnection* pConn, MessageHeader* pMsgHeader);
 
-	void _RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader);
 	void _RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHeader);
-	void _RequestPlaneMove(IConnection* pConn, MessageHeader* pMsgHeader);
-	void _RequestPlaneShoot(IConnection* pConn, MessageHeader* pMsgHeader);
+
+
+	void _RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader);
+	void _RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHeader);
+
+	
 
 private:
 	template<typename T>
