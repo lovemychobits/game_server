@@ -79,7 +79,7 @@ namespace slither {
 		}
 
 		// 测试用的，随机运动方向
-		//if (m_bRobot) 
+		if (m_bRobot) 
 		{
 			uint32_t uAngle = cputil::GenRandom(1, 359);
 			m_pHead->SetAngle(uAngle);
@@ -214,33 +214,42 @@ namespace slither {
 		return;
 	}
 
+	// 是否在对方视野中
 	bool Snake::IsInView(Snake* pSnake) {
 		if (!pSnake) {
 			return false;
 		}
-		set<uint32_t>::iterator snakeIt = m_viewRangeSnakeSet.find(pSnake->GetSnakeId());
-		if (snakeIt == m_viewRangeSnakeSet.end()) {
-			return false;
-		}
+		
 
 		SnakeBodyNode* pHead = pSnake->GetSnakeHead();
 
 		float fLen = sqrt(pow((pHead->GetPos().x - m_pHead->GetPos().x), 2) + pow((pHead->GetPos().y - m_pHead->GetPos().y), 2));
-		if (fLen < (float)m_uViewRange) {
+		if (fLen < (float)pSnake->GetViewRange()) {
 			return true;
 		}
 
 		return false;
 	}
 
+	// 已经在对方的视野中了
+	bool Snake::HasInView(Snake* pSnake) {
+		if (!pSnake) {
+			return false;
+		}
+
+		set<uint32_t>::iterator snakeIt = m_viewRangeSnakeSet.find(pSnake->GetSnakeId());
+		if (snakeIt == m_viewRangeSnakeSet.end()) {
+			return false;
+		}
+
+		return true;
+	}
+
 	bool Snake::IsInView(Grid* pGrid) {
 		if (!pGrid) {
 			return false;
 		}
-		set<Grid*>::iterator gridIt = m_viewRangeGridSet.find(pGrid);
-		if (gridIt == m_viewRangeGridSet.end()) {
-			return false;
-		}
+		
 
 		float fLen = sqrt(pow((pGrid->GetCenterPos().x - m_pHead->GetPos().x), 2) + pow((pGrid->GetCenterPos().y - m_pHead->GetPos().y), 2));
 		if (fLen < (float)m_uViewRange) {
@@ -248,6 +257,19 @@ namespace slither {
 		}
 
 		return false;
+	}
+
+	bool Snake::HasInView(Grid* pGrid) {
+		if (!pGrid) {
+			return false;
+		}
+
+		set<Grid*>::iterator gridIt = m_viewRangeGridSet.find(pGrid);
+		if (gridIt == m_viewRangeGridSet.end()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	void Snake::AddInView(Snake* pSnake) {

@@ -4,6 +4,7 @@
 #include "../../network/header.h"
 #include "../../network/IConnection.h"
 #include "Object.h"
+#include "../../protocol/slither_client.pb.h"
 #include <list>
 #include <set>
 #include <map>
@@ -13,6 +14,7 @@ using namespace cpnet;
 namespace slither {
 
 	class Snake;
+	class Food;
 
 	// 使用数学直角坐标系标准，原点在左下角
 	struct Grid {
@@ -170,8 +172,17 @@ namespace slither {
 		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue);						// 在指定点生成食物
 		Snake* GenSnake(bool bRobot);															// 生成一条蛇
 		void BreakUpSnake(Snake* pSnake);														// 分解蛇
-		vector<uint16_t> GetInViewGrids(uint16_t uGridIndex, uint16_t uSnakeViewRange);			// 获取格子列表，根据蛇本身的视野来决定
-		void Notify(Snake* pSnake);																// 向周围广播这条蛇
+		vector<uint16_t> GetInViewGrids(Snake* pSnake);											// 获取格子列表，根据蛇本身的视野来决定
+
+	private:
+		void Notify(Snake* pSnake);																// 通知这条蛇周围的情况
+		void GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList);						// 获取需要通知对象列表
+		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex);									// 在指定格子内判定吃食物
+		void CheckCollide(Snake* pSnake, uint16_t uGridIndex);									// 在指定格子内判定碰撞
+		void BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList, slither::BroadcastMove& snakeMove);		// 向周围广播这条蛇移动
+		void BroadcastNewFoods(list<Snake*>& broadcastList, const list<Food*>& newFoodList);	// 向周围广播新生成了一些食物
+		void BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake);													// 向周围广播这条蛇发生了碰撞
+		void NotifyGrids(Snake* pSnake);														// 向这条蛇通知新的格子信息
 
 	private:
 		Grid* m_pGrids;												// 将地图划分为N*N的格子

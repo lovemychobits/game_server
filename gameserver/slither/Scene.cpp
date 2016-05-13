@@ -68,7 +68,9 @@ namespace slither {
 			if (!pSnake) {
 				continue;
 			}
+			bool bRobot = pSnake->IsRobot();
 
+			// 不在其他地方删除，否则不好控制
 			if (pSnake->GetStatus() == ObjectStatus::OBJ_DESTROY) {						// 如果蛇需要销毁
 				// 释放蛇
 				gpFactory->ReleaseSnake(pSnake);
@@ -80,61 +82,25 @@ namespace slither {
 			pSnake->Move();
 			uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());				// 获取运动之后头所在的格子，限制每次运动不会超过一个蛇头的直径
 
-			// 然后判断蛇头和其他蛇的碰撞
-			list<Object*>& collidionObjList = m_pGrids[uGridIndex].GetSnakeBodyList();
-			list<Object*>::iterator collideIt = collidionObjList.begin(); 
-			list<Object*>::iterator collideItEnd = collidionObjList.end();
-			for (; collideIt != collideItEnd; collideIt++) {
-				SnakeBodyNode* pTmpObj = (SnakeBodyNode*)*collideIt;
-				if (!pTmpObj) {
-					continue;
-				}
-				if (pTmpObj->GetOwner() == pSnake) {									// 自己身体部分
-					continue;
-				}
-				// 如果发生了碰撞，那么将此蛇销毁掉，然后身体分解成食物
-				if (pSnake->GetSnakeHead()->IsCollide(pTmpObj)) {
-					pSnake->SetStatus(ObjectStatus::OBJ_DESTROY);						// 将状态设置为“销毁”
-					BreakUpSnake(pSnake);												// 将蛇分解掉
-				}
-			}
+			// 向此蛇通知周围的格子食物情况（只通知必要的）
+			NotifyGrids(pSnake);						
 
-			// 判定吃食物
-			list<Object*>& foodObjList = m_pGrids[uGridIndex].GetFoodList();
-			list<Object*>::iterator foodIt = foodObjList.begin();
-			for (; foodIt != foodObjList.end(); ) {
-				Food* pTmpFood = (Food*)*foodIt;
-				if (!pTmpFood) {
-					continue;
-				}
-				
-				if (pTmpFood->GetStatus() == ObjectStatus::OBJ_DESTROY) {
-					// 删除食物
-					foodObjList.erase(foodIt++);
-					gpFactory->ReleaseFood(pTmpFood);
-					continue;
-				}
+			// 判断蛇吃到食物的情况
+			CheckEatFood(pSnake, uGridIndex);
 
-				if (pSnake->GetSnakeHead()->IsContained(pTmpFood->GetPos())) {
-					// 如果食物被吃，也和蛇销毁一样的逻辑，在此时钟周期将其状态设置为销毁，在下一个时钟周期才真正的销毁
-					pTmpFood->SetStatus(ObjectStatus::OBJ_DESTROY);
-					pTmpFood->SetEatenSnakeId(pSnake->GetSnakeId());
-				}
-				foodIt++;
-			}
+			// 判断蛇的碰撞情况
+			CheckCollide(pSnake, uGridIndex);
 
-			if (m_uFoodCount < 7000) {
-				GenFoods(3000);
-			}
-
-			// 通知这条蛇周围的情况
-			Notify(pSnake);
+			// TODO 根据参数定期生成食物
+			//if (m_uFoodCount < 7000) {
+			//	GenFoods(3000);
+			//}
 
 			snakeIt++;
 		}
 
 		DWORD dwEnd = ::GetTickCount();
-		cout << "time cost=[" << dwEnd - dwStart << "]" << endl;
+		cout << "time cost=[" << dwEnd - dwStart << "], snake count=[" << m_snakeMap.size() << "]" << endl;
 	}
 
 	uint32_t Scene::GetGridIndex(const Vector2D& pos) {
@@ -211,8 +177,8 @@ namespace slither {
 		Vector2D pos;
 		uint32_t uGridIndex = 0;
 
-		pos.x = (float)cputil::GenFloatRandom(100.0f, 250.0f);
-		pos.y = (float)cputil::GenFloatRandom(100.0f, 250.0f);
+		pos.x = (float)cputil::GenFloatRandom(50.0f, 850.0f);
+		pos.y = (float)cputil::GenFloatRandom(50.0f, 850.0f);
 
 		Snake* pSnake = gpFactory->CreateSnake(this, m_uSnakeId++, pos, 30, bRobot);
 		if (!pSnake) {
@@ -303,43 +269,46 @@ namespace slither {
 		pSnake->SetSpeedUp(bSpeedUp);			// 是否加速
 	}
 
-	vector<uint16_t> Scene::GetInViewGrids(uint16_t uGridIndex, uint16_t uSnakeViewRange) {
+	vector<uint16_t> Scene::GetInViewGrids(Snake* pSnake) {
 		vector<uint16_t> gridsVec;
 
-		for (int16_t i = 0; i < 3; ++i) {		// 横向3排
-			for (int16_t j = 0; j < 3; ++j) {	// 纵向3列
-				int16_t uTmpIndex = (int16_t)uGridIndex + (int16_t)m_uHorizontalGridNum * (i - 1) + (j - 1);
-				if (uTmpIndex < 0 || uTmpIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {
-					continue;
-				}
-				gridsVec.push_back(uTmpIndex);
+		if (!pSnake) {
+			return gridsVec;
+		}
+
+		const Vector2D& snakeHeadPos = pSnake->GetSnakeHead()->GetPos();
+		uint32_t uViewRange = pSnake->GetViewRange();
+		Vector2D leftTop(snakeHeadPos.x - uViewRange / 2, snakeHeadPos.y + uViewRange / 2);
+		Vector2D rightTop(snakeHeadPos.x + uViewRange / 2, snakeHeadPos.y + uViewRange / 2);
+		Vector2D leftBottom(snakeHeadPos.x - uViewRange / 2, snakeHeadPos.y - uViewRange / 2);
+		Vector2D rightBottom(snakeHeadPos.x + uViewRange / 2, snakeHeadPos.y - uViewRange / 2);
+
+		uint16_t uLeftTopIndex		= GetGridIndex(leftTop);
+		uint16_t uRightTopIndex		= GetGridIndex(rightTop);
+		uint16_t uLeftBottomIndex	= GetGridIndex(leftBottom);
+		uint16_t uRightBottomIndex	= GetGridIndex(rightBottom);
+
+		for (uint16_t i = uLeftBottomIndex; i <= uLeftTopIndex; i += m_uHorizontalGridNum) {
+			for (uint16_t j = uLeftBottomIndex; j <= uRightBottomIndex; ++j) {
+				gridsVec.push_back(j + (i - uLeftBottomIndex));
 			}
 		}
 
 		return gridsVec;
 	}
 
-	// 向这条蛇通知周围的情况
-	void Scene::Notify(Snake* pSnake) {
-		if (!pSnake) {
-			return;
-		}
-
+	// 获取需要通知的列表
+	void Scene::GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList) {
 		uint16_t uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());
-		vector<uint16_t> gridVec = GetInViewGrids(uGridIndex, pSnake->GetViewRange());
-
-		string strResponse;
-		slither::NotifyObjs objsNty;
+		vector<uint16_t> gridVec = GetInViewGrids(pSnake);
 
 		for (uint16_t i = 0; i < gridVec.size(); ++i) {
 			uint16_t uIndex = gridVec[i];
 			list<Object*>& snakeHeadList = m_pGrids[uIndex].GetSnakeHeadList();
 
-			// 通知这条蛇，周围其他蛇目前的情况 
 			list<Object*>::iterator snakeIt = snakeHeadList.begin();
 			list<Object*>::iterator snakeItEnd = snakeHeadList.end();
 			for (; snakeIt != snakeItEnd; snakeIt++) {
-				slither::PBSnake* pPBSnake = objsNty.add_snakelist();
 
 				SnakeBodyNode* pSnakeHead = (SnakeBodyNode*)*snakeIt;
 				if (!pSnakeHead) {
@@ -350,40 +319,200 @@ namespace slither {
 					continue;
 				}
 
-				// 如果已经在视野中了，那么只需要知道蛇头的信息就可以了
-				if (pSnake->IsInView(pTmpSnake)) {
-					// 序列化蛇头
-					pTmpSnake->SerializeToPB(*pPBSnake, true);
+				// 在视野内
+				if (pTmpSnake->IsInView(pSnake)) {
+					broadcastList.push_back(pTmpSnake);
 				}
-				else {
-					pTmpSnake->SerializeToPB(*pPBSnake);
-					pSnake->AddInView(pTmpSnake);
-				}
-			}
-
-			// 通知这条蛇，周围食物的情况
-			if (pSnake->IsInView(&m_pGrids[uIndex])) {
-				continue;
-			}
-			else {
-				list<Object*>& foodList = m_pGrids[uIndex].GetFoodList();
-				list<Object*>::iterator foodIt = foodList.begin();
-				list<Object*>::iterator foodItEnd = foodList.end();
-				for (; foodIt != foodItEnd; foodIt++) {
-					slither::PBFood* pPBFood = objsNty.add_foodlist();
-
-					Food* pFood = (Food*)*foodIt;
-					pFood->SerializeToPB(*pPBFood);
-				}
-				pSnake->AddInView(&m_pGrids[uIndex]);
 			}
 		}
 
-		// 发送给客户端
-		cputil::BuildResponseProto(objsNty, strResponse, slither::ClientProtocol::NTY_OBJS);
-		pSnake->SendMsg(strResponse.c_str(), strResponse.size());
+		broadcastList.push_back(pSnake);						// 加上自己
 	}
 	
+	void Scene::CheckEatFood(Snake* pSnake, uint16_t uGridIndex) {
+		if (!pSnake) {
+			return;
+		}
+
+		if (uGridIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {			// 超出上限了，说明出错了
+			ERRORLOG("error grid index=[" << uGridIndex << "]");
+			return;
+		}
+
+		slither::BroadcastMove moveNty;
+		pSnake->SerializeToPB(*moveNty.mutable_snakeinfo());
+
+		// 判定吃食物
+		list<Object*>& foodObjList = m_pGrids[uGridIndex].GetFoodList();
+		list<Object*>::iterator foodIt = foodObjList.begin();
+		for (; foodIt != foodObjList.end();) {
+			Food* pTmpFood = (Food*)*foodIt;
+			if (!pTmpFood) {
+				foodIt++;
+				continue;
+			}
+
+			if (pSnake->GetSnakeHead()->IsContained(pTmpFood->GetPos())) {
+				moveNty.add_eatenfoodlist(pTmpFood->GetFoodId());
+
+				// 删除食物
+				foodObjList.erase(foodIt++);
+				gpFactory->ReleaseFood(pTmpFood);
+
+				continue;
+			}
+			foodIt++;
+		}
+
+		// broadcast
+		list<Snake*> broadcastList;
+		GetBroadcastList(pSnake, broadcastList);
+		BroadcastMove(pSnake, broadcastList, moveNty);
+
+		return;
+	}
+
+	void Scene::CheckCollide(Snake* pSnake, uint16_t uGridIndex) {
+		// 然后判断蛇头和其他蛇的碰撞
+		list<Object*>& collidionObjList = m_pGrids[uGridIndex].GetSnakeBodyList();
+		list<Object*>::iterator collideIt = collidionObjList.begin();
+		list<Object*>::iterator collideItEnd = collidionObjList.end();
+		for (; collideIt != collideItEnd; collideIt++) {
+			SnakeBodyNode* pTmpObj = (SnakeBodyNode*)*collideIt;
+			if (!pTmpObj) {
+				continue;
+			}
+			if (pTmpObj->GetOwner() == pSnake) {									// 自己身体部分
+				continue;
+			}
+			// 如果发生了碰撞，那么将此蛇销毁掉，然后身体分解成食物
+			if (pSnake->GetSnakeHead()->IsCollide(pTmpObj)) {
+				pSnake->SetStatus(ObjectStatus::OBJ_DESTROY);						// 将状态设置为“销毁”
+
+				// broadcast
+				list<Snake*> broadcastList;
+				GetBroadcastList(pSnake, broadcastList);
+
+				// 向周围广播碰撞
+				BroadcastCollide(broadcastList, pSnake);
+
+				// 将蛇分解掉
+				BreakUpSnake(pSnake);
+			}
+		}
+	}
+
+	void Scene::BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList, slither::BroadcastMove& snakeMove) {
+
+		string strResponse;
+		cputil::BuildResponseProto(snakeMove, strResponse, slither::ClientProtocol::BROADCAST_MOVE);
+		uint32_t uMsgSize = strResponse.size();
+
+		list<Snake*>::iterator snakeIt = broadcastList.begin();
+		list<Snake*>::iterator snakeItEnd = broadcastList.end();
+		for (; snakeIt != snakeItEnd; snakeIt++) {
+			Snake* pTmpSnake = *snakeIt;
+			if (!pTmpSnake) {
+				continue;
+			}
+
+			// 如果已经在对方的视野里面了，那么只需要简单的通知蛇头的信息即可
+			if (pSnake->HasInView(pTmpSnake)) {
+				pTmpSnake->SendMsg(strResponse.c_str(), strResponse.size());
+			}
+			else {
+				pTmpSnake->SendMsg(strResponse.c_str(), strResponse.size());
+				pSnake->AddInView(pTmpSnake);
+			}	
+		}
+
+		return;
+	}
+
+	void Scene::BroadcastNewFoods(list<Snake*>& broadcastList, const list<Food*>& newFoodList) {
+		slither::BroadcastNewFood newFoods;
+		list<Food*>::const_iterator foodIt = newFoodList.begin();
+		list<Food*>::const_iterator foodItEnd = newFoodList.end();
+		for (; foodIt != foodItEnd; foodIt++) {
+			slither::PBFood* pPBFood = newFoods.add_foodlist();
+			(*foodIt)->SerializeToPB(*pPBFood);
+		}
+		string strResponse;
+		cputil::BuildResponseProto(newFoods, strResponse, slither::ClientProtocol::BROADCAST_NEWFOODS);
+
+		// 挨个广播
+		list<Snake*>::iterator snakeIt = broadcastList.begin();
+		list<Snake*>::iterator snakeItEnd = broadcastList.end();
+		for (; snakeIt != snakeItEnd; snakeIt++) {
+			Snake* pSnake = *snakeIt;
+			if (!pSnake) {
+				continue;
+			}
+
+			pSnake->SendMsg(strResponse.c_str(), strResponse.size());
+		}
+	}
+
+	void Scene::BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake) {
+		if (!pSnake) {
+			return;
+		}
+
+		slither::BroadcastCollide snakeCollide;
+		pSnake->SerializeToPB(*snakeCollide.mutable_collidesnake());
+
+		string strResponse;
+		cputil::BuildResponseProto(snakeCollide, strResponse, slither::ClientProtocol::BROADCAST_COLLIDE);
+		
+		// 挨个广播
+		list<Snake*>::iterator snakeIt = broadcastList.begin();
+		list<Snake*>::iterator snakeItEnd = broadcastList.end();
+		for (; snakeIt != snakeItEnd; snakeIt++) {
+			Snake* pSnake = *snakeIt;
+			if (!pSnake) {
+				continue;
+			}
+
+			pSnake->SendMsg(strResponse.c_str(), strResponse.size());
+		}
+
+		return;
+	}
+
+	void Scene::NotifyGrids(Snake* pSnake) {
+
+		slither::NotifyGrids gridsNtfy;
+
+		uint16_t uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());
+		vector<uint16_t> gridVec = GetInViewGrids(pSnake);
+
+		uint32_t uFoodCount = 0;
+		for (uint16_t i = 0; i < gridVec.size(); ++i) {
+			uint16_t uIndex = gridVec[i];
+			if (pSnake->HasInView(&m_pGrids[uIndex])) {
+				continue;
+			}
+			else {
+				pSnake->AddInView(&m_pGrids[uIndex]);
+			}
+
+			list<Object*>& foodList = m_pGrids[uIndex].GetFoodList();
+			list<Object*>::iterator foodIt = foodList.begin();
+			list<Object*>::iterator foodItEnd = foodList.end();
+			for (; foodIt != foodItEnd; foodIt++) {
+				slither::PBFood* pPBFood = gridsNtfy.add_foodlist();
+
+				Food* pFood = (Food*)*foodIt;
+				pFood->SerializeToPB(*pPBFood);
+				++uFoodCount;
+			}
+		}
+
+		string strResponse;
+		cputil::BuildResponseProto(gridsNtfy, strResponse, slither::ClientProtocol::NOTIFY_GRIDS);
+		pSnake->SendMsg(strResponse.c_str(), strResponse.size());
+	}
+
 	void Scene::TestScene() {
 		Vector2D pos;
 		uint32_t uGridIndex = 0;
@@ -392,7 +521,7 @@ namespace slither {
 		GenFoods(50000);
 
 		// 创建N条蛇
-		for (int i = 0; i < 300; ++i) {
+		for (int i = 0; i < 1000; ++i) {
 			GenSnake(true);
 		}
 	}

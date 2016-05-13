@@ -101,11 +101,17 @@ namespace slither {
 		}
 
 		uint32_t GetViewRange() {
-			return 3;						// 后面改成根据蛇的长度重量，来判断
+			return m_uViewRange;						// 后面改成根据蛇的长度重量，来判断
+		}
+
+		bool IsRobot() {
+			return m_bRobot;
 		}
 
 		bool IsInView(Snake* pSnake);
+		bool HasInView(Snake* pSnake);
 		bool IsInView(Grid* pGrid);
+		bool HasInView(Grid* pGrid);
 		void AddInView(Snake* pSnake);
 		void AddInView(Grid* pGrid);
 		void DelInView(Snake* pSnake);
