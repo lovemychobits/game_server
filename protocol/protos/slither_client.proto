@@ -1,0 +1,122 @@
+package slither;
+
+/////////////////////////////////////////////////////////////协议号///////////////////////////////////////////////////////////////////
+enum ClientProtocol
+{
+	REQ_ENTER_GAME		= 2000;					// 请求进入游戏
+	REQ_MOVE			= 2001;					// 请求蛇的新朝向，或者是否加速
+	BROADCAST_MOVE		= 2002;					// 向周围广播移动消息
+	BROADCAST_EAT		= 2003;					// 广播吃到食物
+	BROADCAST_COLLIDE	= 2004;					// 向周围广播碰撞消息
+	BROADCAST_NEWFOODS	= 2005;					// 向周围广播新的食物生成
+	BROADCAST_NEWTAIL	= 2006;					// 蛇新的尾部
+	NOTIFY_GRIDS		= 2007;					// 向蛇通知新的格子信息
+}
+
+/////////////////////////////////////////////////////////////错误码///////////////////////////////////////////////////////////////////
+enum ClientError
+{
+	SUCCESS 		= 0;						// 操作成功
+}
+
+enum PBObjectType
+{
+	FOOD = 1;						// 食物
+	SNAKE_HEAD = 2;					// 蛇头
+	SNAKE_BODY = 3;					// 蛇身
+}
+
+enum PBObjectStatus
+{
+	EXIST = 0;					// 存在
+	DESTROY = 1;				// 销毁
+}
+
+/////////////////////////////////////////////////////////////数据定义///////////////////////////////////////////////////////////////////
+
+message PBVector2D
+{
+	optional float x = 1;
+	optional float y = 2;	
+}
+
+message PBFood
+{
+	optional uint32 foodId			= 1;	// 食物id
+	optional PBVector2D pos 		= 2;	// 坐标位置
+	optional uint32 mass 			= 3;	// 食物能量
+}
+
+message PBSnakeHead
+{
+	optional PBVector2D pos 		= 1;	// 蛇头位置
+	optional uint32 angle			= 2;	// 角度
+	optional float radius		 	= 3;	// 半径
+	optional float speed			= 4;	// 速度
+}
+
+message PBSnakeBody
+{
+	optional uint32 bodyId			= 1;	// 蛇身ID
+	optional PBVector2D pos 		= 2;	// 蛇身位置
+}
+
+message PBSnake 
+{
+	optional uint32 snakeId			= 1;	// 蛇的ID
+	optional PBSnakeHead snakeHead 	= 2;	// 蛇头
+	repeated PBSnakeBody snakeBody 	= 3;	// 蛇身
+	optional PBObjectStatus status 	= 4;	// 状态
+	optional bool speedUp			= 5;	// 是否处于加速状态
+}
+
+/////////////////////////////////////////////////////////////协议///////////////////////////////////////////////////////////////////
+
+message EnterGameReq
+{
+	optional uint32 userId 		= 1;		// 用户Id
+}
+
+message EnterGameAck
+{
+	optional uint32 errorCode	= 1;		// 错误码
+	optional PBSnake snake 		= 2;		// 玩家蛇的信息
+}
+
+message SnakeMoveReq
+{
+	optional float newAngle  	= 1;		// 新的角度
+	optional bool speedUp		= 2;		// 是否加速
+}
+
+// 如果不出错，这条不会返回
+message SnakeMoveAck
+{
+	optional uint32 errorCode	= 1;		// 错误码
+}
+
+message BroadcastMove
+{
+	optional PBSnake snakeInfo	= 1;		// 被广播的蛇（不单广播给周围，还发送给自己）
+}
+
+message BroadcastEat
+{
+	optional uint32 snakeId		  = 1;		// 吃到食物的蛇ID
+	repeated uint32 eatenFoodList = 2;		// 移动过程吃掉的食物列表(只通知ID)
+}
+
+message BroadcastNewFood
+{
+	repeated PBFood foodList = 1;		// 新生成的食物列表
+}
+
+message BroadcastCollide
+{
+	optional PBSnake collideSnake = 1;		// 碰撞到其他蛇身的蛇
+}
+
+message NotifyGrids 
+{
+	repeated PBFood foodList 	= 1;		// 格子内的食物列表
+}
