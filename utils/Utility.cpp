@@ -15,7 +15,7 @@ namespace cputil
 	{
 		static boost::random::mt19937 rng((uint32_t)std::time(0));
 		boost::random::uniform_real_distribution<> randGen(fMin, fMax);
-		return randGen(rng);
+		return (float)randGen(rng);
 	}
 
 	void GenUniRandVec(uint32_t uStart, uint32_t uEnd, uint32_t uNum, vector<uint32_t>& randVec)
