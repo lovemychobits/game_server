@@ -34,6 +34,9 @@
     <Filter Include="plane_shooting">
       <UniqueIdentifier>{f2218ec3-363a-418b-bed4-889d2a31ab37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="slither">
+      <UniqueIdentifier>{0a0a2673-7390-4d46-9b43-9011a9f289c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\gameserver\config\ServerConfig.cpp">
@@ -89,6 +92,24 @@
     </ClCompile>
     <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp">
       <Filter>plane_shooting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gameserver\slither\Scene.cpp">
+      <Filter>slither</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gameserver\slither\Snake.cpp">
+      <Filter>slither</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gameserver\slither\PlayerMng.cpp">
+      <Filter>slither</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_client.pb.cc">
+      <Filter>protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gameserver\slither\Factory.cpp">
+      <Filter>slither</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gameserver\slither\SlitherMath.cpp">
+      <Filter>slither</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +175,30 @@
     </ClInclude>
     <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h">
       <Filter>plane_shooting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\Scene.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\Object.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\Snake.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\Food.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\PlayerMng.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_client.pb.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\Factory.h">
+      <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gameserver\slither\SlitherMath.h">
+      <Filter>slither</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
