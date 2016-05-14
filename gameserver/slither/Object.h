@@ -6,6 +6,8 @@
 #include <math.h>
 
 namespace slither {
+#define PI 3.14159f
+
 	struct Vector2D {
 		float x;
 		float y;
@@ -14,6 +16,10 @@ namespace slither {
 		}
 
 		Vector2D(float _x, float _y) : x(_x), y(_y) {
+		}
+
+		float Magnitude() {
+			return ::sqrt(x * x + y * y);
 		}
 	};
 

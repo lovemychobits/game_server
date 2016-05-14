@@ -7,6 +7,7 @@
 #include "../plane_shooting/SceneMng2.h"
 #include "../slither/Scene.h"
 #include "../slither/PlayerMng.h"
+#include "../slither/Snake.h"
 
 void ClientHandler::HandleConnect(IConnection* pConn)
 {
@@ -73,7 +74,7 @@ void ClientHandler::_RegisterAllCmd()
 	// 网络基本功能测试
 	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
 	_RegisterCmd(slither::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
-	//_RegisterCmd(slither::ClientProtocol::REQ_DIRECT,		&ClientHandler::_RequestNewDirect);
+	_RegisterCmd(slither::ClientProtocol::REQ_MOVE,			&ClientHandler::_RequestNewDirect);
 	
 	return;
 }
@@ -90,11 +91,26 @@ void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHea
 		return;
 	}
 
-	client::EnterGameReq enterGameReq;
+	slither::EnterGameReq enterGameReq;
 	const char* pBuf = (const char*)pMsgHeader;
 	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
 
 	slither::Scene::GetInstance()->PlayerEnter(pConn, enterGameReq.userid());
+	return;
+}
+
+void ClientHandler::_RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHeader) 
+{
+	if (!pConn || !pMsgHeader) {
+		return;
+	}
+
+	slither::SnakeMoveReq moveReq;
+	const char* pBuf = (const char*)pMsgHeader;
+	moveReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+
+	slither::Snake* pSnake = slither::PlayerMng::GetInstance()->GetPlayerSnake(pConn);
+	slither::Scene::GetInstance()->SnakeMove(pSnake, moveReq.newangle(), moveReq.speedup());
 	return;
 }
 

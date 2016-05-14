@@ -164,24 +164,25 @@ namespace slither {
 	public:
 		// 处理玩家信息
 		void PlayerEnter(IConnection* pConn, uint32_t uUserId);
-		void SnakeMove(Snake* pSnake, uint16_t uNewAngle, bool bSpeedUp);
+		void SnakeMove(Snake* pSnake, float fNewAngle, bool bSpeedUp);
 
 	private:
 		uint32_t GetGridIndex(const Vector2D& pos);												// 获取坐标点所在的格子
 		void GenFoods(uint32_t uNum);															// 生成食物
-		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue);						// 在指定点生成食物
+		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue, list<Food*>& foodList);	// 在指定点生成食物
 		Snake* GenSnake(bool bRobot);															// 生成一条蛇
-		void BreakUpSnake(Snake* pSnake);														// 分解蛇
+		void BreakUpSnake(Snake* pSnake, list<Snake*>& broadcastList);							// 分解蛇
 		vector<uint16_t> GetInViewGrids(Snake* pSnake);											// 获取格子列表，根据蛇本身的视野来决定
 
 	private:
 		void Notify(Snake* pSnake);																// 通知这条蛇周围的情况
 		void GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList);						// 获取需要通知对象列表
-		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex);									// 在指定格子内判定吃食物
-		void CheckCollide(Snake* pSnake, uint16_t uGridIndex);									// 在指定格子内判定碰撞
-		void BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList, slither::BroadcastMove& snakeMove);		// 向周围广播这条蛇移动
+		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// 在指定格子内判定吃食物
+		void CheckCollide(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// 在指定格子内判定碰撞
+		void BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList);							// 向周围广播这条蛇移动
+		void BroadcastEat(list<Snake*>& broadcastList, slither::BroadcastEat& eatFoods);		// 广播吃食物
+		void BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake);						// 向周围广播这条蛇发生了碰撞
 		void BroadcastNewFoods(list<Snake*>& broadcastList, const list<Food*>& newFoodList);	// 向周围广播新生成了一些食物
-		void BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake);													// 向周围广播这条蛇发生了碰撞
 		void NotifyGrids(Snake* pSnake);														// 向这条蛇通知新的格子信息
 
 	private:

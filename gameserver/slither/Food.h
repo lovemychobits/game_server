@@ -19,7 +19,7 @@ namespace slither {
 			pbFood.set_foodid(m_uFoodId);
 			pbFood.mutable_pos()->set_x(GetPos().x);
 			pbFood.mutable_pos()->set_y(GetPos().y);
-			pbFood.set_value(m_uValue);
+			pbFood.set_mass(m_uValue);
 		}
 
 		uint32_t GetFoodId() {

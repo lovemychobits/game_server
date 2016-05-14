@@ -4,8 +4,8 @@
 
 namespace slither {
 
-	SnakeBodyNode::SnakeBodyNode(Snake* pOwner, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle) :
-		Object(pos, fRadius, Snake_Body_Type), m_pOwner(pOwner), m_pPrevNode(pPrevNode), m_fSpeed(fSpeed), m_angle(uAngle) {
+	SnakeBodyNode::SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle) :
+		Object(pos, fRadius, Snake_Body_Type), m_pOwner(pOwner), m_uNodeId(uNodeId), m_pPrevNode(pPrevNode), m_fSpeed(fSpeed), m_angle(uAngle) {
 	}
 
 	SnakeBodyNode::~SnakeBodyNode() {
@@ -18,19 +18,24 @@ namespace slither {
 		m_pScene(pScene), m_uSnakeId(uSnakeId), m_bSpeedUp(false), m_pConn(NULL), m_status(ObjectStatus::OBJ_EXIST), m_bRobot(bRobot),
 		m_uViewRange(40), m_uMoveTick(0) 
 	{
-		m_pHead = new SnakeBodyNode(this, NULL, initPos, fRadius, 0.1f, 0);
+		uint16_t uNodeId = 1;
+		m_pHead = new SnakeBodyNode(this, uNodeId++, NULL, initPos, fRadius, 0.25f, 0);
 		m_pHead->SetObjectType(Snake_Head_Type);
 
 		Vector2D nodePos = initPos;
 
 		SnakeBodyNode* pPrevNode = m_pHead;
 		for (uint32_t i = 0; i < uBodySize; ++i) {
-			nodePos.x -= fRadius;
-			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, pPrevNode, nodePos, fRadius, 0.1f, 0);
+			//nodePos.x -= fRadius;
+			nodePos.x -= 0.25f;
+			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, uNodeId++, pPrevNode, nodePos, fRadius, 0.1f, 0);
 			pPrevNode = pSnakeNode;
 
 			m_bodyVec.push_back(pSnakeNode);
 		}
+
+		// 设置蛇尾
+		SetSnakeTail(pPrevNode);
 	}
 
 	Snake::~Snake() {
@@ -67,6 +72,7 @@ namespace slither {
 		// 序列化蛇身
 		for (uint32_t i = 0; i < m_bodyVec.size(); ++i) {
 			slither::PBSnakeBody* pPBSnakeBody = pbSnake.add_snakebody();
+			pPBSnakeBody->set_bodyid(m_bodyVec[i]->GetNodeId());
 			pPBSnakeBody->mutable_pos()->set_x(m_bodyVec[i]->GetPos().x);
 			pPBSnakeBody->mutable_pos()->set_y(m_bodyVec[i]->GetPos().y);
 		}
@@ -85,12 +91,13 @@ namespace slither {
 			m_pHead->SetAngle(uAngle);
 		}
 		
-		float fSpeed = cputil::GenFloatRandom(0.1, 1.0);
-		m_pHead->SetSpeed(fSpeed);
+		//float fSpeed = cputil::GenFloatRandom(0.1, 1.0);
+		//m_pHead->SetSpeed(fSpeed);
 
 		// 蛇头运动
 		ObjectGrids oldGrids = m_pScene->GetObjectGrids(m_pHead);
-		CalcNextPos(m_pHead->GetAngle(), m_pHead->GetSpeed(), m_pHead->GetPos());				// 计算下一个点
+		//CalcNextPos(m_pHead->GetAngle(), m_pHead->GetSpeed(), m_pHead->GetPos());				// 计算下一个点
+		SlitherMath::MoveToAngle(m_pHead->GetPos(), m_pHead->GetAngle(), m_pHead->GetSpeed());
 		ObjectGrids newGrids = m_pScene->GetObjectGrids(m_pHead);
 		newGrids.UpdateGrids(m_pHead, m_pScene->GetSceneGrids(), oldGrids);
 
@@ -103,12 +110,10 @@ namespace slither {
 
 			ObjectGrids oldGrids = m_pScene->GetObjectGrids(pBodyNode);
 			SnakeBodyNode* pPrevNode = pBodyNode->GetPrevNode();
-			if (pPrevNode == NULL) {								// 说明前一个节点是蛇头
-				CalcNextPos(m_pHead->GetAngle(), m_pHead->GetSpeed(), pBodyNode->GetPos());
-			}
-			else {
-				CalcNextPos(pPrevNode->GetAngle(), m_pHead->GetSpeed(), pBodyNode->GetPos());
-			}
+			
+			//CalcNextPos(pPrevNode->GetAngle(), m_pHead->GetSpeed(), pBodyNode->GetPos());
+			pBodyNode->TracePreNode();
+			
 
 			ObjectGrids newGrids = m_pScene->GetObjectGrids(pBodyNode);
 			newGrids.UpdateGrids(pBodyNode, m_pScene->GetSceneGrids(), oldGrids);
@@ -165,7 +170,6 @@ namespace slither {
 		return 0;
 	}
 
-#define PI 3.14159f
 	float Snake::GetXLen(float vectLen, uint16_t uSinAngle) {
 		float fAngle = float(uSinAngle * PI / 180);
 		float sin_value = (float)::sin(fAngle);

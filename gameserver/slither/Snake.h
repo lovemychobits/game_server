@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "../../network/IConnection.h"
 #include "../../protocol/slither_client.pb.h"
+#include "SlitherMath.h"
 #include <vector>
 #include <list>
 #include <set>
@@ -16,18 +17,18 @@ namespace slither {
 	// 蛇身节点
 	class SnakeBodyNode : public Object {
 	public:
-		SnakeBodyNode(Snake* pOwner, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle);
+		SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle);
 		virtual ~SnakeBodyNode();
 
 		SnakeBodyNode* GetPrevNode() {
 			return m_pPrevNode;
 		}
 
-		void SetAngle(uint16_t uAngle) {
-			m_angle = uAngle;
+		void SetAngle(float fAngle) {
+			m_angle = fAngle;
 		}
 
-		uint16_t GetAngle() {
+		float GetAngle() {
 			return m_angle;
 		}
 
@@ -47,11 +48,35 @@ namespace slither {
 			m_objType = type;
 		}
 
+		uint16_t GetNodeId() {
+			return m_uNodeId;
+		}
+
+		void TracePreNode() {
+			if (!m_pPrevNode) {
+				return;
+			}
+
+			Vector2D distVect(m_pPrevNode->GetPos().x - m_pos.x, m_pPrevNode->GetPos().y - m_pos.y);
+			float fMoveDist = distVect.Magnitude() - 0.25f;
+			if (fMoveDist > 0.0f) {
+				m_lastMove = SlitherMath::MoveTo(distVect, fMoveDist);
+				m_pos.x += m_lastMove.x;
+				m_pos.y += m_lastMove.y;
+			}
+			else {
+				m_pos.x += m_lastMove.x;
+				m_pos.y += m_lastMove.y;
+			}
+		}
+
 	protected:
 		Snake* m_pOwner;						// 属于那条蛇
+		uint16_t m_uNodeId;						// 节点
 		SnakeBodyNode* m_pPrevNode;				// 前一个身体节点, 如果是NULL，前一个节点就是SnakeHead
 		float m_fSpeed;							// 速度
-		uint16_t m_angle;						// 移动角度
+		float m_angle;							// 移动角度
+		Vector2D m_lastMove;
 	};
 
 	class Scene;
@@ -82,6 +107,14 @@ namespace slither {
 
 		SnakeBodyNode* GetSnakeHead() {
 			return m_pHead;
+		}
+
+		SnakeBodyNode* GetSnakeTail() {
+			return m_pTail;
+		}
+
+		void SetSnakeTail(SnakeBodyNode* pTail) {
+			m_pTail = pTail;
 		}
 
 		vector<SnakeBodyNode*>& GetSnakeBody() {
@@ -134,6 +167,7 @@ namespace slither {
 		uint32_t m_uSnakeId;												// 蛇ID
 		bool m_bSpeedUp;													// 是否加速
 		SnakeBodyNode* m_pHead;												// 蛇头
+		SnakeBodyNode* m_pTail;												// 蛇尾
 		vector<SnakeBodyNode*> m_bodyVec;									// 蛇的身体
 		IConnection* m_pConn;												// 对应的网络连接
 		ObjectStatus m_status;												// 蛇的状态
