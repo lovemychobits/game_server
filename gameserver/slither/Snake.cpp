@@ -12,6 +12,15 @@ namespace slither {
 
 	}
 
+	float SnakeBodyNode::GetSpeed() {
+		if (!m_pOwner->GetSpeedUp()) {
+			return m_fSpeed;
+		}
+		else {
+			return m_fSpeed * 3;
+		}
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Snake::Snake(Scene* pScene, uint32_t uSnakeId, float fRadius, const Vector2D& initPos, uint32_t uBodySize, bool bRobot) : 
@@ -89,6 +98,7 @@ namespace slither {
 		{
 			uint32_t uAngle = cputil::GenRandom(1, 359);
 			m_pHead->SetAngle(uAngle);
+			m_pHead->SetSpeed(0.0f);
 		}
 		
 		//float fSpeed = cputil::GenFloatRandom(0.1, 1.0);

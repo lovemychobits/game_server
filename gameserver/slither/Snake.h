@@ -32,9 +32,7 @@ namespace slither {
 			return m_angle;
 		}
 
-		float GetSpeed() {
-			return m_fSpeed;
-		}
+		float GetSpeed();
 
 		void SetSpeed(float fSpeed) {
 			m_fSpeed = fSpeed;
@@ -105,6 +103,10 @@ namespace slither {
 			m_bSpeedUp = bSpeedUp;
 		}
 
+		bool GetSpeedUp() {
+			return m_bSpeedUp;
+		}
+
 		SnakeBodyNode* GetSnakeHead() {
 			return m_pHead;
 		}
@@ -123,6 +125,10 @@ namespace slither {
 
 		void SetConnection(IConnection* pConn) {
 			m_pConn = pConn;
+		}
+
+		IConnection* GetConnection() {
+			return m_pConn;
 		}
 
 		void SetStatus(ObjectStatus status) {

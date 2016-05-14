@@ -73,6 +73,9 @@ namespace slither {
 
 			// 不在其他地方删除，否则不好控制
 			if (pSnake->GetStatus() == ObjectStatus::OBJ_DESTROY) {						// 如果蛇需要销毁
+				// 删除蛇与链接之间的关系
+				gpPlayerMng->DeleteSnake(pSnake);
+
 				// 释放蛇
 				gpFactory->ReleaseSnake(pSnake);
 				m_snakeMap.erase(snakeIt++);
@@ -108,7 +111,7 @@ namespace slither {
 		}
 
 		DWORD dwEnd = ::GetTickCount();
-		cout << "time cost=[" << dwEnd - dwStart << "], snake count=[" << m_snakeMap.size() << "]" << endl;
+		//cout << "time cost=[" << dwEnd - dwStart << "], snake count=[" << m_snakeMap.size() << "]" << endl;
 	}
 
 	uint32_t Scene::GetGridIndex(const Vector2D& pos) {
@@ -265,8 +268,10 @@ namespace slither {
 			return;
 		}
 
+		cout << "connection=[" << pConn << "] enter, snake=[" << pSnake << "]" << endl;
+
 		pSnake->SetConnection(pConn);
-		PlayerMng::GetInstance()->SetPlayerConn(pSnake, pConn);
+		gpPlayerMng->SetPlayerConn(pSnake, pConn);
 
 		slither::EnterGameAck enterGameAck;
 		pSnake->SerializeToPB(*enterGameAck.mutable_snake());
@@ -410,6 +415,7 @@ namespace slither {
 
 				// 将蛇分解掉
 				BreakUpSnake(pSnake, broadcastList);
+				cout << "snake=[" << pSnake << "] collide" << endl;
 			}
 		}
 	}
@@ -559,7 +565,7 @@ namespace slither {
 		GenFoods(20000);
 
 		// 创建N条蛇
-		for (int i = 0; i < 0; ++i) {
+		for (int i = 0; i < 3; ++i) {
 			GenSnake(true);
 		}
 	}

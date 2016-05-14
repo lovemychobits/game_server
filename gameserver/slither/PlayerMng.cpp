@@ -31,4 +31,17 @@ namespace slither {
 
 		return snakeIt->second;
 	}
+
+	void PlayerMng::DeleteSnake(Snake* pSnake) {
+		if (!pSnake) {
+			return;
+		}
+
+		map<IConnection*, Snake*>::iterator snakeIt = m_playerConnMap.find(pSnake->GetConnection());
+		if (snakeIt == m_playerConnMap.end()) {
+			return;
+		}
+
+		m_playerConnMap.erase(snakeIt);
+	}
 }

@@ -21,10 +21,13 @@ namespace slither {
 		void SetPlayerConn(Snake* pPlayerSnake, IConnection* pConn);
 		void PlayerDisconnect(IConnection* pConn);
 		Snake* GetPlayerSnake(IConnection* pConn);
+		void DeleteSnake(Snake* pSnake);
 
 	private:
 		map<IConnection*, Snake*> m_playerConnMap;
 	};
+
+#define gpPlayerMng PlayerMng::GetInstance()
 }
 
 #endif
