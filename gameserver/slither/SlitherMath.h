@@ -1,10 +1,12 @@
-#ifndef GAMESERVER_SLITHER_SLITHERMATH_H
+﻿#ifndef GAMESERVER_SLITHER_SLITHERMATH_H
 #define GAMESERVER_SLITHER_SLITHERMATH_H
 
 #include <math.h>
 #include "Object.h"
 
 namespace slither {
+#define PI (3.14159f)
+
 	class SlitherMath {
 	public:
 		static float PosToAnglePI(const Vector2D& pos);

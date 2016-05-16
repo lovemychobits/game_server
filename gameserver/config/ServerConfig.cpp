@@ -126,54 +126,6 @@ bool ServerConfig::LoadServerConf(const char* pFilePath)
 		m_nLobbyPort = boost::lexical_cast<int>(pLobbyServerPort);
 	}
 
-	// loginserveragent
-	TiXmlElement* pLoginAgent = pRoot->FirstChildElement("LoginServerAgent");
-	if (!pLoginAgent)
-	{
-		ERRORLOG("cannot find LoginServerAgent tag");
-		return false;
-	}
-
-	TiXmlElement* pLoginAgentConn = pLoginAgent->FirstChildElement("connect");
-	if (!pLoginAgentConn)
-	{
-		return false;
-	}
-	const char* pLoginAgentIp = pLoginAgentConn->Attribute("ip");
-	const char* pLoginAgentPort = pLoginAgentConn->Attribute("port");
-	if (pLoginAgentIp)
-	{
-		memcpy(m_szLoginIp, pLoginAgentIp, strlen(pLoginAgentIp));
-	}
-	if (pLoginAgentPort)
-	{
-		m_nLoginPort = boost::lexical_cast<int>(pLoginAgentPort);
-	}
-
-	// payserveragent
-	TiXmlElement* pPayAgent = pRoot->FirstChildElement("PayServerAgent");
-	if (!pPayAgent)
-	{
-		ERRORLOG("cannot find PayServerAgent tag");
-		return false;
-	}
-
-	TiXmlElement* pPayAgentConn = pPayAgent->FirstChildElement("connect");
-	if (!pPayAgentConn)
-	{
-		return false;
-	}
-	const char* pPayAgentIp = pPayAgentConn->Attribute("ip");
-	const char* pPayAgentPort = pPayAgentConn->Attribute("port");
-	if (pPayAgentIp)
-	{
-		memcpy(m_szPayIp, pPayAgentIp, strlen(pPayAgentIp));
-	}
-	if (pPayAgentPort)
-	{
-		m_nPayPort = boost::lexical_cast<int>(pPayAgentPort);
-	}
-
 	// redis
 	TiXmlElement* pRedisServer = pRoot->FirstChildElement("Redis");
 	if (!pRedisServer)
@@ -197,44 +149,7 @@ bool ServerConfig::LoadServerConf(const char* pFilePath)
 	m_nRedisPort = boost::lexical_cast<int>(pRedisPort);
 	m_nRedisIndex = boost::lexical_cast<int>(pRedisIndex);
 
-	//// pvp server list
-	//TiXmlElement* pPvpServerList = pRoot->FirstChildElement("PvpServer");
-	//if (!pPvpServerList)
-	//{
-	//	return false;
-	//}
-
-	//TiXmlElement* pPvpServer = pPvpServerList->FirstChildElement("pvp");
-	//while (pPvpServer)
-	//{
-	//	ServerIpConf ipConf;
-	//	ipConf.strIp = pPvpServer->Attribute("ip");
-	//	ipConf.uPort = boost::lexical_cast<int>(pPvpServer->Attribute("port"));
-	//	m_pvpServerList.push_back(ipConf);
-
-	//	pPvpServer = pPvpServer->NextSiblingElement();
-	//}
-
-	//// pvp redis list
-	//TiXmlElement* pPvpRedisList = pRoot->FirstChildElement("PvpRedis");
-	//if (!pPvpRedisList)
-	//{
-	//	return false;
-	//}
-
-	//TiXmlElement* pPvpRedis = pPvpRedisList->FirstChildElement("redis");
-	//while (pPvpRedis)
-	//{
-	//	ServerIpConf ipConf;
-	//	ipConf.strIp = pPvpRedis->Attribute("ip");
-	//	ipConf.uPort = boost::lexical_cast<int>(pPvpRedis->Attribute("port"));
-	//	ipConf.uIndex = boost::lexical_cast<int>(pPvpRedis->Attribute("index"));
-	//	m_pvpRedisList.push_back(ipConf);
-
-	//	pPvpRedis = pPvpRedis->NextSiblingElement();
-	//}
-
-	// recvbuffer
+	// head length
 	TiXmlElement* pRecvBuffer = pRoot->FirstChildElement("RecvBuffer");
 	if (!pRecvBuffer)
 	{
@@ -246,9 +161,7 @@ bool ServerConfig::LoadServerConf(const char* pFilePath)
 	{
 		return false;
 	}
-
 	m_uMsgHeadLen = boost::lexical_cast<int>(pBuffer->Attribute("msgHeadLen"));
-	m_uClientBuf = boost::lexical_cast<int>(pBuffer->Attribute("clientBuf"));
 
 	return true;
 }

@@ -1,4 +1,4 @@
-#ifndef GAMESERVER_SLITHER_FOOD_H
+ï»¿#ifndef GAMESERVER_SLITHER_FOOD_H
 #define GAMESERVER_SLITHER_FOOD_H
 
 #include "Object.h"
@@ -8,7 +8,7 @@ namespace slither {
 	class Food : public Object {
 	public:
 		Food(uint32_t uFoodId, const Vector2D& pos, float fRadius, uint32_t uValue) : 
-			Object(pos, fRadius, Food_Type), m_uFoodId(uFoodId), m_uValue(uValue) {
+			Object(pos, fRadius, Food_Type), m_uFoodId(uFoodId), m_uMass(uValue) {
 
 		}
 		~Food() {
@@ -19,20 +19,20 @@ namespace slither {
 			pbFood.set_foodid(m_uFoodId);
 			pbFood.mutable_pos()->set_x(GetPos().x);
 			pbFood.mutable_pos()->set_y(GetPos().y);
-			pbFood.set_mass(m_uValue);
+			pbFood.set_mass(m_uMass);
 		}
 
 		uint32_t GetFoodId() {
 			return m_uFoodId;
 		}
 
-		uint32_t GetValue() {
-			return m_uValue;
+		uint32_t GetMass() {
+			return m_uMass;
 		}
 
 	private:
-		uint32_t m_uFoodId;					// Ê³ÎïID
-		uint32_t m_uValue;					// food¶ÔÓ¦µÄÖµ
+		uint32_t m_uFoodId;					// é£Ÿç‰©ID
+		uint32_t m_uMass;					// foodå¯¹åº”çš„å€¼
 	};
 }
 

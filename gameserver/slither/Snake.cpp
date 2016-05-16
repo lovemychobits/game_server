@@ -1,11 +1,13 @@
-#include "Snake.h"
+ï»¿#include "Snake.h"
 #include "Scene.h"
+#include "Food.h"
 #include "../../utils/Utility.h"
+#include "SlitherMath.h"
 
 namespace slither {
 
-	SnakeBodyNode::SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle) :
-		Object(pos, fRadius, Snake_Body_Type), m_pOwner(pOwner), m_uNodeId(uNodeId), m_pPrevNode(pPrevNode), m_fSpeed(fSpeed), m_angle(uAngle) {
+	SnakeBodyNode::SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, float fAngle) :
+		Object(pos, fRadius, Snake_Body_Type), m_pOwner(pOwner), m_uNodeId(uNodeId), m_pPrevNode(pPrevNode), m_fSpeed(fSpeed), m_angle(fAngle) {
 	}
 
 	SnakeBodyNode::~SnakeBodyNode() {
@@ -24,11 +26,10 @@ namespace slither {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Snake::Snake(Scene* pScene, uint32_t uSnakeId, float fRadius, const Vector2D& initPos, uint32_t uBodySize, bool bRobot) : 
-		m_pScene(pScene), m_uSnakeId(uSnakeId), m_bSpeedUp(false), m_pConn(NULL), m_status(ObjectStatus::OBJ_EXIST), m_bRobot(bRobot),
-		m_uViewRange(40), m_uMoveTick(0) 
+		m_pScene(pScene), m_uSnakeId(uSnakeId), m_bSpeedUp(false), m_pConn(NULL), m_status(OBJ_EXIST), m_bRobot(bRobot),
+		m_uViewRange(40), m_uMoveTick(0), m_uTotalMass(0), m_uNodeId(1)
 	{
-		uint16_t uNodeId = 1;
-		m_pHead = new SnakeBodyNode(this, uNodeId++, NULL, initPos, fRadius, 0.25f, 0);
+		m_pHead = new SnakeBodyNode(this, m_uNodeId++, NULL, initPos, fRadius, 0.25f, 0);
 		m_pHead->SetObjectType(Snake_Head_Type);
 
 		Vector2D nodePos = initPos;
@@ -37,13 +38,13 @@ namespace slither {
 		for (uint32_t i = 0; i < uBodySize; ++i) {
 			//nodePos.x -= fRadius;
 			nodePos.x -= 0.25f;
-			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, uNodeId++, pPrevNode, nodePos, fRadius, 0.1f, 0);
+			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, m_uNodeId++, pPrevNode, nodePos, fRadius, 0.1f, 0);
 			pPrevNode = pSnakeNode;
 
 			m_bodyVec.push_back(pSnakeNode);
 		}
 
-		// ÉèÖÃÉßÎ²
+		// è®¾ç½®è›‡å°¾
 		SetSnakeTail(pPrevNode);
 	}
 
@@ -67,18 +68,18 @@ namespace slither {
 
 		pbSnake.set_snakeid(m_uSnakeId);
 
-		// ĞòÁĞ»¯ÉßÍ·
+		// åºåˆ—åŒ–è›‡å¤´
 		pbSnake.mutable_snakehead()->mutable_pos()->set_x(m_pHead->GetPos().x);
 		pbSnake.mutable_snakehead()->mutable_pos()->set_y(m_pHead->GetPos().y);
 		pbSnake.mutable_snakehead()->set_angle(m_pHead->GetAngle());
 		pbSnake.mutable_snakehead()->set_radius(m_pHead->GetRadius());
 		pbSnake.mutable_snakehead()->set_speed(m_pHead->GetSpeed());
 
-		if (bJustHead) {					// Èç¹ûÖ»ĞèÒªĞòÁĞ»¯Í·
+		if (bJustHead) {					// å¦‚æœåªéœ€è¦åºåˆ—åŒ–å¤´
 			return;
 		}
 
-		// ĞòÁĞ»¯ÉßÉí
+		// åºåˆ—åŒ–è›‡èº«
 		for (uint32_t i = 0; i < m_bodyVec.size(); ++i) {
 			slither::PBSnakeBody* pPBSnakeBody = pbSnake.add_snakebody();
 			pPBSnakeBody->set_bodyid(m_bodyVec[i]->GetNodeId());
@@ -87,31 +88,31 @@ namespace slither {
 		}
 	}
 
-	// Ä£ÄâÉßÔË¶¯
+	// æ¨¡æ‹Ÿè›‡è¿åŠ¨
 	void Snake::Move() {
 		if (!m_pHead) {
 			return;
 		}
 
-		// ²âÊÔÓÃµÄ£¬Ëæ»úÔË¶¯·½Ïò
+		// æµ‹è¯•ç”¨çš„ï¼Œéšæœºè¿åŠ¨æ–¹å‘
 		if (m_bRobot) 
 		{
-			uint32_t uAngle = cputil::GenRandom(1, 359);
-			m_pHead->SetAngle(uAngle);
+			//uint32_t uAngle = cputil::GenRandom(1, 359);
+			//m_pHead->SetAngle(uAngle);
 			m_pHead->SetSpeed(0.0f);
 		}
 		
 		//float fSpeed = cputil::GenFloatRandom(0.1, 1.0);
 		//m_pHead->SetSpeed(fSpeed);
 
-		// ÉßÍ·ÔË¶¯
+		// è›‡å¤´è¿åŠ¨
 		ObjectGrids oldGrids = m_pScene->GetObjectGrids(m_pHead);
-		//CalcNextPos(m_pHead->GetAngle(), m_pHead->GetSpeed(), m_pHead->GetPos());				// ¼ÆËãÏÂÒ»¸öµã
+		//CalcNextPos(m_pHead->GetAngle(), m_pHead->GetSpeed(), m_pHead->GetPos());				// è®¡ç®—ä¸‹ä¸€ä¸ªç‚¹
 		SlitherMath::MoveToAngle(m_pHead->GetPos(), m_pHead->GetAngle(), m_pHead->GetSpeed());
 		ObjectGrids newGrids = m_pScene->GetObjectGrids(m_pHead);
 		newGrids.UpdateGrids(m_pHead, m_pScene->GetSceneGrids(), oldGrids);
 
-		// ÉßÉíÃ¿½ÚµÄÔË¶¯
+		// è›‡èº«æ¯èŠ‚çš„è¿åŠ¨
 		for (uint32_t i = 0; i < m_bodyVec.size(); ++i) {
 			SnakeBodyNode*& pBodyNode = m_bodyVec[i];
 			if (!pBodyNode) {				// ERROR
@@ -129,9 +130,9 @@ namespace slither {
 			newGrids.UpdateGrids(pBodyNode, m_pScene->GetSceneGrids(), oldGrids);
 		}
 
-		// Ã¿ÒÆ¶¯1´Î£¬¸üĞÂÒ»´ÎÊÓÒ°ÄÚµÄËùÓĞÎïÌå
+		// æ¯ç§»åŠ¨1æ¬¡ï¼Œæ›´æ–°ä¸€æ¬¡è§†é‡å†…çš„æ‰€æœ‰ç‰©ä½“
 		if (m_uMoveTick++ >= 1) {
-			// ÅĞ¶ÏÉß
+			// åˆ¤æ–­è›‡
 			set<uint32_t>::iterator snakeIt = m_viewRangeSnakeSet.begin();
 			set<uint32_t>::iterator snakeItEnd = m_viewRangeSnakeSet.end();
 			for (; snakeIt != snakeItEnd; ) {
@@ -141,18 +142,18 @@ namespace slither {
 					continue;
 				}
 
-				if (!IsInView(pSnake) || pSnake->GetStatus() == ObjectStatus::OBJ_DESTROY) {			// ²»ÔÚÊÓÒ°·¶Î§ÄÚÁË, »òÕßÒÑ¾­ËÀÍöÁË
+				if (!IsInView(pSnake) || pSnake->GetStatus() == OBJ_DESTROY) {			// ä¸åœ¨è§†é‡èŒƒå›´å†…äº†, æˆ–è€…å·²ç»æ­»äº¡äº†
 					m_viewRangeSnakeSet.erase(snakeIt++);
 					continue;
 				}
 				snakeIt++;
 			}
 
-			// ÅĞ¶Ï¸ñ×Ó
+			// åˆ¤æ–­æ ¼å­
 			set<Grid*>::iterator gridIt = m_viewRangeGridSet.begin();
 			set<Grid*>::iterator gridItEnd = m_viewRangeGridSet.end();
 			for (; gridIt != gridItEnd;) {
-				if (!IsInView(*gridIt)) {						// ²»ÔÚÊÓÒ°·¶Î§ÄÚÁË
+				if (!IsInView(*gridIt)) {						// ä¸åœ¨è§†é‡èŒƒå›´å†…äº†
 					m_viewRangeGridSet.erase(gridIt++);
 					continue;
 				}
@@ -161,8 +162,33 @@ namespace slither {
 		}
 	}
 
+	// åƒé£Ÿç‰©
+	void Snake::EatFood(Food* pFood) {
+		if (!pFood) {
+			return;
+		}
+
+		m_uTotalMass += pFood->GetMass();
+		if (m_uTotalMass % 5 == 0) {			// å…ˆæš‚æ—¶æµ‹è¯•ä½¿ç”¨ï¼Œåé¢æ›¿æ¢æˆçœŸå®çš„æ•°å€¼
+			AddTail();
+		}
+
+		return;
+	}
+
+	// åœ¨å°¾éƒ¨æ·»åŠ èŠ‚ç‚¹
+	SnakeBodyNode* Snake::AddTail() {
+		Vector2D tailPos = m_pTail->GetPos();
+		tailPos.x -= 0.25f;
+		SnakeBodyNode* pNewTail = new SnakeBodyNode(m_pHead->GetOwner(), m_uNodeId++, m_pTail, tailPos, m_pTail->GetRadius(), m_pTail->GetSpeed(), m_pTail->GetAngle());
+		m_pTail = pNewTail;
+		m_bodyVec.push_back(pNewTail);
+
+		return pNewTail;
+	}
+
 	uint16_t Snake::GetSinAngle(uint16_t uAngle) {
-		// ÎªÁËËã³öËùÔÚÏóÏŞÖĞ·ÉĞĞÉäÏßÓëYÖáµÄ¼Ğ½Ç
+		// ä¸ºäº†ç®—å‡ºæ‰€åœ¨è±¡é™ä¸­é£è¡Œå°„çº¿ä¸Yè½´çš„å¤¹è§’
 		if (uAngle <= 90) {
 			return uAngle;
 		}
@@ -176,7 +202,7 @@ namespace slither {
 			return 360 - uAngle;
 		}
 
-		// ÆäËûÇé¿öÀíÂÛÉÏ¶¼ÊÇ´íÎóµÄ
+		// å…¶ä»–æƒ…å†µç†è®ºä¸Šéƒ½æ˜¯é”™è¯¯çš„
 		return 0;
 	}
 
@@ -198,15 +224,15 @@ namespace slither {
 		float x_len = GetXLen(fSpeed, uSinAngle);
 		float y_len = GetYLen(fSpeed, uSinAngle);
 
-		// ¸ù¾İ·ÉĞĞ·½Ïò£¬ÖØĞÂ¼ÆËã×Óµ¯×ø±êµã£¬´¦ÀíËÄ¸öÏóÏŞµÄ²»Í¬Çé¿ö£¬µÚÒ»ÏóÏŞ²»ĞèÒªÌØÊâ´¦Àí
-		if (uAngle <= 90) {					// µÚ¶şÏóÏŞ
+		// æ ¹æ®é£è¡Œæ–¹å‘ï¼Œé‡æ–°è®¡ç®—å­å¼¹åæ ‡ç‚¹ï¼Œå¤„ç†å››ä¸ªè±¡é™çš„ä¸åŒæƒ…å†µï¼Œç¬¬ä¸€è±¡é™ä¸éœ€è¦ç‰¹æ®Šå¤„ç†
+		if (uAngle <= 90) {					// ç¬¬äºŒè±¡é™
 			x_len = -x_len;
 		}
-		else if (uAngle <= 180) {			// µÚÈıÏóÏŞ
+		else if (uAngle <= 180) {			// ç¬¬ä¸‰è±¡é™
 			x_len = -x_len;
 			y_len = -y_len;
 		}
-		else if (uAngle <= 270) {			// µÚËÄÏóÏŞ
+		else if (uAngle <= 270) {			// ç¬¬å››è±¡é™
 			y_len = -y_len;
 		}
 
@@ -228,7 +254,7 @@ namespace slither {
 		return;
 	}
 
-	// ÊÇ·ñÔÚ¶Ô·½ÊÓÒ°ÖĞ
+	// æ˜¯å¦åœ¨å¯¹æ–¹è§†é‡ä¸­
 	bool Snake::IsInView(Snake* pSnake) {
 		if (!pSnake) {
 			return false;
@@ -245,7 +271,7 @@ namespace slither {
 		return false;
 	}
 
-	// ÒÑ¾­ÔÚ¶Ô·½µÄÊÓÒ°ÖĞÁË
+	// å·²ç»åœ¨å¯¹æ–¹çš„è§†é‡ä¸­äº†
 	bool Snake::HasInView(Snake* pSnake) {
 		if (!pSnake) {
 			return false;
@@ -264,7 +290,6 @@ namespace slither {
 			return false;
 		}
 		
-
 		float fLen = sqrt(pow((pGrid->GetCenterPos().x - m_pHead->GetPos().x), 2) + pow((pGrid->GetCenterPos().y - m_pHead->GetPos().y), 2));
 		if (fLen < (float)m_uViewRange) {
 			return true;

@@ -1,4 +1,4 @@
-#include "Scene.h"
+ï»¿#include "Scene.h"
 #include "Snake.h"
 #include "Food.h"
 #include "../../utils/Utility.h"
@@ -19,21 +19,21 @@ namespace slither {
 		delete[] m_pGrids;
 	}
 
-	// ³õÊ¼»¯£¬¸ù¾İÕû¸öµØÍ¼µÄ´óĞ¡È¥¼ÆËã¸ñ×ÓÊı
+	// åˆå§‹åŒ–ï¼Œæ ¹æ®æ•´ä¸ªåœ°å›¾çš„å¤§å°å»è®¡ç®—æ ¼å­æ•°
 	bool Scene::Init(uint32_t uSceneHeight, uint32_t uSceneWidth) {
 		uint32_t x = 0;
 		uint32_t y = 0;
 
-		m_uHorizontalGridNum = uSceneWidth / GridSize;						// Ë®Æ½·½ÏòµÄ¸ñ×ÓÊı
-		m_uVerticalGridNum = uSceneHeight / GridSize;						// ´¹Ö±·½ÏòµÄ¸ñ×ÓÊı
+		m_uHorizontalGridNum = uSceneWidth / GridSize;						// æ°´å¹³æ–¹å‘çš„æ ¼å­æ•°
+		m_uVerticalGridNum = uSceneHeight / GridSize;						// å‚ç›´æ–¹å‘çš„æ ¼å­æ•°
 		m_pGrids = new Grid[m_uHorizontalGridNum * m_uVerticalGridNum];
 
 		uint32_t index = 0;
-		// ¹¹Ôì¸ñ×Ó
+		// æ„é€ æ ¼å­
 		for (uint32_t y = 0; y < uSceneHeight; y += GridSize) {
 			for (uint32_t x = 0; x < uSceneWidth; x += GridSize) {
 				Grid& grid = m_pGrids[index++];
-				grid.x = x;													// ×óÏÂ½Ç×ø±ê×÷Îª¸ñ×ÓµÄ×ø±ê
+				grid.x = x;													// å·¦ä¸‹è§’åæ ‡ä½œä¸ºæ ¼å­çš„åæ ‡
 				grid.y = y;
 				grid.uHeight = GridSize;
 				grid.uWidth = GridSize;
@@ -58,11 +58,11 @@ namespace slither {
 			return;
 		}
 
-		DWORD dwStart = ::GetTickCount();
+		//DWORD dwStart = ::GetTickCount();
 
-		uint32_t uGridIndex = 0;														// ÉßÍ·ËùÔÚµÄ¸ñ×Ó
+		uint32_t uGridIndex = 0;														// è›‡å¤´æ‰€åœ¨çš„æ ¼å­
 
-		// Ä£ÄâËùÓĞÉßµÄÔË¶¯
+		// æ¨¡æ‹Ÿæ‰€æœ‰è›‡çš„è¿åŠ¨
 		map<uint32_t, Snake*>::iterator snakeIt = m_snakeMap.begin();
 		for (; snakeIt != m_snakeMap.end();) {
 			Snake* pSnake = snakeIt->second;
@@ -71,38 +71,52 @@ namespace slither {
 			}
 			bool bRobot = pSnake->IsRobot();
 
-			// ²»ÔÚÆäËûµØ·½É¾³ı£¬·ñÔò²»ºÃ¿ØÖÆ
-			if (pSnake->GetStatus() == ObjectStatus::OBJ_DESTROY) {						// Èç¹ûÉßĞèÒªÏú»Ù
-				// É¾³ıÉßÓëÁ´½ÓÖ®¼äµÄ¹ØÏµ
+			// ä¸åœ¨å…¶ä»–åœ°æ–¹åˆ é™¤ï¼Œå¦åˆ™ä¸å¥½æ§åˆ¶
+			if (pSnake->GetStatus() == OBJ_DESTROY) {						// å¦‚æœè›‡éœ€è¦é”€æ¯
+				// åˆ é™¤è›‡ä¸é“¾æ¥ä¹‹é—´çš„å…³ç³»
 				gpPlayerMng->DeleteSnake(pSnake);
 
-				// ÊÍ·ÅÉß
+				// é‡Šæ”¾è›‡
 				gpFactory->ReleaseSnake(pSnake);
 				m_snakeMap.erase(snakeIt++);
 				continue;
 			}
 
-			// ÏÈÈÃÉßÔË¶¯
+			// å…ˆè®©è›‡è¿åŠ¨
 			pSnake->Move();
-			uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());				// »ñÈ¡ÔË¶¯Ö®ºóÍ·ËùÔÚµÄ¸ñ×Ó£¬ÏŞÖÆÃ¿´ÎÔË¶¯²»»á³¬¹ıÒ»¸öÉßÍ·µÄÖ±¾¶
+			uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());				// è·å–è¿åŠ¨ä¹‹åå¤´æ‰€åœ¨çš„æ ¼å­ï¼Œé™åˆ¶æ¯æ¬¡è¿åŠ¨ä¸ä¼šè¶…è¿‡ä¸€ä¸ªè›‡å¤´çš„ç›´å¾„
 
-			// Ïò´ËÉßÍ¨ÖªÖÜÎ§µÄ¸ñ×ÓÊ³ÎïÇé¿ö£¨Ö»Í¨Öª±ØÒªµÄ£©
+			// å‘æ­¤è›‡é€šçŸ¥å‘¨å›´çš„æ ¼å­é£Ÿç‰©æƒ…å†µï¼ˆåªé€šçŸ¥å¿…è¦çš„ï¼‰
 			NotifyGrids(pSnake);						
 
-			// »ñÈ¡ĞèÒªÍ¨ÖªµÄÖÜÎ§ÉßÁĞ±í
+			// è·å–éœ€è¦é€šçŸ¥çš„å‘¨å›´è›‡åˆ—è¡¨
 			list<Snake*> broadcastList;
 			GetBroadcastList(pSnake, broadcastList);
 
-			// ¹ã²¥ÒÆ¶¯ÏûÏ¢
+			// å¦‚æœè›‡æ˜¯åŠ é€Ÿçš„ï¼Œé‚£ä¹ˆåœ¨è›‡å°¾ç”Ÿæˆé£Ÿç‰©
+			SnakeBodyNode* pTail = pSnake->GetSnakeTail();
+			if (pSnake->GetSpeedUp()) {
+				list<Food*> foodList;
+				GenFoods(pSnake->GetSnakeTail()->GetPos(), 1, 1, foodList);
+				// é€šçŸ¥ç”Ÿæˆæ–°çš„é£Ÿç‰©äº†
+				BroadcastNewFoods(broadcastList, foodList);
+			}
+
+			// å¹¿æ’­ç§»åŠ¨æ¶ˆæ¯
 			BroadcastMove(pSnake, broadcastList);
 
-			// ÅĞ¶ÏÉß³Ôµ½Ê³ÎïµÄÇé¿ö
+			// åˆ¤æ–­è›‡åƒåˆ°é£Ÿç‰©çš„æƒ…å†µ
 			CheckEatFood(pSnake, uGridIndex, broadcastList);
 
-			// ÅĞ¶ÏÉßµÄÅö×²Çé¿ö
+			SnakeBodyNode* pNewTail = pSnake->GetSnakeTail();
+			if (pTail != pNewTail) {				// åƒå®Œé£Ÿç‰©ä¹‹åå°¾éƒ¨èŠ‚ç‚¹ä¸åŒäº†ï¼Œè¯´æ˜é•¿å‡ºäº†æ–°çš„èŠ‚ç‚¹
+				BroadcastNewTail(pSnake, broadcastList);
+			}
+
+			// åˆ¤æ–­è›‡çš„ç¢°æ’æƒ…å†µ
 			CheckCollide(pSnake, uGridIndex, broadcastList);
 
-			// TODO ¸ù¾İ²ÎÊı¶¨ÆÚÉú³ÉÊ³Îï
+			// TODO æ ¹æ®å‚æ•°å®šæœŸç”Ÿæˆé£Ÿç‰©
 			//if (m_uFoodCount < 7000) {
 			//	GenFoods(3000);
 			//}
@@ -110,7 +124,7 @@ namespace slither {
 			snakeIt++;
 		}
 
-		DWORD dwEnd = ::GetTickCount();
+		//DWORD dwEnd = ::GetTickCount();
 		//cout << "time cost=[" << dwEnd - dwStart << "], snake count=[" << m_snakeMap.size() << "]" << endl;
 	}
 
@@ -121,13 +135,13 @@ namespace slither {
 		uint32_t uIndex = uVerticalGridNum * m_uHorizontalGridNum + uHorizontalGridNum;
 		if (uIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {
 			// TODO 
-			// ĞèÒª¸ù¾İÅĞ¶¨±ßÔµ£¬Ä¿Ç°Ö»ÊÇ¼òµ¥µÄÉèÖÃÁËÉÏÏŞ
+			// éœ€è¦æ ¹æ®åˆ¤å®šè¾¹ç¼˜ï¼Œç›®å‰åªæ˜¯ç®€å•çš„è®¾ç½®äº†ä¸Šé™
 			uIndex = m_uHorizontalGridNum * m_uVerticalGridNum - 1;
 		}
 		return uIndex;
 	}
 
-	// »ñÈ¡Ò»¸öÎïÌåÊôÓÚµÄËùÓĞ¸ñ×Ó£¬ÒòÎªÒ»¸öÎïÌå¿ÉÄÜÔÚ¼¸¸ö¸ñ×ÓµÄ±ßÔµ£¬ËùÒÔËãÊÇÊôÓÚ¶à¸ö¸ñ×Ó
+	// è·å–ä¸€ä¸ªç‰©ä½“å±äºçš„æ‰€æœ‰æ ¼å­ï¼Œå› ä¸ºä¸€ä¸ªç‰©ä½“å¯èƒ½åœ¨å‡ ä¸ªæ ¼å­çš„è¾¹ç¼˜ï¼Œæ‰€ä»¥ç®—æ˜¯å±äºå¤šä¸ªæ ¼å­
 	ObjectGrids Scene::GetObjectGrids(Object* pObj) {
 		const Vector2D& objPos = pObj->GetPos();
 		Vector2D leftTopPos		(objPos.x - pObj->GetRadius(), objPos.y + pObj->GetRadius());
@@ -138,7 +152,7 @@ namespace slither {
 		ObjectGrids objectGrids;
 		objectGrids.grids[0] = GetGridIndex(leftTopPos);
 		objectGrids.grids[1] = GetGridIndex(rightTopPos);
-		if (objectGrids.grids[1] == objectGrids.grids[0]) {				// ÅĞ¶ÏÊÇ·ñÍ¬Ò»¸ö¸ñ×Ó
+		if (objectGrids.grids[1] == objectGrids.grids[0]) {				// åˆ¤æ–­æ˜¯å¦åŒä¸€ä¸ªæ ¼å­
 			objectGrids.grids[1] = -1;
 		}
 		objectGrids.grids[2] = GetGridIndex(leftBottomPos);
@@ -185,13 +199,13 @@ namespace slither {
 		}
 	}
 
-	// Éú³ÉÉß£¬²ÎÊıbRobot Èç¹ûÎªtrue£¬ËµÃ÷ÊÇÏµÍ³Éú³ÉµÄ»úÆ÷Éß
+	// ç”Ÿæˆè›‡ï¼Œå‚æ•°bRobot å¦‚æœä¸ºtrueï¼Œè¯´æ˜æ˜¯ç³»ç»Ÿç”Ÿæˆçš„æœºå™¨è›‡
 	Snake* Scene::GenSnake(bool bRobot) {
 		Vector2D pos;
 		uint32_t uGridIndex = 0;
 
-		pos.x = (float)cputil::GenFloatRandom(80.0f, 100.0f);
-		pos.y = (float)cputil::GenFloatRandom(80.0f, 100.0f);
+		pos.x = (float)cputil::GenFloatRandom(80.0f, 800.0f);
+		pos.y = (float)cputil::GenFloatRandom(80.0f, 800.0f);
 
 		Snake* pSnake = gpFactory->CreateSnake(this, m_uSnakeId++, pos, 20, bRobot);
 		if (!pSnake) {
@@ -199,8 +213,8 @@ namespace slither {
 		}
 		m_snakeMap.insert(make_pair(pSnake->GetSnakeId(), pSnake));
 
-		// ½«ÕûÌõÉß¸÷¸ö²¿·Ö¼ÓÈëGridÖĞ
-		// ½«ÉßÍ·¼ÓÈë¸ñ×ÓÖĞ
+		// å°†æ•´æ¡è›‡å„ä¸ªéƒ¨åˆ†åŠ å…¥Gridä¸­
+		// å°†è›‡å¤´åŠ å…¥æ ¼å­ä¸­
 		ObjectGrids objectGrids = GetObjectGrids(pSnake->GetSnakeHead());
 		for (uint32_t i = 0; i < MAX_GRID_IN; ++i) {
 			if (objectGrids.grids[i] == -1) {
@@ -209,7 +223,7 @@ namespace slither {
 			m_pGrids[objectGrids.grids[i]].AddObj(pSnake->GetSnakeHead());
 		}
 
-		// ½«ÉßÉí¼ÓÈë¸ñ×ÓÖĞ
+		// å°†è›‡èº«åŠ å…¥æ ¼å­ä¸­
 		vector<SnakeBodyNode*>& snakeBodyVec = pSnake->GetSnakeBody();
 		vector<SnakeBodyNode*>::iterator bodyIt = snakeBodyVec.begin();
 		for (; bodyIt != snakeBodyVec.end(); bodyIt++) {
@@ -226,7 +240,7 @@ namespace slither {
 		return pSnake;
 	}
 
-	// ÉßËÀÍöºó£¬½«Éß·Ö½âµô
+	// è›‡æ­»äº¡åï¼Œå°†è›‡åˆ†è§£æ‰
 	void Scene::BreakUpSnake(Snake* pSnake, list<Snake*>& broadcastList) {
 		if (!pSnake) {
 			return;
@@ -246,7 +260,7 @@ namespace slither {
 		vector<SnakeBodyNode*>::iterator bodyIt = snakeBodeVec.begin();
 		vector<SnakeBodyNode*>::iterator bodyItEnd = snakeBodeVec.end();
 		for (; bodyIt != bodyItEnd; bodyIt++) {
-			GenFoods((*bodyIt)->GetPos(), 1, 1, foodList);					// ºóÃæ¸ù¾İbodyµÄ°ë¾¶¾ö¶¨Éú³ÉµÄÊıÁ¿ºÍÖµ
+			GenFoods((*bodyIt)->GetPos(), 1, 1, foodList);					// åé¢æ ¹æ®bodyçš„åŠå¾„å†³å®šç”Ÿæˆçš„æ•°é‡å’Œå€¼
 			objGrids = GetObjectGrids(*bodyIt);
 			for (int i = 0; i < MAX_GRID_IN; ++i) {
 				if (objGrids.grids[i] == -1) {
@@ -256,7 +270,7 @@ namespace slither {
 			}
 		}
 
-		// Í¨ÖªÉú³ÉĞÂµÄÊ³ÎïÁË
+		// é€šçŸ¥ç”Ÿæˆæ–°çš„é£Ÿç‰©äº†
 		BroadcastNewFoods(broadcastList, foodList);
 		return;
 	}
@@ -277,7 +291,7 @@ namespace slither {
 		pSnake->SerializeToPB(*enterGameAck.mutable_snake());
 
 		string strResponse;
-		cputil::BuildResponseProto(enterGameAck, strResponse, slither::ClientProtocol::REQ_ENTER_GAME);
+		cputil::BuildResponseProto(enterGameAck, strResponse, REQ_ENTER_GAME);
 		pSnake->SendMsg(strResponse.c_str(), strResponse.size());
 	}
 
@@ -287,7 +301,7 @@ namespace slither {
 		}
 
 		pSnake->SetAngle(fNewAngle);
-		pSnake->SetSpeedUp(bSpeedUp);			// ÊÇ·ñ¼ÓËÙ
+		pSnake->SetSpeedUp(bSpeedUp);			// æ˜¯å¦åŠ é€Ÿ
 	}
 
 	vector<uint16_t> Scene::GetInViewGrids(Snake* pSnake) {
@@ -311,14 +325,18 @@ namespace slither {
 
 		for (uint16_t i = uLeftBottomIndex; i <= uLeftTopIndex; i += m_uHorizontalGridNum) {
 			for (uint16_t j = uLeftBottomIndex; j <= uRightBottomIndex; ++j) {
-				gridsVec.push_back(j + (i - uLeftBottomIndex));
+				uint16_t uViewIndex = j + (i - uLeftBottomIndex);
+				if (uViewIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {
+					continue;
+				}
+				gridsVec.push_back(uViewIndex);
 			}
 		}
 
 		return gridsVec;
 	}
 
-	// »ñÈ¡ĞèÒªÍ¨ÖªµÄÁĞ±í
+	// è·å–éœ€è¦é€šçŸ¥çš„åˆ—è¡¨
 	void Scene::GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList) {
 		uint16_t uGridIndex = GetGridIndex(pSnake->GetSnakeHead()->GetPos());
 		vector<uint16_t> gridVec = GetInViewGrids(pSnake);
@@ -340,23 +358,23 @@ namespace slither {
 					continue;
 				}
 
-				// ÔÚÊÓÒ°ÄÚ
+				// åœ¨è§†é‡å†…
 				if (pTmpSnake->IsInView(pSnake)) {
 					broadcastList.push_back(pTmpSnake);
 				}
 			}
 		}
 
-		broadcastList.push_back(pSnake);						// ¼ÓÉÏ×Ô¼º
+		broadcastList.push_back(pSnake);						// åŠ ä¸Šè‡ªå·±
 	}
 	
-	// ½«ÒÆ¶¯Í¨ÖªÏûÏ¢ºÍ³ÔÊ³ÎïÏûÏ¢ºÏ²¢ÁË£¬¼õÉÙÏûÏ¢Í¨ÖªÁ¿
+	// å°†ç§»åŠ¨é€šçŸ¥æ¶ˆæ¯å’Œåƒé£Ÿç‰©æ¶ˆæ¯åˆå¹¶äº†ï¼Œå‡å°‘æ¶ˆæ¯é€šçŸ¥é‡
 	void Scene::CheckEatFood(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList) {
 		if (!pSnake) {
 			return;
 		}
 
-		if (uGridIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {			// ³¬³öÉÏÏŞÁË£¬ËµÃ÷³ö´íÁË
+		if (uGridIndex >= m_uHorizontalGridNum * m_uVerticalGridNum) {			// è¶…å‡ºä¸Šé™äº†ï¼Œè¯´æ˜å‡ºé”™äº†
 			ERRORLOG("error grid index=[" << uGridIndex << "]");
 			return;
 		}
@@ -364,7 +382,7 @@ namespace slither {
 		slither::BroadcastEat eatNty;
 		eatNty.set_snakeid(pSnake->GetSnakeId());
 
-		// ÅĞ¶¨³ÔÊ³Îï
+		// åˆ¤å®šåƒé£Ÿç‰©
 		list<Object*>& foodObjList = m_pGrids[uGridIndex].GetFoodList();
 		list<Object*>::iterator foodIt = foodObjList.begin();
 		for (; foodIt != foodObjList.end();) {
@@ -377,7 +395,10 @@ namespace slither {
 			if (pSnake->GetSnakeHead()->IsContained(pTmpFood->GetPos())) {
 				eatNty.add_eatenfoodlist(pTmpFood->GetFoodId());
 
-				// É¾³ıÊ³Îï
+				// è›‡åƒåˆ°äº†é£Ÿç‰©
+				pSnake->EatFood(pTmpFood);
+
+				// åˆ é™¤é£Ÿç‰©
 				foodObjList.erase(foodIt++);
 				gpFactory->ReleaseFood(pTmpFood);
 
@@ -386,14 +407,14 @@ namespace slither {
 			foodIt++;
 		}
 
-		// ¹ã²¥
+		// å¹¿æ’­
 		BroadcastEat(broadcastList, eatNty);
 
 		return;
 	}
 
 	void Scene::CheckCollide(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList) {
-		// È»ºóÅĞ¶ÏÉßÍ·ºÍÆäËûÉßµÄÅö×²
+		// ç„¶ååˆ¤æ–­è›‡å¤´å’Œå…¶ä»–è›‡çš„ç¢°æ’
 		list<Object*>& collidionObjList = m_pGrids[uGridIndex].GetSnakeBodyList();
 		list<Object*>::iterator collideIt = collidionObjList.begin();
 		list<Object*>::iterator collideItEnd = collidionObjList.end();
@@ -402,18 +423,18 @@ namespace slither {
 			if (!pTmpObj) {
 				continue;
 			}
-			if (pTmpObj->GetOwner() == pSnake) {									// ×Ô¼ºÉíÌå²¿·Ö
+			if (pTmpObj->GetOwner() == pSnake) {									// è‡ªå·±èº«ä½“éƒ¨åˆ†
 				continue;
 			}
-			// Èç¹û·¢ÉúÁËÅö×²£¬ÄÇÃ´½«´ËÉßÏú»Ùµô£¬È»ºóÉíÌå·Ö½â³ÉÊ³Îï
+			// å¦‚æœå‘ç”Ÿäº†ç¢°æ’ï¼Œé‚£ä¹ˆå°†æ­¤è›‡é”€æ¯æ‰ï¼Œç„¶åèº«ä½“åˆ†è§£æˆé£Ÿç‰©
 			if (pSnake->GetSnakeHead()->IsCollide(pTmpObj)) {
 
-				pSnake->SetStatus(ObjectStatus::OBJ_DESTROY);						// ½«×´Ì¬ÉèÖÃÎª¡°Ïú»Ù¡±
+				pSnake->SetStatus(OBJ_DESTROY);						// å°†çŠ¶æ€è®¾ç½®ä¸ºâ€œé”€æ¯â€
 
-				// ÏòÖÜÎ§¹ã²¥Åö×²
+				// å‘å‘¨å›´å¹¿æ’­ç¢°æ’
 				BroadcastCollide(broadcastList, pSnake);
 
-				// ½«Éß·Ö½âµô
+				// å°†è›‡åˆ†è§£æ‰
 				BreakUpSnake(pSnake, broadcastList);
 				cout << "snake=[" << pSnake << "] collide" << endl;
 			}
@@ -422,18 +443,18 @@ namespace slither {
 
 	void Scene::BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList) {
 
-		// Õı³£µÄÒÆ¶¯ÏûÏ¢°ü
+		// æ­£å¸¸çš„ç§»åŠ¨æ¶ˆæ¯åŒ…
 		slither::BroadcastMove snakeMove;								
 		pSnake->SerializeToPB(*snakeMove.mutable_snakeinfo());
 		string strResponse;
-		cputil::BuildResponseProto(snakeMove, strResponse, slither::ClientProtocol::BROADCAST_MOVE);
+		cputil::BuildResponseProto(snakeMove, strResponse, BROADCAST_MOVE);
 
-		// Ö»ÓĞÉßÍ·µÄ¼òÒª°ü
+		// åªæœ‰è›‡å¤´çš„ç®€è¦åŒ…
 		slither::BroadcastMove briefSnakeMove;							
 		briefSnakeMove.CopyFrom(snakeMove);
 		briefSnakeMove.mutable_snakeinfo()->clear_snakebody();
 		string strBriefResponse;
-		cputil::BuildResponseProto(briefSnakeMove, strBriefResponse, slither::ClientProtocol::BROADCAST_MOVE);
+		cputil::BuildResponseProto(briefSnakeMove, strBriefResponse, BROADCAST_MOVE);
 
 		list<Snake*>::iterator snakeIt = broadcastList.begin();
 		list<Snake*>::iterator snakeItEnd = broadcastList.end();
@@ -443,7 +464,7 @@ namespace slither {
 				continue;
 			}
 
-			// Èç¹ûÒÑ¾­ÔÚ¶Ô·½µÄÊÓÒ°ÀïÃæÁË£¬ÄÇÃ´Ö»ĞèÒª¼òµ¥µÄÍ¨ÖªÉßÍ·µÄĞÅÏ¢¼´¿É
+			// å¦‚æœå·²ç»åœ¨å¯¹æ–¹çš„è§†é‡é‡Œé¢äº†ï¼Œé‚£ä¹ˆåªéœ€è¦ç®€å•çš„é€šçŸ¥è›‡å¤´çš„ä¿¡æ¯å³å¯
 			if (pSnake->HasInView(pTmpSnake)) {
 				//pTmpSnake->SendMsg(strBriefResponse.c_str(), strBriefResponse.size());
 				pTmpSnake->SendMsg(strResponse.c_str(), strResponse.size());
@@ -459,7 +480,7 @@ namespace slither {
 
 	void Scene::BroadcastEat(list<Snake*>& broadcastList, slither::BroadcastEat& eatFoods) {
 		string strResponse;
-		cputil::BuildResponseProto(eatFoods, strResponse, slither::ClientProtocol::BROADCAST_EAT);
+		cputil::BuildResponseProto(eatFoods, strResponse, BROADCAST_EAT);
 
 		list<Snake*>::iterator snakeIt = broadcastList.begin();
 		list<Snake*>::iterator snakeItEnd = broadcastList.end();
@@ -482,9 +503,9 @@ namespace slither {
 		pSnake->SerializeToPB(*snakeCollide.mutable_collidesnake());
 
 		string strResponse;
-		cputil::BuildResponseProto(snakeCollide, strResponse, slither::ClientProtocol::BROADCAST_COLLIDE);
+		cputil::BuildResponseProto(snakeCollide, strResponse, BROADCAST_COLLIDE);
 		
-		// °¤¸ö¹ã²¥
+		// æŒ¨ä¸ªå¹¿æ’­
 		list<Snake*>::iterator snakeIt = broadcastList.begin();
 		list<Snake*>::iterator snakeItEnd = broadcastList.end();
 		for (; snakeIt != snakeItEnd; snakeIt++) {
@@ -508,9 +529,38 @@ namespace slither {
 			(*foodIt)->SerializeToPB(*pPBFood);
 		}
 		string strResponse;
-		cputil::BuildResponseProto(newFoods, strResponse, slither::ClientProtocol::BROADCAST_NEWFOODS);
+		cputil::BuildResponseProto(newFoods, strResponse, BROADCAST_NEWFOODS);
 
-		// °¤¸ö¹ã²¥
+		// æŒ¨ä¸ªå¹¿æ’­
+		list<Snake*>::iterator snakeIt = broadcastList.begin();
+		list<Snake*>::iterator snakeItEnd = broadcastList.end();
+		for (; snakeIt != snakeItEnd; snakeIt++) {
+			Snake* pSnake = *snakeIt;
+			if (!pSnake) {
+				continue;
+			}
+
+			pSnake->SendMsg(strResponse.c_str(), strResponse.size());
+		}
+	}
+
+	void Scene::BroadcastNewTail(Snake* pSnake, list<Snake*>& broadcastList) {
+		if (!pSnake) {
+			return;
+		}
+
+		slither::BroadcastNewTail newTails;
+		SnakeBodyNode* pNewTail = pSnake->GetSnakeTail();
+		newTails.set_snakeid(pSnake->GetSnakeId());
+		slither::PBSnakeBody* pPBBody = newTails.add_newbodylist();
+		pPBBody->set_bodyid(pNewTail->GetNodeId());
+		pPBBody->mutable_pos()->set_x(pNewTail->GetPos().x);
+		pPBBody->mutable_pos()->set_y(pNewTail->GetPos().y);
+
+		string strResponse;
+		cputil::BuildResponseProto(newTails, strResponse, BROADCAST_NEWTAIL);
+
+		// æŒ¨ä¸ªå¹¿æ’­
 		list<Snake*>::iterator snakeIt = broadcastList.begin();
 		list<Snake*>::iterator snakeItEnd = broadcastList.end();
 		for (; snakeIt != snakeItEnd; snakeIt++) {
@@ -553,7 +603,7 @@ namespace slither {
 		}
 
 		string strResponse;
-		cputil::BuildResponseProto(gridsNtfy, strResponse, slither::ClientProtocol::NOTIFY_GRIDS);
+		cputil::BuildResponseProto(gridsNtfy, strResponse, NOTIFY_GRIDS);
 		pSnake->SendMsg(strResponse.c_str(), strResponse.size());
 	}
 
@@ -561,11 +611,11 @@ namespace slither {
 		Vector2D pos;
 		uint32_t uGridIndex = 0;
 
-		// ´´½¨1w¸öÊ³Îï
+		// åˆ›å»º1wä¸ªé£Ÿç‰©
 		GenFoods(20000);
 
-		// ´´½¨NÌõÉß
-		for (int i = 0; i < 3; ++i) {
+		// åˆ›å»ºNæ¡è›‡
+		for (int i = 0; i < 100; ++i) {
 			GenSnake(true);
 		}
 	}

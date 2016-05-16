@@ -6,8 +6,6 @@
 #include <math.h>
 
 namespace slither {
-#define PI 3.14159f
-
 	struct Vector2D {
 		float x;
 		float y;

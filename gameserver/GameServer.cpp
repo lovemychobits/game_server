@@ -201,7 +201,7 @@ bool GameServer::_InitTimerTrigger()
 	}
 	//gpTimerMng->SetTimerTigger(m_pTimerTrigger);
 	//m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 50);
-	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::Scene::OnTimer, slither::Scene::GetInstance(), _1), 100);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::Scene::OnTimer, slither::Scene::GetInstance(), _1), 160);
 	return true;
 }
 

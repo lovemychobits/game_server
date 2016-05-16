@@ -1,4 +1,4 @@
-#ifndef GAMESERVER_SLITHER_SCENE_H
+ï»¿#ifndef GAMESERVER_SLITHER_SCENE_H
 #define GAMESERVER_SLITHER_SCENE_H
 
 #include "../../network/header.h"
@@ -16,19 +16,19 @@ namespace slither {
 	class Snake;
 	class Food;
 
-	// Ê¹ÓÃÊıÑ§Ö±½Ç×ø±êÏµ±ê×¼£¬Ô­µãÔÚ×óÏÂ½Ç
+	// ä½¿ç”¨æ•°å­¦ç›´è§’åæ ‡ç³»æ ‡å‡†ï¼ŒåŸç‚¹åœ¨å·¦ä¸‹è§’
 	struct Grid {
-		uint32_t x;					// ×ø±êµãx
-		uint32_t y;					// ×ø±êµãu0
-		uint32_t uHeight;			// ³¤
-		uint32_t uWidth;			// ¿í
+		uint32_t x;					// åæ ‡ç‚¹x
+		uint32_t y;					// åæ ‡ç‚¹u0
+		uint32_t uHeight;			// é•¿
+		uint32_t uWidth;			// å®½
 
-		list<Object*> snakeHeadList;	// ÉßÍ·ÁĞ±í
-		list<Object*> snakeBodyList;	// ÉßÉíÌåÁĞ±í
-		list<Object*> foodList;			// Ê³ÎïÁĞ±í
+		list<Object*> snakeHeadList;	// è›‡å¤´åˆ—è¡¨
+		list<Object*> snakeBodyList;	// è›‡èº«ä½“åˆ—è¡¨
+		list<Object*> foodList;			// é£Ÿç‰©åˆ—è¡¨
 
 		Vector2D GetCenterPos() {
-			Vector2D pos(x + uWidth / 2, y + uHeight / 2);
+			Vector2D pos(x + (float)uWidth / 2, y + (float)uHeight / 2);
 			return pos;
 		}
 
@@ -98,7 +98,7 @@ namespace slither {
 		}
 	};
 
-	// Ò»¸öÔÂÎïÌå×î¶àÄÜÍ¬Ê±´¦ÓÚ¼¸¸ö¸ñ×Ó
+	// ä¸€ä¸ªæœˆç‰©ä½“æœ€å¤šèƒ½åŒæ—¶å¤„äºå‡ ä¸ªæ ¼å­
 	#define MAX_GRID_IN 4
 	struct ObjectGrids {
 		int16_t grids[MAX_GRID_IN];
@@ -119,13 +119,13 @@ namespace slither {
 		}
 
 		void UpdateGrids(Object* pObj, Grid* pGrids, const ObjectGrids& oldGrids) {
-			// ¸úÖ®Ç°ÍêÈ«Ò»¸öÔÂ£¬²»ĞèÒª×öÈÎºÎËùÔÚ¸ñ×ÓµÄ¸üĞÂ
+			// è·Ÿä¹‹å‰å®Œå…¨ä¸€ä¸ªæœˆï¼Œä¸éœ€è¦åšä»»ä½•æ‰€åœ¨æ ¼å­çš„æ›´æ–°
 			if (IsSame(oldGrids)) {
 				return;
 			}
 
-			// Èç¹û²»Ò»Ñù£¬ÄÇÃ´´ÓÔ­À´µÄÄÇĞ©¸ñ×ÓÖĞÉ¾³ı£¬È»ºó¼ÓÈëĞÂµÄ¸ñ×ÓÖĞ
-			// ÕâÀï¿ÉÒÔĞèÒªÓÅ»¯£¬¿ÉÄÜÄ³Ğ©¸ñ×Ó»¹ÊÇÒ»ÑùµÄ
+			// å¦‚æœä¸ä¸€æ ·ï¼Œé‚£ä¹ˆä»åŸæ¥çš„é‚£äº›æ ¼å­ä¸­åˆ é™¤ï¼Œç„¶ååŠ å…¥æ–°çš„æ ¼å­ä¸­
+			// è¿™é‡Œå¯ä»¥éœ€è¦ä¼˜åŒ–ï¼Œå¯èƒ½æŸäº›æ ¼å­è¿˜æ˜¯ä¸€æ ·çš„
 			for (int i = 0; i < MAX_GRID_IN; ++i) {
 				if (oldGrids.grids[i] == -1) {
 					continue;
@@ -155,44 +155,45 @@ namespace slither {
 		void TestScene();
 
 	public:
-		ObjectGrids GetObjectGrids(Object* pObj);					// »ñÈ¡Ò»¸öÎïÌåËùÔÚµÄ¸ñ×Ó
+		ObjectGrids GetObjectGrids(Object* pObj);					// è·å–ä¸€ä¸ªç‰©ä½“æ‰€åœ¨çš„æ ¼å­
 		Grid* GetSceneGrids() {
 			return m_pGrids;
 		}
 		Snake* GetSnakeById(uint32_t uSnakeId);
 
 	public:
-		// ´¦ÀíÍæ¼ÒĞÅÏ¢
+		// å¤„ç†ç©å®¶ä¿¡æ¯
 		void PlayerEnter(IConnection* pConn, uint32_t uUserId);
 		void SnakeMove(Snake* pSnake, float fNewAngle, bool bSpeedUp);
 
 	private:
-		uint32_t GetGridIndex(const Vector2D& pos);												// »ñÈ¡×ø±êµãËùÔÚµÄ¸ñ×Ó
-		void GenFoods(uint32_t uNum);															// Éú³ÉÊ³Îï
-		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue, list<Food*>& foodList);	// ÔÚÖ¸¶¨µãÉú³ÉÊ³Îï
-		Snake* GenSnake(bool bRobot);															// Éú³ÉÒ»ÌõÉß
-		void BreakUpSnake(Snake* pSnake, list<Snake*>& broadcastList);							// ·Ö½âÉß
-		vector<uint16_t> GetInViewGrids(Snake* pSnake);											// »ñÈ¡¸ñ×ÓÁĞ±í£¬¸ù¾İÉß±¾ÉíµÄÊÓÒ°À´¾ö¶¨
+		uint32_t GetGridIndex(const Vector2D& pos);												// è·å–åæ ‡ç‚¹æ‰€åœ¨çš„æ ¼å­
+		void GenFoods(uint32_t uNum);															// ç”Ÿæˆé£Ÿç‰©
+		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue, list<Food*>& foodList);	// åœ¨æŒ‡å®šç‚¹ç”Ÿæˆé£Ÿç‰©
+		Snake* GenSnake(bool bRobot);															// ç”Ÿæˆä¸€æ¡è›‡
+		void BreakUpSnake(Snake* pSnake, list<Snake*>& broadcastList);							// åˆ†è§£è›‡
+		vector<uint16_t> GetInViewGrids(Snake* pSnake);											// è·å–æ ¼å­åˆ—è¡¨ï¼Œæ ¹æ®è›‡æœ¬èº«çš„è§†é‡æ¥å†³å®š
 
 	private:
-		void Notify(Snake* pSnake);																// Í¨ÖªÕâÌõÉßÖÜÎ§µÄÇé¿ö
-		void GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList);						// »ñÈ¡ĞèÒªÍ¨Öª¶ÔÏóÁĞ±í
-		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// ÔÚÖ¸¶¨¸ñ×ÓÄÚÅĞ¶¨³ÔÊ³Îï
-		void CheckCollide(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// ÔÚÖ¸¶¨¸ñ×ÓÄÚÅĞ¶¨Åö×²
-		void BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList);							// ÏòÖÜÎ§¹ã²¥ÕâÌõÉßÒÆ¶¯
-		void BroadcastEat(list<Snake*>& broadcastList, slither::BroadcastEat& eatFoods);		// ¹ã²¥³ÔÊ³Îï
-		void BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake);						// ÏòÖÜÎ§¹ã²¥ÕâÌõÉß·¢ÉúÁËÅö×²
-		void BroadcastNewFoods(list<Snake*>& broadcastList, const list<Food*>& newFoodList);	// ÏòÖÜÎ§¹ã²¥ĞÂÉú³ÉÁËÒ»Ğ©Ê³Îï
-		void NotifyGrids(Snake* pSnake);														// ÏòÕâÌõÉßÍ¨ÖªĞÂµÄ¸ñ×ÓĞÅÏ¢
+		void Notify(Snake* pSnake);																// é€šçŸ¥è¿™æ¡è›‡å‘¨å›´çš„æƒ…å†µ
+		void GetBroadcastList(Snake* pSnake, list<Snake*>& broadcastList);						// è·å–éœ€è¦é€šçŸ¥å¯¹è±¡åˆ—è¡¨
+		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// åœ¨æŒ‡å®šæ ¼å­å†…åˆ¤å®šåƒé£Ÿç‰©
+		void CheckCollide(Snake* pSnake, uint16_t uGridIndex, list<Snake*>& broadcastList);		// åœ¨æŒ‡å®šæ ¼å­å†…åˆ¤å®šç¢°æ’
+		void BroadcastMove(Snake* pSnake, list<Snake*>& broadcastList);							// å‘å‘¨å›´å¹¿æ’­è¿™æ¡è›‡ç§»åŠ¨
+		void BroadcastEat(list<Snake*>& broadcastList, slither::BroadcastEat& eatFoods);		// å¹¿æ’­åƒé£Ÿç‰©
+		void BroadcastCollide(list<Snake*>& broadcastList, Snake* pSnake);						// å‘å‘¨å›´å¹¿æ’­è¿™æ¡è›‡å‘ç”Ÿäº†ç¢°æ’
+		void BroadcastNewFoods(list<Snake*>& broadcastList, const list<Food*>& newFoodList);	// å‘å‘¨å›´å¹¿æ’­æ–°ç”Ÿæˆäº†ä¸€äº›é£Ÿç‰©
+		void BroadcastNewTail(Snake* pSnake, list<Snake*>& broadcastList);						// å‘å‘¨å›´å¹¿æ’­è¿™æ¡è›‡é•¿å‡ºäº†æ–°çš„å°¾å·´èŠ‚ç‚¹
+		void NotifyGrids(Snake* pSnake);														// å‘è¿™æ¡è›‡é€šçŸ¥æ–°çš„æ ¼å­ä¿¡æ¯
 
 	private:
-		Grid* m_pGrids;												// ½«µØÍ¼»®·ÖÎªN*NµÄ¸ñ×Ó
-		uint32_t m_uHorizontalGridNum;								// Ë®Æ½·½Ïò£¨x·½Ïò£©¸ñ×ÓÊı
-		uint32_t m_uVerticalGridNum;								// ´¹Ö±·½Ïò£¨y·½Ïò£©¸ñ×ÓÊı
-		uint32_t m_uSnakeId;										// ÉßµÄID£¨µİÔö£©
-		uint32_t m_uFoodId;											// Ê³ÎïID£¨µİÔö£©
-		map<uint32_t, Snake*> m_snakeMap;							// ÉßµÄÁĞ±í
-		uint32_t m_TestCount;										// ²âÊÔÊ¹ÓÃ
+		Grid* m_pGrids;												// å°†åœ°å›¾åˆ’åˆ†ä¸ºN*Nçš„æ ¼å­
+		uint32_t m_uHorizontalGridNum;								// æ°´å¹³æ–¹å‘ï¼ˆxæ–¹å‘ï¼‰æ ¼å­æ•°
+		uint32_t m_uVerticalGridNum;								// å‚ç›´æ–¹å‘ï¼ˆyæ–¹å‘ï¼‰æ ¼å­æ•°
+		uint32_t m_uSnakeId;										// è›‡çš„IDï¼ˆé€’å¢ï¼‰
+		uint32_t m_uFoodId;											// é£Ÿç‰©IDï¼ˆé€’å¢ï¼‰
+		map<uint32_t, Snake*> m_snakeMap;							// è›‡çš„åˆ—è¡¨
+		uint32_t m_TestCount;										// æµ‹è¯•ä½¿ç”¨
 		uint32_t m_uFoodCount;
 	};
 }

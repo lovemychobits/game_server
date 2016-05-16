@@ -73,8 +73,8 @@ void ClientHandler::_RegisterAllCmd()
 {
 	// 网络基本功能测试
 	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
-	_RegisterCmd(slither::ClientProtocol::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
-	_RegisterCmd(slither::ClientProtocol::REQ_MOVE,			&ClientHandler::_RequestNewDirect);
+	_RegisterCmd(slither::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
+	_RegisterCmd(slither::REQ_MOVE,			&ClientHandler::_RequestNewDirect);
 	
 	return;
 }
@@ -116,40 +116,40 @@ void ClientHandler::_RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHea
 
 void ClientHandler::_RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHeader) 
 {
-	if (!pConn || !pMsgHeader)
-	{
-		return;
-	}
+	//if (!pConn || !pMsgHeader)
+	//{
+	//	return;
+	//}
 
-	client::QueryPathReq queryPathReq;
-	const char* pBuf = (const char*)pMsgHeader;
-	queryPathReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+	//client::QueryPathReq queryPathReq;
+	//const char* pBuf = (const char*)pMsgHeader;
+	//queryPathReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
 
-	float startPos[3];
-	float endPos[3];
-	startPos[0] = queryPathReq.startpos().x();
-	startPos[1] = queryPathReq.startpos().y();
-	startPos[2] = queryPathReq.startpos().z();
+	//float startPos[3];
+	//float endPos[3];
+	//startPos[0] = queryPathReq.startpos().x();
+	//startPos[1] = queryPathReq.startpos().y();
+	//startPos[2] = queryPathReq.startpos().z();
 
-	endPos[0] = queryPathReq.endpos().x();
-	endPos[1] = queryPathReq.endpos().y();
-	endPos[2] = queryPathReq.endpos().z();
+	//endPos[0] = queryPathReq.endpos().x();
+	//endPos[1] = queryPathReq.endpos().y();
+	//endPos[2] = queryPathReq.endpos().z();
 
-	client::QueryPathAck queryPathAck;
+	//client::QueryPathAck queryPathAck;
 
-	int path = scene_alpha::SceneMng::getInstance()->findPath(startPos, endPos);
-	float* smoothPath = scene_alpha::SceneMng::getInstance()->getPath();
-	for (int i = 0; i < path * 3;) {
-		client::PBVector* pVector = queryPathAck.add_path();
-		pVector->set_x(smoothPath[i]);
-		pVector->set_y(smoothPath[i+1]);
-		pVector->set_z(smoothPath[i+2]);
-		i += 3;
-	}
+	//int path = scene_alpha::SceneMng::getInstance()->findPath(startPos, endPos);
+	//float* smoothPath = scene_alpha::SceneMng::getInstance()->getPath();
+	//for (int i = 0; i < path * 3;) {
+	//	client::PBVector* pVector = queryPathAck.add_path();
+	//	pVector->set_x(smoothPath[i]);
+	//	pVector->set_y(smoothPath[i+1]);
+	//	pVector->set_z(smoothPath[i+2]);
+	//	i += 3;
+	//}
 
-	string strResponse;
-	//cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
-	pConn->SendMsg(strResponse.c_str(), strResponse.size());
+	//string strResponse;
+	////cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
+	//pConn->SendMsg(strResponse.c_str(), strResponse.size());
 
 	return;
 }

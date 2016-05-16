@@ -5,6 +5,7 @@
 #include "../../network/IMsgParser.h"
 #include "../../network/IConnection.h"
 #include "../../network/IMsgHandler.h"
+#include "../../protocol/client.pb.h"
 using namespace cpnet;
 /*
 	处理从客户端(玩家)发送过来的请求
@@ -50,7 +51,7 @@ private:
 	template<typename T>
 	void _SendPlayerNotFound(IConnection* pConn, T& response, uint32_t uMsgCmd)
 	{
-		response.set_errcode(ERROR_PLAYER_NOT_FOUND);
+		//response.set_errcode(client::ERROR_PLAYER_NOT_FOUND);
 		string strMessage;
 		BuildResponseProto(response, strMessage, uMsgCmd);
 

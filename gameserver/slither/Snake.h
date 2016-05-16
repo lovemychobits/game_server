@@ -1,4 +1,4 @@
-#ifndef GAMESERVER_SLITHER_SNAKE_H
+ï»¿#ifndef GAMESERVER_SLITHER_SNAKE_H
 #define GAMESERVER_SLITHER_SNAKE_H
 
 #include "Object.h"
@@ -13,11 +13,13 @@ using namespace cpnet;
 
 namespace slither {
 	class Snake;
+	class Food;
 	struct Grid;
-	// ÉßÉí½Úµã
+
+	// è›‡èº«èŠ‚ç‚¹
 	class SnakeBodyNode : public Object {
 	public:
-		SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, uint16_t uAngle);
+		SnakeBodyNode(Snake* pOwner, uint16_t uNodeId, SnakeBodyNode* pPrevNode, const Vector2D& pos, float fRadius, float fSpeed, float fAngle);
 		virtual ~SnakeBodyNode();
 
 		SnakeBodyNode* GetPrevNode() {
@@ -69,16 +71,16 @@ namespace slither {
 		}
 
 	protected:
-		Snake* m_pOwner;						// ÊôÓÚÄÇÌõÉß
-		uint16_t m_uNodeId;						// ½Úµã
-		SnakeBodyNode* m_pPrevNode;				// Ç°Ò»¸öÉíÌå½Úµã, Èç¹ûÊÇNULL£¬Ç°Ò»¸ö½Úµã¾ÍÊÇSnakeHead
-		float m_fSpeed;							// ËÙ¶È
-		float m_angle;							// ÒÆ¶¯½Ç¶È
+		Snake* m_pOwner;						// å±äºé‚£æ¡è›‡
+		uint16_t m_uNodeId;						// èŠ‚ç‚¹
+		SnakeBodyNode* m_pPrevNode;				// å‰ä¸€ä¸ªèº«ä½“èŠ‚ç‚¹, å¦‚æœæ˜¯NULLï¼Œå‰ä¸€ä¸ªèŠ‚ç‚¹å°±æ˜¯SnakeHead
+		float m_fSpeed;							// é€Ÿåº¦
+		float m_angle;							// ç§»åŠ¨è§’åº¦
 		Vector2D m_lastMove;
 	};
 
 	class Scene;
-	// Éß
+	// è›‡
 	class Snake {
 	public:
 		Snake(Scene* pScene, uint32_t uSnakeId, float fRadius, const Vector2D& initPos, uint32_t uBodySize, bool bRobot);
@@ -87,18 +89,18 @@ namespace slither {
 
 	public:
 		void Move();
-		
+		void EatFood(Food* pFood);
 
 	public:
 		uint32_t GetSnakeId() {
 			return m_uSnakeId;
 		}
 
-		void SetAngle(uint16_t uAngle) {
-			m_pHead->SetAngle(uAngle);
+		void SetAngle(float fAngle) {
+			m_pHead->SetAngle(fAngle);
 		}
 		
-		// ÉèÖÃÊÇ·ñ¼ÓËÙ
+		// è®¾ç½®æ˜¯å¦åŠ é€Ÿ
 		void SetSpeedUp(bool bSpeedUp) {
 			m_bSpeedUp = bSpeedUp;
 		}
@@ -140,7 +142,7 @@ namespace slither {
 		}
 
 		uint32_t GetViewRange() {
-			return m_uViewRange;						// ºóÃæ¸Ä³É¸ù¾İÉßµÄ³¤¶ÈÖØÁ¿£¬À´ÅĞ¶Ï
+			return m_uViewRange;						// åé¢æ”¹æˆæ ¹æ®è›‡çš„é•¿åº¦é‡é‡ï¼Œæ¥åˆ¤æ–­
 		}
 
 		bool IsRobot() {
@@ -163,26 +165,30 @@ namespace slither {
 			m_bodyVec.push_back(pNode);
 		}
 
-		uint16_t GetSinAngle(uint16_t uAngle);								// ¸ù¾İunity×ø±êÏµÖĞµÄ½Ç¶È£¬¼ÆËã³ö¶ÔÓÚµÄÖ±½Ç×ø±êÏµÖĞĞ±±ßsin¶ÔÓ¦µÄ½Ç¶È
-		float GetXLen(float vectLen, uint16_t uSinAngle);					// »ñÈ¡·ÉĞĞÒ»¶Î¾àÀëºó£¬x×ø±êµÄÆ«ÒÆÁ¿
-		float GetYLen(float vectLen, uint16_t uSinAngle);					// »ñÈ¡·ÉĞĞÒ»¶Î¾àÀëºó£¬y×ø±êµÄÆ«ÒÆÁ¿
-		void CalcNextPos(uint16_t uAngle, float fSpeed, Vector2D& pos);		// ¸ù¾İ½Ç¶ÈºÍËÙ¶È£¬Ëã³öÏÂÒ»¸ö×ø±êµãÎ»ÖÃ
+		SnakeBodyNode* AddTail();											// æ·»åŠ å°¾éƒ¨
+
+		uint16_t GetSinAngle(uint16_t uAngle);								// æ ¹æ®unityåæ ‡ç³»ä¸­çš„è§’åº¦ï¼Œè®¡ç®—å‡ºå¯¹äºçš„ç›´è§’åæ ‡ç³»ä¸­æ–œè¾¹sinå¯¹åº”çš„è§’åº¦
+		float GetXLen(float vectLen, uint16_t uSinAngle);					// è·å–é£è¡Œä¸€æ®µè·ç¦»åï¼Œxåæ ‡çš„åç§»é‡
+		float GetYLen(float vectLen, uint16_t uSinAngle);					// è·å–é£è¡Œä¸€æ®µè·ç¦»åï¼Œyåæ ‡çš„åç§»é‡
+		void CalcNextPos(uint16_t uAngle, float fSpeed, Vector2D& pos);		// æ ¹æ®è§’åº¦å’Œé€Ÿåº¦ï¼Œç®—å‡ºä¸‹ä¸€ä¸ªåæ ‡ç‚¹ä½ç½®
 
 	private:
-		Scene* m_pScene;													// ËùÊôµÄ³¡¾°
-		uint32_t m_uSnakeId;												// ÉßID
-		bool m_bSpeedUp;													// ÊÇ·ñ¼ÓËÙ
-		SnakeBodyNode* m_pHead;												// ÉßÍ·
-		SnakeBodyNode* m_pTail;												// ÉßÎ²
-		vector<SnakeBodyNode*> m_bodyVec;									// ÉßµÄÉíÌå
-		IConnection* m_pConn;												// ¶ÔÓ¦µÄÍøÂçÁ¬½Ó
-		ObjectStatus m_status;												// ÉßµÄ×´Ì¬
-		bool m_bRobot;														// ÊÇ·ñÎª»úÆ÷ÈË
-		uint16_t m_uViewRange;												// ÊÓÒ°·¶Î§
-		uint16_t m_uMoveTick;												// ÒÑ¾­¶¯ÁË¼¸´ÎÁË
+		Scene* m_pScene;													// æ‰€å±çš„åœºæ™¯
+		uint32_t m_uSnakeId;												// è›‡ID
+		bool m_bSpeedUp;													// æ˜¯å¦åŠ é€Ÿ
+		SnakeBodyNode* m_pHead;												// è›‡å¤´
+		SnakeBodyNode* m_pTail;												// è›‡å°¾
+		vector<SnakeBodyNode*> m_bodyVec;									// è›‡çš„èº«ä½“
+		IConnection* m_pConn;												// å¯¹åº”çš„ç½‘ç»œè¿æ¥
+		ObjectStatus m_status;												// è›‡çš„çŠ¶æ€
+		bool m_bRobot;														// æ˜¯å¦ä¸ºæœºå™¨äºº
+		uint16_t m_uViewRange;												// è§†é‡èŒƒå›´
+		uint16_t m_uMoveTick;												// å·²ç»åŠ¨äº†å‡ æ¬¡äº†
+		uint32_t m_uTotalMass;												// æ€»çš„Mass
+		uint16_t m_uNodeId;													// èŠ‚ç‚¹Id
 
-		set<uint32_t> m_viewRangeSnakeSet;									// ÊÓÒ°ÄÚµÄÆäËûÉß
-		set<Grid*> m_viewRangeGridSet;										// ÊÓÒ°ÄÚµÄ¸ñ×Ó
+		set<uint32_t> m_viewRangeSnakeSet;									// è§†é‡å†…çš„å…¶ä»–è›‡
+		set<Grid*> m_viewRangeGridSet;										// è§†é‡å†…çš„æ ¼å­
 
 	};
 }

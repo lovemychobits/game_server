@@ -1,7 +1,6 @@
-#include "SlitherMath.h"
+﻿#include "SlitherMath.h"
 
 namespace slither {
-#define PI (3.14159f)
 #define MAX_ROTATION (PI * 1.5f)
 
 	float SlitherMath::PosToAnglePI(const Vector2D& pos) {
@@ -24,7 +23,7 @@ namespace slither {
 	float SlitherMath::GetLegalAngle(float fTurnAngle, float fFaceAngle) {
 		float fAngle = fTurnAngle - fFaceAngle;
 
-		if (::abs(fAngle) >= PI) {
+		if (fabs(fAngle) >= PI) {
 			if (fAngle > 0)
 				fAngle = fAngle - 2 * PI;
 			else if (fAngle < 0)
@@ -33,10 +32,10 @@ namespace slither {
 
 		float fDetalAngel = MAX_ROTATION * 0.1f;
 
-		if (::abs(fAngle) > fDetalAngel) {
+		if (fabs(fAngle) > fDetalAngel) {
 			return fmod((fFaceAngle + Sign(fAngle) * fDetalAngel), (2 * PI));
 		}
-		//return fTurnAngle % (2 * PI);
+
 		return fmod(fTurnAngle, 2 * PI);
 	}
 

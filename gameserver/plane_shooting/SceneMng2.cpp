@@ -32,7 +32,7 @@ namespace plane_shooting {
 			由于飞机的数量通常远小于子弹，所以遍历的速度就可以提升很多了，不过暂时还没有用新的算法测试，有待验证
 		*/
 		
-		DWORD dwStart = ::GetTickCount();
+		//DWORD dwStart = ::GetTickCount();
 		// 模拟子弹飞行，及广播
 		list<Bullet*>::iterator bulletIt = m_bulletList.begin();
 		list<Bullet*>::iterator bulletItEnd = m_bulletList.end();
@@ -69,7 +69,7 @@ namespace plane_shooting {
 			}
 			bulletIt++;
 		}
-		DWORD dwEnd = ::GetTickCount();
+		//DWORD dwEnd = ::GetTickCount();
 		//cout << "time cost=[" << dwEnd - dwStart << "]" << endl;
 	}
 
@@ -93,7 +93,7 @@ namespace plane_shooting {
 		enterGameAck.mutable_pos()->set_y(pos.y);
 
 		string strResponse;
-		cputil::BuildResponseProto(enterGameAck, strResponse, client::ClientProtocol::REQ_ENTER_GAME);
+		cputil::BuildResponseProto(enterGameAck, strResponse, client::REQ_ENTER_GAME);
 		pPlane->SendMsg(strResponse.c_str(), strResponse.size());
 		return;
 	}
@@ -180,7 +180,7 @@ namespace plane_shooting {
 				//pPBObject->set_flyangle(pTmpBullet->GetAngle());
 			}
 
-			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
+			cputil::BuildResponseProto(objsNty, strResponse, client::NTY_OBJS);
 			pPlane->SendMsg(strResponse.c_str(), strResponse.size());
 		}
 
@@ -229,7 +229,7 @@ namespace plane_shooting {
 				//pPBObject->set_flyangle(pTmpBullet->GetAngle());
 			}
 
-			cputil::BuildResponseProto(objsNty, strResponse, client::ClientProtocol::NTY_OBJS);
+			cputil::BuildResponseProto(objsNty, strResponse, client::NTY_OBJS);
 			pSelf->SendMsg(strResponse.c_str(), strResponse.size());
 		}
 

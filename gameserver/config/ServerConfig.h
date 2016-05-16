@@ -80,26 +80,6 @@ public:
 		return m_strRedisIp.c_str();
 	}
 
-	uint32_t GetLoginPort()
-	{
-		return m_nLoginPort;
-	}
-
-	const char* GetLoginIp()
-	{
-		return m_szLoginIp;
-	}
-
-	uint32_t GetPayPort()
-	{
-		return m_nPayPort;
-	}
-
-	const char* GetPayIp()
-	{
-		return m_szPayIp;
-	}
-
 	uint32_t GetRedisPort()
 	{
 		return m_nRedisPort;
@@ -113,10 +93,6 @@ public:
 	{
 		return m_uMsgHeadLen;
 	}
-	uint32_t GetClientRecvBuf()
-	{
-		return m_uClientBuf;
-	}
 
 	vector<ServerIpConf>& GetPvpServerList()
 	{
@@ -129,7 +105,7 @@ public:
 	}
 
 private:
-	ServerConfig() : m_nServerId(0), m_nGsPort(0), m_uMsgHeadLen(0), m_uClientBuf(0)
+	ServerConfig() : m_nServerId(0), m_nGsPort(0), m_uMsgHeadLen(0)
 	{
 		memset(m_szGsIp, 0, sizeof(m_szGsIp));
 		memset(m_szDsIp, 0, sizeof(m_szDsIp));
@@ -147,10 +123,6 @@ private:
 	char m_szDsIp[32];
 	uint32_t m_nLobbyPort;
 	char m_szLobbyIp[32];
-	uint32_t m_nLoginPort;
-	char m_szLoginIp[32];
-	uint32_t m_nPayPort;
-	char m_szPayIp[32];
 
 	string m_strRedisIp;
 	uint32_t m_nRedisPort;
@@ -160,7 +132,6 @@ private:
 	vector<ServerIpConf> m_pvpRedisList;
 
 	uint32_t m_uMsgHeadLen;
-	uint32_t m_uClientBuf;
 };
 
 #define gpServerConfig ServerConfig::GetInstance()
