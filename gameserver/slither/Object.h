@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#include "../config/SlitherConfig.h"
 
 namespace slither {
 	struct Vector2D {
@@ -92,7 +93,7 @@ namespace slither {
 		bool IsContained(const Vector2D& pos) {
 			// 如果点到圆心的距离小于半径，则是被包含了
 			float fLen = sqrt(pow((pos.x - m_pos.x), 2) + pow((pos.y - m_pos.y), 2));
-			if (fLen < m_fRadius) {
+			if (fLen < gpSlitherConf->m_fEatFoodRadius) {
 				return true;
 			}
 

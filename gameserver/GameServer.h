@@ -67,6 +67,7 @@ private:
 	// handler 对象
 	ClientHandler* m_pClientHandler;					// 客户端处理类
 	DsHandler* m_pDsHandler;							// DataServer处理类
+	LobbyHandler* m_pLobbyHandler;						// 与LobbyServer直接的连接
 	ClientMsgDecoder* m_pMsgDecoder;
 	ClientMsgEncoder* m_pMsgEncoder;	
 

@@ -1,4 +1,5 @@
 ﻿#include "SlitherMath.h"
+#include "../config/SlitherConfig.h"
 
 namespace slither {
 #define MAX_ROTATION (PI * 1.5f)
@@ -54,6 +55,23 @@ namespace slither {
 
 		pos.x += x;
 		pos.y += y;
+
+		if (pos.x < 0.0f) {
+			pos.x = 0.0f;
+		}
+
+		if (pos.y < 0.0f) {
+			pos.y = 0.0f;
+		}
+
+		if (pos.x > slither::gpSlitherConf->m_uMapLength) {
+			pos.x = (float)slither::gpSlitherConf->m_uMapLength;
+		}
+
+		if (pos.y > slither::gpSlitherConf->m_uMapLength) {
+			pos.y = (float)slither::gpSlitherConf->m_uMapLength;
+		}
+
 		return pos;
 	}
 }

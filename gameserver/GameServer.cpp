@@ -3,8 +3,9 @@
 #include "handlers/ClientHandler.h"
 #include "handlers/DsHandler.h"
 #include "handlers/GsMsgChainer.h"
-#include "scenemng-alpha/SceneMng.h"
-#include "plane_shooting/SceneMng2.h"
+#include "handlers/LobbyHandler.h"
+#include "config/SlitherConfig.h"
+#include "slither/GameRoom.h"
 
 GameServer::~GameServer()
 {
@@ -67,6 +68,11 @@ bool GameServer::Init(const char* pConfPath)
 	//	ERRORLOG("init data server failed.");
 	//	return false;
 	//}
+	if (!_InitLobbyServer()) 
+	{
+		ERRORLOG("init lobby server failed.");
+		return false;
+	}
 	if (!_InitTimerTrigger())
 	{
 		ERRORLOG("init timer trigger failed.");
@@ -120,6 +126,12 @@ bool GameServer::_InitObjects()
 		return false;
 	}
 
+	m_pLobbyHandler = new LobbyHandler();
+	if (!m_pLobbyHandler)
+	{
+		return false;
+	}
+
 	m_pMsgDecoder = new ClientMsgDecoder();
 	m_pMsgEncoder = new ClientMsgEncoder();
 
@@ -136,7 +148,25 @@ bool GameServer::_InitLog4cpp()
 
 bool GameServer::_InitServerConf(const char* pConfPath)
 {
-	return gpServerConfig->LoadServerConf(pConfPath);
+	bool bRet = gpServerConfig->LoadServerConf(pConfPath);
+	if (!bRet) {
+		ERRORLOG("init load " << pConfPath << " failed.");
+		return false;
+	}
+
+	bRet = slither::gpSlitherConf->LoadSlitherConf("./xml/Config.xml");
+	if (!bRet) {
+		ERRORLOG("init load xml/Config.xml failed.");
+		return false;
+	}
+
+	bRet = slither::gpSlitherConf->LoadSlitherConf2("./xml/Config2.xml");
+	if (!bRet) {
+		ERRORLOG("init load xml/Config2.xml failed.");
+		return false;
+	}
+
+	return true;
 }
 
 bool GameServer::_InitServerApp()
@@ -192,6 +222,26 @@ bool GameServer::_InitDataServer()
 	return true;
 }
 
+bool GameServer::_InitLobbyServer()
+{
+	m_pLobbySession = m_pNetCluster->CreateClientSession();
+	if (!m_pLobbySession) {
+		return false;
+	}
+
+	IMsgChainer* pMsgChainer = m_pNetCluster->CreateMsgChainer();
+	pMsgChainer->AddDecodeLast(m_pMsgDecoder);
+	pMsgChainer->AddEncodeLast(m_pMsgEncoder);
+
+	m_pLobbySession->SetMsgChainer(pMsgChainer);
+	m_pLobbySession->SetMsgHandler(m_pLobbyHandler);
+	m_pLobbySession->SetHeadLen(gpServerConfig->GetMsgHeadLen());
+
+	m_pLobbySession->Connect(gpServerConfig->GetLobbyIp(), gpServerConfig->GetLobbyPort());
+	g_pLobbySession = m_pLobbySession;
+	return true;
+}
+
 bool GameServer::_InitTimerTrigger()
 {
 	m_pTimerTrigger = m_pNetCluster->CreateTimerTrigger();
@@ -199,9 +249,7 @@ bool GameServer::_InitTimerTrigger()
 	{
 		return false;
 	}
-	//gpTimerMng->SetTimerTigger(m_pTimerTrigger);
-	//m_pTimerTrigger->AddCircleTimer(boost::bind(&plane_shooting::SceneMng::OnTimer, plane_shooting::SceneMng::GetInstance(), _1), 50);
-	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::Scene::OnTimer, slither::Scene::GetInstance(), _1), 160);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::GameRoomMng::OnTimer, slither::gpGameRoomMng, _1), 100);
 	return true;
 }
 
@@ -217,7 +265,5 @@ bool GameServer::_InitLoadConf()
 
 bool GameServer::_InitModules()
 {
-	slither::Scene::GetInstance()->Init(1000, 1000);
-	slither::Scene::GetInstance()->TestScene();
 	return true;
 }

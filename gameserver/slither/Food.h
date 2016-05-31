@@ -2,7 +2,7 @@
 #define GAMESERVER_SLITHER_FOOD_H
 
 #include "Object.h"
-#include "../../protocol/slither_client.pb.h"
+#include "../../protocol/slither_battle.pb.h"
 
 namespace slither {
 	class Food : public Object {

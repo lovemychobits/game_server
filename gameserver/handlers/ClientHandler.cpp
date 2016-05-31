@@ -1,13 +1,11 @@
 ﻿#include "../header.h"
 #include "ClientHandler.h"
 #include "../../utils/Utility.h"
-#include "../../protocol/client.pb.h"
-#include "../../protocol/slither_client.pb.h"
-#include "../scenemng-alpha/SceneMng.h"
-#include "../plane_shooting/SceneMng2.h"
+#include "../../protocol/slither_battle.pb.h"
 #include "../slither/Scene.h"
 #include "../slither/PlayerMng.h"
 #include "../slither/Snake.h"
+#include "../slither/GameRoom.h"
 
 void ClientHandler::HandleConnect(IConnection* pConn)
 {
@@ -42,10 +40,10 @@ void ClientHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uL
 	
 	MessageHeader* pMsgHeader = (MessageHeader*)pBuf;
 
-	map<uint32_t, pCmdFunc>::iterator funcIt = m_cmdFuncMap.find(pMsgHeader->uMsgCmd);
+	map<uint32_t, pCmdFunc>::iterator funcIt = m_cmdFuncMap.find(ntohs(pMsgHeader->uMsgCmd));
 	if (funcIt == m_cmdFuncMap.end())
 	{
-		ERRORLOG("cannot find cmd=[0x" << hex << pMsgHeader->uMsgCmd << "] function");
+		ERRORLOG("cannot find cmd=[0x" << hex << ntohs(pMsgHeader->uMsgCmd) << "] function");
 		return;
 	}
 	static uint32_t uMsgProc = 0;
@@ -93,9 +91,9 @@ void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHea
 
 	slither::EnterGameReq enterGameReq;
 	const char* pBuf = (const char*)pMsgHeader;
-	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), ntohs(pMsgHeader->uMsgSize) - sizeof(MessageHeader));
 
-	slither::Scene::GetInstance()->PlayerEnter(pConn, enterGameReq.userid());
+	slither::gpGameRoomMng->EnterGame(pConn, enterGameReq.userid(), enterGameReq.nickname(), enterGameReq.skinid());
 	return;
 }
 
@@ -107,49 +105,13 @@ void ClientHandler::_RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHea
 
 	slither::SnakeMoveReq moveReq;
 	const char* pBuf = (const char*)pMsgHeader;
-	moveReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
+	moveReq.ParseFromArray(pBuf + sizeof(MessageHeader), ntohs(pMsgHeader->uMsgSize) - sizeof(MessageHeader));
 
 	slither::Snake* pSnake = slither::PlayerMng::GetInstance()->GetPlayerSnake(pConn);
-	slither::Scene::GetInstance()->SnakeMove(pSnake, moveReq.newangle(), moveReq.speedup());
+	if (!pSnake) {
+		return;
+	}
+	pSnake->GetScene()->SnakeMove(pSnake, moveReq.newangle(), moveReq.speedup(), moveReq.stopmove());
 	return;
 }
 
-void ClientHandler::_RequestQueryPath(IConnection* pConn, MessageHeader* pMsgHeader) 
-{
-	//if (!pConn || !pMsgHeader)
-	//{
-	//	return;
-	//}
-
-	//client::QueryPathReq queryPathReq;
-	//const char* pBuf = (const char*)pMsgHeader;
-	//queryPathReq.ParseFromArray(pBuf + sizeof(MessageHeader), pMsgHeader->uMsgSize - sizeof(MessageHeader));
-
-	//float startPos[3];
-	//float endPos[3];
-	//startPos[0] = queryPathReq.startpos().x();
-	//startPos[1] = queryPathReq.startpos().y();
-	//startPos[2] = queryPathReq.startpos().z();
-
-	//endPos[0] = queryPathReq.endpos().x();
-	//endPos[1] = queryPathReq.endpos().y();
-	//endPos[2] = queryPathReq.endpos().z();
-
-	//client::QueryPathAck queryPathAck;
-
-	//int path = scene_alpha::SceneMng::getInstance()->findPath(startPos, endPos);
-	//float* smoothPath = scene_alpha::SceneMng::getInstance()->getPath();
-	//for (int i = 0; i < path * 3;) {
-	//	client::PBVector* pVector = queryPathAck.add_path();
-	//	pVector->set_x(smoothPath[i]);
-	//	pVector->set_y(smoothPath[i+1]);
-	//	pVector->set_z(smoothPath[i+2]);
-	//	i += 3;
-	//}
-
-	//string strResponse;
-	////cputil::BuildResponseProto(queryPathAck, strResponse, client::ClientProtocol::REQ_QUERY_PATH);
-	//pConn->SendMsg(strResponse.c_str(), strResponse.size());
-
-	return;
-}

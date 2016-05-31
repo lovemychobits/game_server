@@ -33,13 +33,7 @@ boost::shared_ptr<MsgBuffer> ClientMsgDecoder::Decode(IConnection* pConn, const 
 	}
 
 	uint32_t* pMsgSize = (uint32_t*)pMsg;
-	if (*pMsgSize < 12)
-	{
-		boost::shared_ptr<MsgBuffer> msgBuffer(new MsgBuffer());
-		return msgBuffer;
-	}
-	uint32_t* pMagicCode = (uint32_t*)((char*)pMsg + 8);
-	if (*pMagicCode != 0xA1B2C3D4)
+	if (*pMsgSize < 4)
 	{
 		boost::shared_ptr<MsgBuffer> msgBuffer(new MsgBuffer());
 		return msgBuffer;

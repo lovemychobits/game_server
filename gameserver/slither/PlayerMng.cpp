@@ -15,10 +15,14 @@ namespace slither {
 	}
 
 	void PlayerMng::PlayerDisconnect(IConnection* pConn) {
+		DEBUGLOG("connection=[" << pConn << "] disconnect");
 		map<IConnection*, Snake*>::iterator snakeIt = m_playerConnMap.find(pConn);
 		if (snakeIt == m_playerConnMap.end()) {
 			return;
 		}
+
+		DEBUGLOG("connection=[" << pConn << "] disconnect, snake id=[" << snakeIt->second->GetSnakeId() << "] snake addr=[" << snakeIt->second << "]");
+
 		snakeIt->second->SetConnection(NULL);
 		m_playerConnMap.erase(snakeIt);
 	}
