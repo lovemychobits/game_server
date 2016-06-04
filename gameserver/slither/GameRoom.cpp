@@ -8,12 +8,12 @@
 #include "../../protocol/slither_battle.pb.h"
 
 namespace slither {
-	GameRoom::GameRoom() : m_pScene(NULL), m_uRoundTime(0), m_uMaxPlayer(0) {
+	GameRoom::GameRoom() : m_pScene(NULL), m_uRoundTime(0), m_uMaxPlayer(0), m_bClosed(false) {
 		m_startTime = boost::posix_time::second_clock::local_time();
 		Start();
 	}
 
-	GameRoom::GameRoom(uint32_t uRoundTime, uint32_t uMaxPlayer) : m_pScene(NULL), m_uRoundTime(uRoundTime), m_uMaxPlayer(uMaxPlayer) {
+	GameRoom::GameRoom(uint32_t uRoundTime, uint32_t uMaxPlayer) : m_pScene(NULL), m_uRoundTime(uRoundTime), m_uMaxPlayer(uMaxPlayer), m_bClosed(false) {
 		m_startTime = boost::posix_time::microsec_clock::local_time();
 		Start();
 	}
@@ -25,15 +25,34 @@ namespace slither {
 	void GameRoom::OnTimer() {
 		boost::posix_time::ptime end = boost::posix_time::second_clock::local_time();
 		boost::posix_time::time_duration diff = end - m_startTime;
-		//if (diff.total_seconds() > m_uRoundTime * 60) {				// 到了结束时间了
-		//	End();
-		//	return;
-		//}
+		if (diff.total_seconds() > m_uRoundTime * 60) {				// 到了结束时间了
+		//if (diff.total_seconds() > m_uRoundTime) {				// 到了结束时间了
+			End();
+			ClearSnakes();
+			m_bClosed = true;
+			cout << "game room close" << endl;
+			return;
+		}
 		m_pScene->OnTimer();
 	}
 
+	uint32_t GameRoom::GetLeftTime() {
+		boost::posix_time::ptime end = boost::posix_time::second_clock::local_time();
+		boost::posix_time::time_duration diff = end - m_startTime;
+		return (m_uRoundTime * 60 - (uint32_t)diff.total_seconds());
+	}
+
+	void GameRoom::ClearSnakes() {
+		set<uint32_t>::iterator snakeIt = m_snakeSet.begin();
+		set<uint32_t>::iterator snakeItEnd = m_snakeSet.end();
+		for (; snakeIt != snakeItEnd; snakeIt++) {
+			// 将玩家的房间关系删除
+			gpGameRoomMng->DeleteSnakeGameRoom(*snakeIt);
+		}
+	}
+
 	bool GameRoom::Start() {
-		m_pScene = new Scene();
+		m_pScene = new Scene(this);
 		if (!m_pScene) {
 			return false;
 		}
@@ -53,10 +72,11 @@ namespace slither {
 		for (; snakeIt != snakeItEnd; snakeIt++) {
 			const Snake* pSnake = snakeIt->second;
 			slither::PBPlayerGameRound* pPBPlayer = gameRoomEndNty.add_gameroundinfo();
+			pPBPlayer->set_playerid(pSnake->GetPlayerId());
 			pPBPlayer->set_rank(pSnake->GetStatistics().uRank);
 			pPBPlayer->set_killsnaketimes(pSnake->GetStatistics().uKillSnakeTimes);
 			pPBPlayer->set_totaleatnum(pSnake->GetStatistics().uEatNum);
-			pPBPlayer->set_maxlength(pSnake->GetStatistics().uMaxLength);
+			pPBPlayer->set_maxmass(pSnake->GetStatistics().uMaxLength);
 
 			// 通知每个玩家
 			slither::NotifyGameOverInfo gameOverNty;
@@ -83,6 +103,7 @@ namespace slither {
 			return;
 		}
 
+		m_snakeSet.insert(pSnake->GetSnakeId());
 		m_pScene->PlayerEnter(pSnake);
 	}
 
@@ -99,12 +120,18 @@ namespace slither {
 	void GameRoomMng::OnTimer(const boost::system::error_code&) {
 		list<GameRoom*>::iterator roomIt = m_gameRoomList.begin();
 		list<GameRoom*>::iterator roomItEnd = m_gameRoomList.end();
-		for (; roomIt != roomItEnd; roomIt++) {
+		for (; roomIt != roomItEnd; ) {
 			GameRoom* pGameRoom = *roomIt;
 			if (!pGameRoom) {
 				continue;
 			}
 			pGameRoom->OnTimer();
+			if (pGameRoom->IsClosed()) {
+				m_gameRoomList.erase(roomIt++);
+				ReleaseGameRoom(pGameRoom);
+				continue;
+			}
+			roomIt++;
 		}
 	}
 
@@ -128,7 +155,7 @@ namespace slither {
 		}
 
 		Snake* pSnake = pGameRoom->GetScene()->GetSnakeById(uSnakeId);
-		if (!pSnake || pSnake->GetStatus() == OBJ_DESTROY) {								// 蛇不存在，或者已经死亡了
+		if (!pSnake ) {																				// 蛇不存在，或者已经死亡了
 			Vector2D pos = pGameRoom->GetScene()->GenSnakeBornPos();
 			pSnake = gpFactory->CreateSnake(pGameRoom->GetScene(), uSnakeId, pos);
 			if (!pSnake) {
@@ -139,8 +166,24 @@ namespace slither {
 			pSnake->SetScene(pGameRoom->GetScene());
 		}
 
+		if (pSnake->GetStatus() == OBJ_DESTROY) {
+			m_uSnakeId++;
+			uSnakeId = m_uSnakeId;
+
+			Vector2D pos = pGameRoom->GetScene()->GenSnakeBornPos();
+			pSnake = gpFactory->CreateSnake(pGameRoom->GetScene(), uSnakeId, pos);
+			if (!pSnake) {
+				ERRORLOG("create snake failed, snake id=[" << uSnakeId << "]");
+				return;
+			}
+
+			pSnake->SetScene(pGameRoom->GetScene());
+		}
+
+		pSnake->SetPlayerId(uUserId);
 		pSnake->SetConnection(pConn);
 		gpPlayerMng->SetPlayerConn(pSnake, pConn);
+		ERRORLOG("snake=[" << pSnake << "] set connection=[" << pConn << "], snake id=[" << uSnakeId << "], user id=[" << uUserId << "]");
 		
 		pSnake->SetNickName(strNickName);
 		pSnake->SetSkinId(uSkinId);
@@ -154,6 +197,14 @@ namespace slither {
 	GameRoom* GameRoomMng::CreateGameRoom(uint32_t uGameTime, uint32_t uMaxPlayer) {
 		GameRoom* pGameRoom = new GameRoom(uGameTime, uMaxPlayer);
 		return pGameRoom;
+	}
+
+	void GameRoomMng::ReleaseGameRoom(GameRoom* pGameRoom) {
+		if (!pGameRoom) {
+			return;
+		}
+
+		delete pGameRoom;
 	}
 
 	// 是否已经在游戏中了
@@ -173,6 +224,10 @@ namespace slither {
 		}
 
 		return gameIt->second;
+	}
+
+	void GameRoomMng::DeleteSnakeGameRoom(uint32_t uSnakeId) {
+		m_playerGameRoundMap.erase(uSnakeId);
 	}
 
 	GameRoom* GameRoomMng::GetAvailabeRoom() {

@@ -154,13 +154,13 @@ bool GameServer::_InitServerConf(const char* pConfPath)
 		return false;
 	}
 
-	bRet = slither::gpSlitherConf->LoadSlitherConf("./xml/Config.xml");
+	bRet = slither::gpSlitherConf->LoadSlitherConf("./xml/SnakeConfig.xml");
 	if (!bRet) {
 		ERRORLOG("init load xml/Config.xml failed.");
 		return false;
 	}
 
-	bRet = slither::gpSlitherConf->LoadSlitherConf2("./xml/Config2.xml");
+	bRet = slither::gpSlitherConf->LoadSlitherConf2("./xml/MapConfig.xml");
 	if (!bRet) {
 		ERRORLOG("init load xml/Config2.xml failed.");
 		return false;
@@ -249,7 +249,8 @@ bool GameServer::_InitTimerTrigger()
 	{
 		return false;
 	}
-	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::GameRoomMng::OnTimer, slither::gpGameRoomMng, _1), 100);
+	//m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::GameRoomMng::OnTimer, slither::gpGameRoomMng, _1), 50);
+	m_pTimerTrigger->AddCircleTimer(boost::bind(&slither::GameRoomMng::OnTimer, slither::gpGameRoomMng, _1), slither::gpSlitherConf->m_uSimInterval);
 	return true;
 }
 

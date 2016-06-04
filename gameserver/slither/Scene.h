@@ -15,6 +15,7 @@ namespace slither {
 
 	class Snake;
 	class Food;
+	class GameRoom;
 	typedef set<Snake*> SnakeSet;
 
 	// 使用数学直角坐标系标准，原点在左下角
@@ -103,17 +104,17 @@ namespace slither {
 
 	class Scene {
 	public:
-		Scene();
+		Scene(GameRoom* pGameRoom);
 		~Scene();
 
 		bool Init(uint32_t uSceneHeight, uint32_t uSceneWidth, uint32_t uGridSize);
 		void OnTimer();
 		void TestScene();
-		void Finish();												// 结束场景
+		void Finish();																// 结束场景
 
 	public:
-		ObjectGrids GetObjectGrids(Object* pObj);					// 获取一个物体所在的格子
-		ObjectGrids GetObjectGrids(Vector2D& pos, float fRadius);	// 获取一个物体所在的格子
+		ObjectGrids GetObjectGrids(Object* pObj);									// 获取一个物体所在的格子
+		ObjectGrids GetObjectGrids(const Vector2D& pos, float fRadius);				// 获取一个物体所在的格子
 		Grid* GetSceneGrids() {
 			return m_pGrids;
 		}
@@ -128,7 +129,7 @@ namespace slither {
 
 	public:
 		// 处理玩家信息
-		void PlayerEnter(IConnection* pConn, uint32_t uUserId);
+		void PlayerEnter(IConnection* pConn);
 		void PlayerEnter(Snake* pSnake);
 		void SnakeMove(Snake* pSnake, float fNewAngle, bool bSpeedUp=false, bool bStopMove=false);
 
@@ -136,10 +137,12 @@ namespace slither {
 		uint32_t GetGridIndex(const Vector2D& pos);													// 获取坐标点所在的格子
 		void GenFoods(uint32_t uNum);																// 生成食物
 		void GenFoods(const Vector2D& pos, uint32_t uNum, uint32_t uValue, list<Food*>& foodList);	// 在指定点生成食物
+		void GenFoods(Grid& grid, uint32_t uNum, list<Food*>& foodList);							// 在指定格子中刷新食物
 		void RefreshFoods();																		// 定时刷新食物
 		Snake* GenSnake(bool bRobot);																// 生成一条蛇
 		void AddSnakeInScene(Snake* pSnake);														// 将蛇加入场景
-		void BreakUpSnake(Snake* pSnake);															// 分解蛇
+		void BreakUpSnake(Snake* pSnake, bool bGenFood = true);										// 分解蛇
+		uint32_t GetBreakUpFoodSize(Snake* pSnake);													// 获取分解可以得到的食物数量
 		
 		void DeleteSnakeViewGrids(Snake* pSnake);													// 删除蛇视野中的格子
 		void UpdateSnakeViewGrids(Snake* pSnake);													// 更新蛇视野中的格子
@@ -150,9 +153,11 @@ namespace slither {
 		void CheckSpeedUp(Snake* pSnake);															// 检查加速情况
 		void CheckEatFood(Snake* pSnake, uint16_t uGridIndex);										// 在指定格子内判定吃食物
 		void CheckCollide(Snake* pSnake, uint16_t uGridIndex);										// 在指定格子内判定碰撞
+		void CheckCollideWithEgde(Snake* pSnake, uint16_t uGridIndex);								// 判断和边界的碰撞
 		void BroadcastEat(set<Snake*>& broadcastList, slither::BroadcastEat& eatFoods);				// 广播吃食物
 		void BroadcastCollide(set<Snake*>& broadcastList, Snake* pSnake);							// 向周围广播这条蛇发生了碰撞
 		void BroadcastNewFoods(const list<Food*>& newFoodList);										// 向周围广播新生成了一些食物
+		void BroadcastNewFoods(uint32_t uGridId, const list<Food*>& newFoodList);					// 广播生成了新的食物
 		void BroadcastRankingList();																// 广播排行榜信息
 
 	private:
@@ -168,6 +173,8 @@ namespace slither {
 		uint32_t m_uFoodCount;										// 食物数量
 
 		map<uint32_t, SnakeSet>	m_gridInSnakeViewMap;				// 能看见格子的蛇列表
+		GameRoom* m_pGameRoom;
+		boost::posix_time::ptime m_startTime;						// 场景开始时间
 	};
 }
 

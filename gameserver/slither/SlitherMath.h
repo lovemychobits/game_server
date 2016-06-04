@@ -14,7 +14,7 @@ namespace slither {
 		static int32_t Sign(float fValue);
 		static Vector2D MoveTo(Vector2D& pos, float fLength);
 		static Vector2D MoveTo(float fAngle, float fLength);
-		static Vector2D MoveToAngle(Vector2D& pos, float fAngle, float fSpeed);
+		static Vector2D MoveToAngle(const Vector2D& oldPos, float fAngle, float fSpeed);
 	};
 }
 

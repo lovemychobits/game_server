@@ -2,6 +2,7 @@
 #include "../config/ServerConfig.h"
 #include "../header.h"
 #include "../../utils/Utility.h"
+#include "../../protocol/slither_server.pb.h"
 
 void LobbyHandler::HandleConnect(IConnection* pConnection)
 {
@@ -52,5 +53,14 @@ void LobbyHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uLe
 
 void LobbyHandler::RegGameServer(IConnection* pConnection)
 {
+	slither::RegisterGSReq registerGsReq;
+	slither::PBGameServer* pPBGameServer = registerGsReq.mutable_gsinfo();
+	pPBGameServer->set_ip(gpServerConfig->GetRegisterIp());
+	pPBGameServer->set_port(gpServerConfig->GetGsBindPort());
+	pPBGameServer->set_serverid(gpServerConfig->GetServerId());
+
+	string strResponse;
+	cputil::BuildResponseProto(registerGsReq, strResponse, slither::REQ_REGISTER_GAMESERVER);
+	pConnection->SendMsg(strResponse.c_str(), strResponse.size());
 }
  

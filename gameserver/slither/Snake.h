@@ -73,6 +73,10 @@ namespace slither {
 		uint32_t uKillSnakeTimes;				// 击杀蛇的次数
 		uint32_t uEatNum;						// 吞噬数量
 		uint32_t uMaxLength;					// 最大长度
+
+		SnakeStatistics() {
+			memset(this, 0, sizeof(*this));
+		}
 	};
 
 	class Scene;
@@ -92,6 +96,14 @@ namespace slither {
 	public:
 		uint32_t GetSnakeId() {
 			return m_uSnakeId;
+		}
+
+		void SetPlayerId(uint64_t uPlayerId) {
+			m_uPlayerId = uPlayerId;
+		}
+
+		uint64_t GetPlayerId() const{
+			return m_uPlayerId;
 		}
 
 		void SetAngle(float fAngle) {
@@ -128,6 +140,9 @@ namespace slither {
 		}
 
 		void SetConnection(IConnection* pConn) {
+			if (m_pConn && m_pConn->IsConnected()) {
+				m_pConn->Shutdown();					// 如果之前连接还存在，则先关闭
+			}
 			m_pConn = pConn;
 		}
 
@@ -157,11 +172,11 @@ namespace slither {
 			return m_bRobot;
 		}
 
-		uint32_t GetTotalMass() {
+		float GetTotalMass() {
 			return m_fTotalMass;
 		}
 
-		uint32_t GetTotalMass() const {
+		float GetTotalMass() const {
 			return m_fTotalMass;
 		}
 
@@ -186,7 +201,7 @@ namespace slither {
 		}
 
 		void AddEatNum(uint32_t uEatNum) {
-			m_snakeStatistics.uKillSnakeTimes += uEatNum;
+			m_snakeStatistics.uEatNum += uEatNum;
 		}
 
 		void SetMaxLength(uint32_t uLength) {
@@ -223,14 +238,20 @@ namespace slither {
 			return m_uSkinId;
 		}
 
-		bool IsInView(Snake* pSnake);
+		const set<uint32_t>& GetGridsInView() {
+			return m_gridsInView;
+		}
+
+		void SetGridsInView(set<uint32_t>& gridsInView) {
+			m_gridsInView = gridsInView;
+		}
+
+		bool IsInView(Snake* pSnake, const set<uint32_t>& gridSet);
 		bool HasInView(Snake* pSnake);
 		bool IsInView(Grid* pGrid);
 		bool HasInView(uint32_t uGridId);
 		void AddInView(Snake* pSnake);
 		void AddInView(uint32_t uGridId);
-		void DelInView(Snake* pSnake);
-		void DelInView(uint32_t uGridId);
 
 		void SendMsg(const char* pData, uint32_t uLen);
 
@@ -253,6 +274,7 @@ namespace slither {
 
 	private:
 		Scene* m_pScene;													// 所属的场景
+		uint64_t m_uPlayerId;												// 玩家Id
 		uint32_t m_uSnakeId;												// 蛇ID
 		bool m_bSpeedUp;													// 是否加速
 		bool m_bStopMove;													// 是否停止运动（测试使用的）
@@ -276,6 +298,7 @@ namespace slither {
 
 		string m_strNickName;												// 赛局昵称
 		uint32_t m_uSkinId;													// 皮肤ID
+		set<uint32_t> m_gridsInView;										// 视野内的格子
 	};
 }
 

@@ -34,12 +34,11 @@ namespace slither {
 		float fSnakeRadius = m_pOwner->GetSnakeHead()->GetRadius();
 		float fMoveDist = distVect.Magnitude() - GetBodyNodeDist(fSnakeRadius, gpSlitherConf->m_fBodyInterval);
 
-		bool bIsMove = false;
-		if (fMoveDist > 0.0f && !bIsMove) {
-			bIsMove = true;
+		if (fMoveDist > 0.0f && !m_bIsMove) {
+			m_bIsMove = true;
 		}
 
-		if (bIsMove) {
+		if (m_bIsMove) {
 			if (fMoveDist > 0.0f) {
 				m_lastMove = SlitherMath::MoveTo(distVect, fMoveDist);
 				m_pos.x += m_lastMove.x;
@@ -59,10 +58,10 @@ namespace slither {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Snake::Snake(Scene* pScene, uint32_t uSnakeId, float fRadius, const Vector2D& initPos, uint32_t uBodySize, bool bRobot) : 
-		m_pScene(pScene), m_uSnakeId(uSnakeId), m_bSpeedUp(false), m_bStopMove(false), m_pConn(NULL), m_status(OBJ_EXIST), m_bRobot(bRobot),
-		m_uViewRange(20), m_uMoveTick(0), m_fTotalMass(gpSlitherConf->m_uInitSnakeMass), m_uNodeId(1), m_uMsgCount(0), m_uMsgSize(0)
+		m_pScene(pScene), m_uPlayerId(0), m_uSnakeId(uSnakeId), m_bSpeedUp(false), m_bStopMove(false), m_pConn(NULL), m_status(OBJ_EXIST), m_bRobot(bRobot),
+		m_uViewRange(20), m_uMoveTick(0), m_fTotalMass((float)gpSlitherConf->m_uInitSnakeMass), m_uNodeId(1), m_uMsgCount(0), m_uMsgSize(0)
 	{
-		m_pHead = new SnakeBodyNode(this, m_uNodeId++, NULL, initPos, fRadius, gpSlitherConf->m_fSpeed / 10.0f, 0);
+		m_pHead = new SnakeBodyNode(this, m_uNodeId++, NULL, initPos, fRadius, gpSlitherConf->m_fSpeed / (1000.0 / gpSlitherConf->m_uSimInterval), 0);
 		m_pHead->SetObjectType(Snake_Head_Type);
 
 		Vector2D nodePos = initPos;
@@ -70,7 +69,7 @@ namespace slither {
 		SnakeBodyNode* pPrevNode = m_pHead;
 		for (uint32_t i = 0; i < uBodySize; ++i) {
 			nodePos.x -= (1 - gpSlitherConf->m_fBodyInterval) * fRadius;
-			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, m_uNodeId++, pPrevNode, nodePos, fRadius, gpSlitherConf->m_fSpeed / 10, 0);
+			SnakeBodyNode* pSnakeNode = new SnakeBodyNode(this, m_uNodeId++, pPrevNode, nodePos, fRadius, gpSlitherConf->m_fSpeed / (1000.0 / gpSlitherConf->m_uSimInterval), 0);
 			pPrevNode = pSnakeNode;
 
 			m_bodyList.push_back(pSnakeNode);
@@ -105,8 +104,8 @@ namespace slither {
 		pbSnake.mutable_snakehead()->mutable_pos()->set_y(m_pHead->GetPos().y);
 		pbSnake.mutable_snakehead()->set_angle(m_pHead->GetAngle());
 		pbSnake.mutable_snakehead()->set_radius(m_pHead->GetRadius());
-		pbSnake.mutable_snakehead()->set_speed(m_pHead->GetSpeed() * 10);
-		pbSnake.set_totalmass(m_fTotalMass);
+		pbSnake.mutable_snakehead()->set_speed(m_pHead->GetSpeed() * (1000.0 / gpSlitherConf->m_uSimInterval));
+		pbSnake.set_totalmass((uint32_t)m_fTotalMass);
 
 		if (bJustHead) {					// 如果只需要序列化头
 			return;
@@ -147,7 +146,8 @@ namespace slither {
 		
 		// 蛇头运动
 		ObjectGrids oldGrids = m_pScene->GetObjectGrids(m_pHead);
-		SlitherMath::MoveToAngle(m_pHead->GetPos(), m_pHead->GetAngle(), m_pHead->GetSpeed());
+		Vector2D newPos = SlitherMath::MoveToAngle(m_pHead->GetPos(), m_pHead->GetAngle(), m_pHead->GetSpeed());
+		m_pHead->SetPos(newPos);
 		ObjectGrids newGrids = m_pScene->GetObjectGrids(m_pHead);
 		newGrids.UpdateGrids(m_pHead, m_pScene->GetSceneGrids(), oldGrids);
 		//cout << "new head pos=[" << m_pHead->GetPos().x << ", " << m_pHead->GetPos().y << "]" << endl;
@@ -161,9 +161,7 @@ namespace slither {
 				return;
 			}
 
-			ObjectGrids oldGrids = m_pScene->GetObjectGrids(pBodyNode);
-			SnakeBodyNode* pPrevNode = pBodyNode->GetPrevNode();
-			
+			ObjectGrids oldGrids = m_pScene->GetObjectGrids(pBodyNode);			
 			pBodyNode->TracePreNode();												// 跟随前一个点
 			
 			ObjectGrids newGrids = m_pScene->GetObjectGrids(pBodyNode);
@@ -173,6 +171,8 @@ namespace slither {
 		// 每移动30次，将一些不在视野内的物体，或者格子删除
 		//if (m_uMoveTick++ >= 30) {
 		if (true) {
+			set<uint32_t> gridSet = m_pScene->GetInViewGrids(this);
+
 			// 判断蛇
 			set<uint32_t>::iterator snakeIt = m_viewRangeSnakeSet.begin();
 			set<uint32_t>::iterator snakeItEnd = m_viewRangeSnakeSet.end();
@@ -183,14 +183,13 @@ namespace slither {
 					continue;
 				}
 
-				if (!IsInView(pSnake) || pSnake->GetStatus() == OBJ_DESTROY) {			// 不在视野范围内了, 或者已经死亡了
+				if (!IsInView(pSnake, gridSet) || pSnake->GetStatus() == OBJ_DESTROY) {			// 不在自己视野范围内了, 或者已经死亡了
 					m_viewRangeSnakeSet.erase(snakeIt++);
+					cout << "delete snake id=[" << pSnake->GetSnakeId() << "] in snake=[" << m_uSnakeId << "] view" << endl;
 					continue;
 				}
 				snakeIt++;
 			}
-
-			set<uint32_t> gridSet = m_pScene->GetInViewGrids(this);
 
 			// 判断格子
 			set<uint32_t>::iterator gridIt = m_viewRangeGridSet.begin();
@@ -217,7 +216,7 @@ namespace slither {
 		AddEatNum(pFood->GetMass());
 		m_fTotalMass += pFood->GetMass();
 
-		SetMaxLength(m_fTotalMass);
+		SetMaxLength((uint32_t)m_fTotalMass);
 
 		float fNewRadius = 0.0f;
 		uint32_t uNewNodeNum = 0;
@@ -241,7 +240,11 @@ namespace slither {
 		}
 
 		// 减少重量
-		m_fTotalMass -= (0.1 / gpSlitherConf->m_fAttenuationInterval * gpSlitherConf->m_fAttenuationValue);
+		float fEachTickCost = 1.0 / (1000.0f / (float)gpSlitherConf->m_uSimInterval);
+		m_fTotalMass -= (fEachTickCost / gpSlitherConf->m_fAttenuationInterval * gpSlitherConf->m_fAttenuationValue);
+		if (m_fTotalMass < 10.0f) {
+			m_fTotalMass = 10.001f;
+		}
 
 		float fNewRadius = 0.0f;
 		uint32_t uNewNodeNum = 0;
@@ -279,7 +282,7 @@ namespace slither {
 	// 在尾部添加节点
 	SnakeBodyNode* Snake::IncTail() {
 		Vector2D tailPos = m_pTail->GetPos();
-		tailPos.x -= (1 - gpSlitherConf->m_fBodyInterval) * m_pTail->GetRadius();
+		//tailPos.x -= (1 - gpSlitherConf->m_fBodyInterval) * m_pTail->GetRadius();
 
 		SnakeBodyNode* pNewTail = new SnakeBodyNode(m_pHead->GetOwner(), m_uNodeId++, m_pTail, tailPos, m_pTail->GetRadius(), m_pTail->GetSpeed(), m_pTail->GetAngle());
 		m_pTail = pNewTail;
@@ -417,17 +420,45 @@ namespace slither {
 		return vectLen * cos_value;
 	}
 
-	// 是否在对方视野中
-	bool Snake::IsInView(Snake* pSnake) {
+	// 是否自己视野中
+	// 参数 pSnake 判断是否在自己视野中的其他蛇， 自己的视野内的格子gridSet
+	bool Snake::IsInView(Snake* pSnake, const set<uint32_t>& gridSet) {
 		if (!pSnake) {
 			return false;
 		}
 
+		// 判断一条蛇是否在自己的视野内，从蛇头一直到整个蛇身，如果某个节点在格子内，格子能被看见，蛇就能被看见
 		SnakeBodyNode* pHead = pSnake->GetSnakeHead();
+		ObjectGrids bodyGrids = m_pScene->GetObjectGrids(pHead);
+		for (int i = 0; i < MAX_GRID_IN; ++i) {
+			uint32_t uGridIndex = bodyGrids.grids[i];
+			if (uGridIndex == -1) {
+				continue;
+			}
+			
+			set<uint32_t>::const_iterator gridIt = gridSet.find(uGridIndex);
+			if (gridIt != gridSet.end()) {
+				return true;
+			}
+		}
 
-		float fLen = sqrt(pow((pHead->GetPos().x - m_pHead->GetPos().x), 2) + pow((pHead->GetPos().y - m_pHead->GetPos().y), 2));
-		if (fLen < pSnake->GetViewRange()) {
-			return true;
+		const list<SnakeBodyNode*>& otherBodyList = pSnake->GetSnakeBody();
+		list<SnakeBodyNode*>::const_iterator otherBodyIt = otherBodyList.begin();
+		list<SnakeBodyNode*>::const_iterator otherBodyItEnd = otherBodyList.end();
+		for (; otherBodyIt != otherBodyItEnd; otherBodyIt++) {
+			SnakeBodyNode* pOtherBody = *otherBodyIt;
+			bodyGrids = m_pScene->GetObjectGrids(pOtherBody);
+			for (int i = 0; i < MAX_GRID_IN; ++i) {
+				uint32_t uGridIndex = bodyGrids.grids[i];
+				if (uGridIndex == -1) {
+					continue;
+				}
+
+				set<uint32_t>::iterator gridIt = gridSet.find(uGridIndex);
+				if (gridIt != gridSet.end()) {
+					return true;
+				}
+			}
 		}
 
 		return false;
@@ -453,7 +484,7 @@ namespace slither {
 		}
 		
 		float fLen = sqrt(pow((pGrid->GetCenterPos().x - m_pHead->GetPos().x), 2) + pow((pGrid->GetCenterPos().y - m_pHead->GetPos().y), 2));
-		if (fLen < (float)GetSnakeView()) {
+		if (fLen < (float)GetSnakeView() / 2.0f) {
 			return true;
 		}
 
@@ -481,17 +512,6 @@ namespace slither {
 		m_viewRangeGridSet.insert(uGridId);
 	}
 
-	void Snake::DelInView(Snake* pSnake) {
-		if (!pSnake) {
-			return;
-		}
-		m_viewRangeSnakeSet.erase(pSnake->GetSnakeId());
-	}
-
-	void Snake::DelInView(uint32_t uGridId) {
-		m_viewRangeGridSet.erase(uGridId);
-	}
-
 	void Snake::SendMsg(const char* pData, uint32_t uLen) {
 		if (!pData || uLen == 0) {
 			return;
@@ -517,31 +537,32 @@ namespace slither {
 		const float fMaxRadius = gpSlitherConf->m_fMaxRadius;						//蛇身最大半径
 
 		const uint32_t nGrowNode = 1;
-		const float fNodeRate = (float)gpSlitherConf->m_uGrowUpValue;				//节点成长系数
+		const float fNodeRate = (float)gpSlitherConf->m_fGrowUpValue;				//节点成长系数
 		const float nNodeSqt = gpSlitherConf->m_fNodeSqt;							//节点成长指数
 		const uint32_t nMaxNode = gpSlitherConf->m_uMaxBodySize;					//蛇身最大节点
 
 		//根据当前能量，计算半径实际成长的次数
-		uint32_t nRadiusTime = (uint32_t)floor(pow((m_fTotalMass) / nRadiusRate, fRadiusSqt));
+		uint32_t nRadiusTime = (uint32_t)floor(pow((m_fTotalMass) / nRadiusRate * 100, fRadiusSqt));
 
 		//根据已成长的次数，得出当前的实际半径
-		fCurRadius = min(fMaxRadius, nInitialRadius + nRadiusTime * nGrowRadius);
+		fCurRadius = min(fMaxRadius, nInitialRadius + nRadiusTime * nGrowRadius * 0.025f);
 		fCurRadius = fCurRadius;
 
 		//根据当前能量，计算节点实际增加的次数
 		uint32_t nNodeTime = (uint32_t)floor(pow((m_fTotalMass - nInitialPower) / fNodeRate, nNodeSqt));
 
 		//根据已成长的次数，得出当前的实际半径
-		uCurNode = min(nMaxNode, nInitialNode + nNodeTime*nGrowNode);
+		uCurNode = min(nMaxNode, nInitialNode + nNodeTime * nGrowNode);
 	}
 
 	float Snake::GetSnakeView() {
 		const float fRadiusSqt = gpSlitherConf->m_fRadiusSqt;						//半径成长指数
 		const float fGrowRadius = gpSlitherConf->m_fIncRadiusValue;					//每次增长的半径
 		const float fInitialRadius = gpSlitherConf->m_fInitRadius;					//蛇初始半径值
+		const uint32_t nRadiusRate = gpSlitherConf->m_uIncRadiusIntervalValue;		//半径成长系数
 
-		float fTmp = floor(pow((m_fTotalMass / 100), fRadiusSqt));
-		float fCurView = (fTmp * fGrowRadius * 100 + fInitialRadius * 100) / (fInitialRadius * 100) * 30;
+		float fTmp = floor(pow((m_fTotalMass) / nRadiusRate * 100, fRadiusSqt));
+		float fCurView = (fTmp * fGrowRadius * 0.025f + fInitialRadius) / fInitialRadius * 30;
 
 		return fCurView;
 	}

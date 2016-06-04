@@ -49,29 +49,31 @@ namespace slither {
 		return move;
 	}
 
-	Vector2D SlitherMath::MoveToAngle(Vector2D& pos, float fAngle, float fSpeed) {
+	Vector2D SlitherMath::MoveToAngle(const Vector2D& oldPos, float fAngle, float fSpeed) {
 		float x = fSpeed * ::cos(fAngle);
 		float y = fSpeed * ::sin(fAngle);
 
-		pos.x += x;
-		pos.y += y;
+		Vector2D newPos = oldPos;
 
-		if (pos.x < 0.0f) {
-			pos.x = 0.0f;
+		newPos.x += x;
+		newPos.y += y;
+
+		if (newPos.x < 0.0f) {
+			newPos.x = 0.0f;
 		}
 
-		if (pos.y < 0.0f) {
-			pos.y = 0.0f;
+		if (newPos.y < 0.0f) {
+			newPos.y = 0.0f;
 		}
 
-		if (pos.x > slither::gpSlitherConf->m_uMapLength) {
-			pos.x = (float)slither::gpSlitherConf->m_uMapLength;
+		if (newPos.x > slither::gpSlitherConf->m_uMapLength) {
+			newPos.x = (float)slither::gpSlitherConf->m_uMapLength;
 		}
 
-		if (pos.y > slither::gpSlitherConf->m_uMapLength) {
-			pos.y = (float)slither::gpSlitherConf->m_uMapLength;
+		if (newPos.y > slither::gpSlitherConf->m_uMapLength) {
+			newPos.y = (float)slither::gpSlitherConf->m_uMapLength;
 		}
 
-		return pos;
+		return newPos;
 	}
 }

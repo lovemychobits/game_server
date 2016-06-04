@@ -49,7 +49,7 @@ namespace slither {
 		}
 
 		// 获取物体的中心点
-		Vector2D& GetPos() {
+		const Vector2D& GetPos() {
 			return m_pos;
 		}
 
@@ -82,7 +82,7 @@ namespace slither {
 
 			// 两个圆做碰撞检测，只要判定圆点距离是否大于两个圆的半径即可
 			float fLen = sqrt(pow((pObj->GetPos().x - m_pos.x), 2) + pow((pObj->GetPos().y - m_pos.y), 2));
-			if (fLen < pObj->GetRadius() + m_fRadius) {
+			if (fLen < ((pObj->GetRadius() + m_fRadius) * gpSlitherConf->m_fCollideProportion)) {
 				return true;
 			}
 
