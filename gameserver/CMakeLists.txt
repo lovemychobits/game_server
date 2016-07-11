@@ -13,7 +13,9 @@ ADD_SUBDIRECTORY(slither)
 
 AUX_SOURCE_DIRECTORY(. DIR_SRCS)
 MESSAGE(STATUS "dir src:" +${DIR_SRCS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wextra -Wall -pthread")
+
+SET(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wno-unused-variable -pthread")
+SET(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wno-unused-variable -pthread")
 
 LINK_DIRECTORIES("../libs")
 LINK_DIRECTORIES("/usr/local/lib")

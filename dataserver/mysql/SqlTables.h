@@ -10,7 +10,7 @@ using namespace std;
 class SqlTables
 {
 public:
-	SqlTables(CMysqlConnection& sqlConn) : m_pSqlConn(&sqlConn), m_sqlParser(m_pSqlConn)
+	SqlTables(cputil::CMysqlConnection& sqlConn) : m_pSqlConn(&sqlConn), m_sqlParser(m_pSqlConn)
 	{
 	}
 	
@@ -20,8 +20,8 @@ public:
 	}
 
 private:
-	CMysqlConnection* m_pSqlConn;
-	SqlParser m_sqlParser;
+	cputil::CMysqlConnection* m_pSqlConn;
+	cputil::SqlParser m_sqlParser;
 };
 
 #endif

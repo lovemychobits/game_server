@@ -30,6 +30,14 @@ public:
 	void HandleRecv(IConnection* pConn, const char* pBuf, uint32_t nLen);
 
 private:
+	void savePlayerStatisticsData(const char* pBuf, uint32_t nLen);
+	void receiveHttpBulletin(IConnection* pGsConn, const char* pBuf, uint32_t uLen);
+	void registerGameServer(IConnection* pGsConn, const char* pBuf, uint32_t uLen);
+	void delHttpBulletin(IConnection* pGsConn, const char* pBuf, uint32_t uLen);
+	void registerGameRoom(IConnection* pGsConn, const char* pBuf, uint32_t uLen);
+	void notifyPlayerEnterRoom(const char* pBuf, uint32_t uLen);
+
+private:
 	LobbyServer* m_pLobbyServer;
 	GameGroupMng* m_pGameGroupMng;
 };

@@ -3,6 +3,7 @@
 #include "../header.h"
 #include "../../utils/Utility.h"
 #include "../../protocol/slither_server.pb.h"
+#include "../slither/GameRoom.h"
 
 void LobbyHandler::HandleConnect(IConnection* pConnection)
 {
@@ -40,10 +41,21 @@ void LobbyHandler::HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uLe
 	{
 		return;
 	}
-	switch (pMsgHeader->uMsgCmd)
+	switch (ntohs(pMsgHeader->uMsgCmd))
 	{
-	case 0:
+	case slither::REQ_REGISTER_GAMESERVER:
 		{
+			slither::RegisterGSAck registerGsAck;
+			const char* pBuf = (const char*)pMsgHeader;
+			registerGsAck.ParseFromArray(pBuf + sizeof(MessageHeader), ntohs(pMsgHeader->uMsgSize) - sizeof(MessageHeader));
+
+			if (registerGsAck.errorcode() != slither::SERVER_SUCCESS) {
+				ERRORLOG("register gs id=[" << gpServerConfig->GetServerId() << "] failed");
+				return;
+			}
+
+			// 注册房间
+			RegGameRooms();
 		}
 		break;
 	default:
@@ -64,3 +76,34 @@ void LobbyHandler::RegGameServer(IConnection* pConnection)
 	pConnection->SendMsg(strResponse.c_str(), strResponse.size());
 }
  
+void LobbyHandler::RegGameRooms() 
+{
+	if (!g_pLobbySession) {
+		return;
+	}
+	const map<uint32_t, slither::GameRoom*>& roomList = slither::gpGameRoomMng->GetRooms();
+	slither::RegisterGameRoomReq regGameRoomReq;
+	regGameRoomReq.set_gsid(gpServerConfig->GetServerId());
+
+	map<uint32_t, slither::GameRoom*>::const_iterator roomIt = roomList.begin();
+	map<uint32_t, slither::GameRoom*>::const_iterator roomItEnd = roomList.end();
+	for (; roomIt != roomItEnd; roomIt++) {
+		slither::GameRoom* pGameRoom = roomIt->second;
+		if (!pGameRoom) {
+			continue;
+		}
+
+		slither::PBGameRoom* pPBGameRoom = regGameRoomReq.add_roomlist();
+		pPBGameRoom->set_roomid(pGameRoom->GetRoomId());
+		pPBGameRoom->set_curplayernum(pGameRoom->GetCurPlayerNum());
+		pPBGameRoom->set_lefttime(pGameRoom->GetLeftTime());
+		pPBGameRoom->set_isstart(pGameRoom->HasStart());
+		pPBGameRoom->set_totaltime(pGameRoom->GetTotalTime());
+		pPBGameRoom->set_maxplayernum(pGameRoom->GetMaxPlayer());
+		pPBGameRoom->set_refuseentertime(pGameRoom->GetRefuseEnterTime());
+	}
+
+	string strResponse;
+	cputil::BuildResponseProto(regGameRoomReq, strResponse, slither::REQ_REGISTER_GAMEROOM);
+	g_pLobbySession->SendMsg(strResponse.c_str(), strResponse.size());
+}

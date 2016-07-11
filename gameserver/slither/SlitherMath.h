@@ -16,6 +16,9 @@ namespace slither {
 		static Vector2D MoveTo(float fAngle, float fLength);
 		static Vector2D MoveToAngle(const Vector2D& oldPos, float fAngle, float fSpeed);
 	};
+
+	#define slither_max(a,b)    (((a) > (b)) ? (a) : (b))
+	#define slither_min(a,b)    (((a) < (b)) ? (a) : (b))
 }
 
 

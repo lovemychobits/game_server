@@ -6,6 +6,7 @@
 namespace cpnet
 {
 #define MAGIC_CODE 0xA1B2C3D4
+
 	struct MessageHeader
 	{
 		uint32_t uMsgSize;
@@ -13,5 +14,6 @@ namespace cpnet
 		uint32_t uMsgReserved;
 	};
 }
+
 
 #endif

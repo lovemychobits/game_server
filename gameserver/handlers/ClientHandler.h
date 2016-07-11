@@ -40,7 +40,7 @@ private:
 
 	void _RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHeader);
 	void _RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHeader);
-
+	void _RequestGetPing(IConnection* pConn, MessageHeader* pMsgHeader);
 	
 
 private:

@@ -23,7 +23,8 @@ public:
 
 	void HandleRecv(IConnection* pConn, const char* pBuf, uint32_t uLen);
 
-	void RegGameServer(IConnection* pConnections);					// 向lobbyserver注册
+	void RegGameServer(IConnection* pConnections);					// 向lobbyserver注册gs
+	void RegGameRooms();											// 向lobbyserver注册room
 };
 
 

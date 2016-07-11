@@ -2,7 +2,6 @@
 #define LOBBSERVER_LOBBYSERVER_H
 
 #include "header.h"
-#include "config/ServerConfig.h"
 #include "../network/INetCluster.h"
 using namespace cpnet;
 
@@ -14,7 +13,7 @@ public:
 
 	}
 
-	bool Init(const char* pConfPath);
+	bool Init(const char* serverConfPath);
 
 	void Start()
 	{
@@ -26,6 +25,7 @@ private:
 	bool InitServerConf(const char* pConfPath);
 	bool InitServerApp();
 	bool InitPlayerDataMng();
+	bool InitConfig();
 
 private:
 	IServerSession* m_pServerSession;

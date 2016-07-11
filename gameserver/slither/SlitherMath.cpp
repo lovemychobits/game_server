@@ -66,12 +66,12 @@ namespace slither {
 			newPos.y = 0.0f;
 		}
 
-		if (newPos.x > slither::gpSlitherConf->m_uMapLength) {
-			newPos.x = (float)slither::gpSlitherConf->m_uMapLength;
+		if (newPos.x > slither::g_slitherConfig.m_uMapLength) {
+			newPos.x = (float)slither::g_slitherConfig.m_uMapLength;
 		}
 
-		if (newPos.y > slither::gpSlitherConf->m_uMapLength) {
-			newPos.y = (float)slither::gpSlitherConf->m_uMapLength;
+		if (newPos.y > slither::g_slitherConfig.m_uMapLength) {
+			newPos.y = (float)slither::g_slitherConfig.m_uMapLength;
 		}
 
 		return newPos;

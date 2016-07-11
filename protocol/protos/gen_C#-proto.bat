@@ -1,3 +1,12 @@
-E:\git\game_server\proto-net-gen\protogen.exe -i:E:\git\game_server\protocol\protos\slither_client.proto  -o:E:\git\game_server\protocol\slither_client_proto.cs
+@set Path=%cd%
+@set ExePath=%Path%/proto-net-gen/
+@set ProtoPath=%Path%/
+@set CsPath=%Path%/cs/
 
-pause()
+@for %%i in (%ProtoPath%*) do (
+  @%ExePath%protogen.exe -i:%ProtoPath%%%~ni.proto  -o:%CsPath%%%~ni.cs
+  @echo %%~ni.proto Complete
+)
+
+@echo All complete
+@pause()

@@ -3,6 +3,7 @@
 
 #include "Food.h"
 #include "Snake.h"
+#include "Buff.h"
 
 namespace slither {
 	class Factory {
@@ -14,12 +15,15 @@ namespace slither {
 			return &instance;
 		}
 
-		Snake* CreateSnake(Scene* pScene, uint32_t uSnakeId, const Vector2D& pos, uint32_t uBodySize, bool bRobot=false);
+		Snake* CreateSnake(Scene* pScene, uint32_t uSnakeId, const Vector2D& pos, uint32_t uBodySize, float fRadius, bool bRobot=false);
 		Snake* CreateSnake(Scene* pScene, uint32_t uSnakeId, Vector2D& posd);
 		void ReleaseSnake(Snake* pSnake);
 
 		Food* CreateFood(uint32_t uFoodId, const Vector2D& pos, uint32_t uValue);
 		void ReleaseFood(Food* pFood);
+
+		Buff* CreateBuff(BuffType buffType);
+		void ReleaseBuff(Buff* pBuff);
 	};
 
 #define gpFactory Factory::GetInstance()

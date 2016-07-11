@@ -7,17 +7,12 @@ namespace slither {
 	class SlitherConfig
 	{
 	public:
-		~SlitherConfig();
-		static SlitherConfig* GetInstance() {
-			static SlitherConfig instance;
-			return &instance;
-		}
-
-		bool LoadSlitherConf(const char* pFilePath);
-		bool LoadSlitherConf2(const char* pFilePath);
-
-	private:
 		SlitherConfig();
+		~SlitherConfig();
+
+		bool LoadSnakeConf(const char* pFilePath);
+		bool LoadMapConf(const char* pFilePath);
+		bool LoadRoomConf(const char* pFilePath);
 
 	public:
 		float m_fInitRadius;										// 蛇初始半径
@@ -25,7 +20,7 @@ namespace slither {
 		float m_fSpeed;												// 蛇的速度
 		float m_fSpeedUpRate;										// 加速速度提升比例
 		float m_fSpawnInterval;										// 加速时候生成食物的间隔
-		float m_fGrowUpValue;									// 增加身体节点需要的值
+		float m_fGrowUpValue;										// 增加身体节点需要的值
 		float m_fSpeedUpNeedValue;									// 可以启动加速的值（除去蛇身基本值）
 		float m_fAttenuationValue;									// 加速衰减值
 		float m_fAttenuationInterval;								// 加速衰减间隔
@@ -56,9 +51,27 @@ namespace slither {
 		uint32_t m_uInitFoodNum;									// 初始食物数量
 		uint32_t m_uRefreshFoodThreshold;							// 刷新食物的阈值
 		uint32_t m_uRefreshFoodNum;									// 刷新食物的数量
+		uint32_t m_uInitViewRange;									// 初始视野范围
+		float m_fViewAttenuation;									// 视野衰减值
+		uint32_t m_uSnakeSimTimes;									// 蛇每秒模拟次数
+
+		// 房间相关配置
+		uint32_t m_uRoomNum;										// 房间数量
+		uint32_t m_uRoomSnakeLimit;									// 房间内蛇的数量限制
+		uint32_t m_uRefuseEnterTime;								// 拒绝进入时间
+		uint32_t m_uInvalidNum;										// 房间人数不合法的数量
+		uint32_t m_uRobotNum;										// 机器人数量
+		uint32_t m_uRobotMass;										// 机器人身体的体重
+
+		// 食物生成参数
+		float m_fInsideScale;										// 内层范围
+		float m_fMiddleScale;										// 中层范围
+		float m_fInsideGenScale;									// 内层生成食物比例
+		float m_fMiddleGenScale;									// 中层生成食物比例
 	};
 
-#define gpSlitherConf SlitherConfig::GetInstance()
+	extern SlitherConfig g_slitherConfig;
+//#define gpSlitherConf SlitherConfig::GetInstance()
 }
 
 #endif

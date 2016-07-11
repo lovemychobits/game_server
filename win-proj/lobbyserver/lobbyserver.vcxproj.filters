@@ -48,6 +48,12 @@
     <ClCompile Include="..\..\lobbyserver\LobbyServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_lobby.pb.cc">
+      <Filter>protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_player.pb.cc">
+      <Filter>protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lobbyserver\config\ServerConfig.h">
@@ -70,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="..\..\lobbyserver\LobbyServer.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_lobby.pb.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_player.pb.h">
+      <Filter>protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

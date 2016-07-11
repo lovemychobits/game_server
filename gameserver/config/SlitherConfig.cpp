@@ -2,6 +2,8 @@
 #include "../../tinyxml/tinyxml.h"
 
 namespace slither {
+	slither::SlitherConfig g_slitherConfig;
+
 	SlitherConfig::SlitherConfig() {
 
 	}
@@ -10,7 +12,7 @@ namespace slither {
 
 	}
 
-	bool SlitherConfig::LoadSlitherConf(const char* pFilePath) {
+	bool SlitherConfig::LoadSnakeConf(const char* pFilePath) {
 		TiXmlDocument xmlDoc;
 		if (!xmlDoc.LoadFile(pFilePath)) {
 			return false;
@@ -39,7 +41,7 @@ namespace slither {
 		m_fStopSpeedUpValue			= (float)atof(pConf->Attribute("Stop_Accelation"));
 		m_uInitSnakeBodySize		= atoi(pConf->Attribute("Body_Num"));
 		m_uInitSnakeMass			= atoi(pConf->Attribute("Begin_Length"));
-		m_fSpeedUpNeedValue = (float)atof(pConf->Attribute("Speed_Accelation")) + m_uInitSnakeMass;
+		m_fSpeedUpNeedValue			= (float)atof(pConf->Attribute("Speed_Accelation")) + m_uInitSnakeMass;
 		m_fNodeSqt					= (float)atof(pConf->Attribute("Body_Index"));
 		m_uMaxBodySize				= atoi(pConf->Attribute("Max_Body"));
 		m_uInitDeadFoodSize			= atoi(pConf->Attribute("Begin_Death_Ball_Num"));
@@ -54,7 +56,7 @@ namespace slither {
 		return true;
 	}
 
-	bool SlitherConfig::LoadSlitherConf2(const char* pFilePath) {
+	bool SlitherConfig::LoadMapConf(const char* pFilePath) {
 		TiXmlDocument xmlDoc;
 		if (!xmlDoc.LoadFile(pFilePath)) {
 			return false;
@@ -83,6 +85,43 @@ namespace slither {
 		m_uInitFoodNum					= atoi(pConf->Attribute("Initial_Ball_Num"));
 		m_uRefreshFoodThreshold			= atoi(pConf->Attribute("Less_Than_Num"));
 		m_uRefreshFoodNum				= atoi(pConf->Attribute("Again_Ball_Num"));
+
+		m_fInsideScale					= (float)atof(pConf->Attribute("Inside_Scale"));
+		m_fMiddleScale					= (float)atof(pConf->Attribute("Middle_Scale"));
+		m_fInsideGenScale				= (float)atof(pConf->Attribute("Inside_Produce_Scale"));
+		m_fMiddleGenScale				= (float)atof(pConf->Attribute("Middle_Produce_Scale"));
+
+		m_uInitViewRange				= atoi(pConf->Attribute("Init_View_Range"));
+		m_fViewAttenuation				= (float)atof(pConf->Attribute("Camera_Attenuation_Index"));
+		m_uSnakeSimTimes				= atoi(pConf->Attribute("Snake_Sim_Times"));
+
+		return true;
+	}
+
+	bool SlitherConfig::LoadRoomConf(const char* pFilePath) {
+		TiXmlDocument xmlDoc;
+		if (!xmlDoc.LoadFile(pFilePath)) {
+			return false;
+		}
+
+		TiXmlElement* pRoot = xmlDoc.RootElement();
+		if (!pRoot) {
+			return false;
+		}
+
+		TiXmlElement* pConf = pRoot->FirstChildElement("type");
+		if (!pConf) {
+			ERRORLOG("cannot find type tag");
+			return false;
+		}
+
+		m_uRoomNum						= atoi(pConf->Attribute("RoomNum"));
+		m_uRoomSnakeLimit				= atoi(pConf->Attribute("RoomSnakeLimit"));
+		m_uRefuseEnterTime				= atoi(pConf->Attribute("RefuseEnterTime"));
+		m_uInvalidNum					= atoi(pConf->Attribute("InvalidNum"));
+		m_uRobotNum						= atoi(pConf->Attribute("RobotNum"));
+		m_uRobotMass					= atoi(pConf->Attribute("RobotMass"));
+
 		return true;
 	}
 }

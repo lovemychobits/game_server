@@ -95,21 +95,14 @@
     <ClCompile Include="..\..\gameserver\handlers\GsMsgChainer.cpp" />
     <ClCompile Include="..\..\gameserver\handlers\LobbyHandler.cpp" />
     <ClCompile Include="..\..\gameserver\main.cpp" />
-    <ClCompile Include="..\..\gameserver\plane_shooting\Bullet.cpp" />
-    <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp" />
-    <ClCompile Include="..\..\gameserver\plane_shooting\Plane.cpp" />
-    <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp" />
-    <ClCompile Include="..\..\gameserver\plane_shooting\SceneMng2.cpp" />
-    <ClCompile Include="..\..\gameserver\scenemng-alpha\Map.cpp" />
-    <ClCompile Include="..\..\gameserver\scenemng-alpha\SceneMng.cpp" />
     <ClCompile Include="..\..\gameserver\slither\Factory.cpp" />
     <ClCompile Include="..\..\gameserver\slither\PlayerMng.cpp" />
     <ClCompile Include="..\..\gameserver\slither\Scene.cpp" />
     <ClCompile Include="..\..\gameserver\slither\SlitherMath.cpp" />
     <ClCompile Include="..\..\gameserver\slither\Snake.cpp" />
-    <ClCompile Include="..\..\protocol\client.pb.cc" />
-    <ClCompile Include="..\..\protocol\login.pb.cc" />
-    <ClCompile Include="..\..\protocol\slither_client.pb.cc" />
+    <ClCompile Include="..\..\protocol\slither_battle.pb.cc" />
+    <ClCompile Include="..\..\protocol\slither_lobby.pb.cc" />
+    <ClCompile Include="..\..\protocol\slither_player.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\gameserver\config\ServerConfig.h" />
@@ -121,16 +114,7 @@
     <ClInclude Include="..\..\gameserver\handlers\GsMsgChainer.h" />
     <ClInclude Include="..\..\gameserver\handlers\LobbyHandler.h" />
     <ClInclude Include="..\..\gameserver\header.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\Bullet.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\Map.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\Object.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\Plane.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\QuadTree.h" />
-    <ClInclude Include="..\..\gameserver\plane_shooting\SceneMng2.h" />
     <ClInclude Include="..\..\gameserver\playermng\PlayerMng.h" />
-    <ClInclude Include="..\..\gameserver\scenemng-alpha\Map.h" />
-    <ClInclude Include="..\..\gameserver\scenemng-alpha\SceneMng.h" />
     <ClInclude Include="..\..\gameserver\slither\Factory.h" />
     <ClInclude Include="..\..\gameserver\slither\Food.h" />
     <ClInclude Include="..\..\gameserver\slither\Object.h" />
@@ -138,9 +122,9 @@
     <ClInclude Include="..\..\gameserver\slither\Scene.h" />
     <ClInclude Include="..\..\gameserver\slither\SlitherMath.h" />
     <ClInclude Include="..\..\gameserver\slither\Snake.h" />
-    <ClInclude Include="..\..\protocol\client.pb.h" />
-    <ClInclude Include="..\..\protocol\login.pb.h" />
-    <ClInclude Include="..\..\protocol\slither_client.pb.h" />
+    <ClInclude Include="..\..\protocol\slither_battle.pb.h" />
+    <ClInclude Include="..\..\protocol\slither_lobby.pb.h" />
+    <ClInclude Include="..\..\protocol\slither_player.pb.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

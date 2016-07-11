@@ -74,6 +74,6 @@ FILE* SqlParser::OpenFile(const char* pPath, const char* pOpenMode)
 		return fp;
 	return 0;
 #else
-	return fopen(filename, mode);
+	return fopen(pPath, pOpenMode);
 #endif
 }

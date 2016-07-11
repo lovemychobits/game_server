@@ -24,7 +24,8 @@ namespace slither {
 		void DeleteSnake(Snake* pSnake);
 
 	private:
-		map<IConnection*, Snake*> m_playerConnMap;
+		map<IConnection*, Snake*> m_snakeConnMap;
+		map<IConnection*, uint64_t> m_playerConnMap;
 	};
 
 #define gpPlayerMng PlayerMng::GetInstance()

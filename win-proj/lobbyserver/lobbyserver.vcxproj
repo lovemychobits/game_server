@@ -18,6 +18,8 @@
     <ClCompile Include="..\..\lobbyserver\handlers\LobbyMsgChainer.cpp" />
     <ClCompile Include="..\..\lobbyserver\LobbyServer.cpp" />
     <ClCompile Include="..\..\lobbyserver\main.cpp" />
+    <ClCompile Include="..\..\protocol\slither_lobby.pb.cc" />
+    <ClCompile Include="..\..\protocol\slither_player.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lobbyserver\config\ServerConfig.h" />
@@ -27,6 +29,8 @@
     <ClInclude Include="..\..\lobbyserver\handlers\LobbyMsgChainer.h" />
     <ClInclude Include="..\..\lobbyserver\header.h" />
     <ClInclude Include="..\..\lobbyserver\LobbyServer.h" />
+    <ClInclude Include="..\..\protocol\slither_lobby.pb.h" />
+    <ClInclude Include="..\..\protocol\slither_player.pb.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3C500B9C-771D-423B-A00F-1FF65503A908}</ProjectGuid>
@@ -60,8 +64,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>../../bin/</OutDir>
-    <IncludePath>D:\boost_1_58_0;../../log4cplus-1.1.3/include;../../protobuf/include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost_1_58_0\stage\lib;../../libs;E:\git\game_server\protobuf\;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\boost_1_58_0;../../log4cplus-1.1.3/include;../../protobuf/include;D:\Program Files (x86)\MySQL\MySQL Server 5.6\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost_1_58_0\stage\lib;../../libs;E:\git\game_server\protobuf\;D:\Program Files (x86)\MySQL\MySQL Server 5.6\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -79,7 +83,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>log4cplusD.lib;tinyxml.lib;utils_d.lib;network_d.lib;libprotobuf_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4cplusD.lib;tinyxml.lib;utils_d.lib;network_d.lib;libprotobuf_d.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

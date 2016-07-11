@@ -4,6 +4,7 @@
 #include "../network/MessageHeader.h"
 #include <string>
 #include <set>
+using namespace cpnet;
 
 #if !defined(_MSC_VER)
 	#include <sys/time.h>

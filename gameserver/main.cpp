@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 	}
 
 	TRACELOG("SERVER Start");
+	cout << "server start success" << endl;
 	gameServer.Start();
 	gameServer.Exit();
 	TRACELOG("SERVER Stop");

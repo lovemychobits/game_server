@@ -3,18 +3,39 @@
 #include "gsgroup/GameGroupMng.h"
 #include "handlers/ClientMsgHandler.h"
 #include "handlers/LobbyMsgChainer.h"
+#include "playermng/playerMsg.h"
 
-bool LobbyServer::Init(const char* pConfPath)
+#include "config/ServerConfig.h"
+#include "config/GradeConfig.h"
+#include "config/SkinConfig.h"
+#include "config/LvExpConfig.h"
+#include "config/LvExpSettlement.h"
+#include "config/LvExpLenConfig.h"
+#include "config/LvExpRankConfig.h"
+
+
+#include "ConfigPath.h"
+
+bool LobbyServer::Init(const char* serverConfPath)
 {
 	if (!InitLog4cpp())
 	{
 		return false;
 	}
-	if (!InitServerConf(pConfPath))
+	if (!InitServerConf(serverConfPath))
 	{
 		return false;
 	}
 	if (!InitServerApp())
+	{
+		return false;
+	}
+	if (!InitPlayerDataMng()) 
+	{
+		return false;
+	}
+
+	if (!InitConfig())
 	{
 		return false;
 	}
@@ -57,12 +78,10 @@ bool LobbyServer::InitServerApp()
 	pMsgChainer->AddEncodeLast(new ClientMsgEncoder());
 
 	GameServerHandler* pGsHandler = new GameServerHandler(this);
-	GameGroupMng* pGameGroupMng = new GameGroupMng;
-	pGameGroupMng->LoadGameGroupConf();
-	pGsHandler->SetGroupMng(pGameGroupMng);
+	pGsHandler->SetGroupMng(gpGameGroupMng);
 	m_pServerSession->SetMsgHandler(pGsHandler);
 	m_pServerSession->SetMsgChainer(pMsgChainer);
-	m_pServerSession->SetHeadLen(12);
+	m_pServerSession->SetHeadLen(4);
 
 	m_pServerSession->Listen(gpServerConfig->GetBindIp(), gpServerConfig->GetListenPort());
 
@@ -74,12 +93,61 @@ bool LobbyServer::InitServerApp()
 
 	// 初始化客户端
 	ClientMsgHandler* pClientHandler = new ClientMsgHandler();
-	pClientHandler->SetGroupMng(pGameGroupMng);
+	pClientHandler->SetGroupMng(gpGameGroupMng);
 	m_pClientSession->SetMsgHandler(pClientHandler);
 	m_pClientSession->SetMsgChainer(pMsgChainer);
-	m_pClientSession->SetHeadLen(12);
+	m_pClientSession->SetHeadLen(4);
 
 	m_pClientSession->Listen(gpServerConfig->GetClientBindIp(), gpServerConfig->GetClientListenPort());
+
+	return true;
+}
+
+
+
+bool LobbyServer::InitPlayerDataMng() 
+{
+	return playerMsgDeal->Init();
+}
+
+bool LobbyServer::InitConfig()
+{
+	if (!gradeConfig->LoadGradeConf(configPath->gradeConfigPath))
+	{
+		cout << "!!! gradeConfig->LoadGradeConf(configPath->gradeConfigPath) error" << endl;
+		return false;
+	}
+
+	if (!skinConfig->LoadSkinConf(configPath->skinConfigPath))
+	{
+		cout << "!!! skinConfig->LoadSkinConf(configPath->skinConfigPath) error" << endl;
+		return false;
+	}
+
+	if (!lvExpConfig->LoadLvExpConf(configPath->lvExpConfigPath))
+	{
+		cout << "!!! lvExpConfig->LoadLvExpConf(configPath->lvExpConfigPath) error" << endl;
+		return false;
+	}
+
+	if (!lvExpLenConfig->LoadLvExpLenConf(configPath->lvExpLenConfigPath))
+	{
+		cout << "!!! lvExpConfig->LoadLvExpConf(configPath->lvExpConfigPath) error" << endl;
+		return false;
+	}
+
+	if (!lvExpRankConfig->LoadLvExpRankConf(configPath->lvExpRankConfigPath))
+	{
+		cout << "!!! lvExpRankConfig->LoadLvExpRankConf(configPath->lvExpRankConfigPath) error" << endl;
+		return false;
+	}
+
+	if (!lvExpSettConfig->LoadLvExpSettConf(configPath->lvExpSettConfigPath))
+	{
+		cout << "!!! lvExpRankConfig->LoadLvExpRankConf(configPath->lvExpRankConfigPath) error" << endl;
+		return false;
+	}
+
 
 	return true;
 }

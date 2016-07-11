@@ -22,17 +22,11 @@
     <Filter Include="protocol">
       <UniqueIdentifier>{bff37f7d-4c71-459e-aafd-50caa4903caf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scenemng-alpha">
-      <UniqueIdentifier>{29eda156-0a6b-4c7d-a768-81eb8290f7f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="playermng">
       <UniqueIdentifier>{c523638d-e590-47a6-b5d7-cadb843c8258}</UniqueIdentifier>
     </Filter>
     <Filter Include="fsm">
       <UniqueIdentifier>{2d9af8ed-cf4f-458f-a73f-6d41e68d0ed3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="plane_shooting">
-      <UniqueIdentifier>{f2218ec3-363a-418b-bed4-889d2a31ab37}</UniqueIdentifier>
     </Filter>
     <Filter Include="slither">
       <UniqueIdentifier>{0a0a2673-7390-4d46-9b43-9011a9f289c0}</UniqueIdentifier>
@@ -60,38 +54,11 @@
     <ClCompile Include="..\..\gameserver\handlers\LobbyHandler.cpp">
       <Filter>handlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gameserver\scenemng-alpha\Map.cpp">
-      <Filter>scenemng-alpha</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\scenemng-alpha\SceneMng.cpp">
-      <Filter>scenemng-alpha</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\protocol\login.pb.cc">
-      <Filter>protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\protocol\client.pb.cc">
-      <Filter>protocol</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gameserver\fsm\State.cpp">
       <Filter>fsm</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gameserver\fsm\StateImpls.cpp">
       <Filter>fsm</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\plane_shooting\Plane.cpp">
-      <Filter>plane_shooting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\plane_shooting\Bullet.cpp">
-      <Filter>plane_shooting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\plane_shooting\SceneMng2.cpp">
-      <Filter>plane_shooting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\plane_shooting\QuadTree.cpp">
-      <Filter>plane_shooting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gameserver\plane_shooting\FixedQuadTree.cpp">
-      <Filter>plane_shooting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gameserver\slither\Scene.cpp">
       <Filter>slither</Filter>
@@ -102,14 +69,20 @@
     <ClCompile Include="..\..\gameserver\slither\PlayerMng.cpp">
       <Filter>slither</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\protocol\slither_client.pb.cc">
-      <Filter>protocol</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\gameserver\slither\Factory.cpp">
       <Filter>slither</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gameserver\slither\SlitherMath.cpp">
       <Filter>slither</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_battle.pb.cc">
+      <Filter>protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_lobby.pb.cc">
+      <Filter>protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\protocol\slither_player.pb.cc">
+      <Filter>protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,20 +104,8 @@
     <ClInclude Include="..\..\gameserver\handlers\LobbyHandler.h">
       <Filter>handlers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gameserver\scenemng-alpha\Map.h">
-      <Filter>scenemng-alpha</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\scenemng-alpha\SceneMng.h">
-      <Filter>scenemng-alpha</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\protocol\login.pb.h">
-      <Filter>protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gameserver\playermng\PlayerMng.h">
       <Filter>playermng</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\protocol\client.pb.h">
-      <Filter>protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\fsm\State.h">
       <Filter>fsm</Filter>
@@ -152,29 +113,8 @@
     <ClInclude Include="..\..\gameserver\fsm\StateImpls.h">
       <Filter>fsm</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\Map.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\Plane.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\Bullet.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\SceneMng2.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\Object.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\QuadTree.h">
-      <Filter>plane_shooting</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gameserver\handlers\GsMsgChainer.h">
       <Filter>handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gameserver\plane_shooting\FixedQuadTree.h">
-      <Filter>plane_shooting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\slither\Scene.h">
       <Filter>slither</Filter>
@@ -191,14 +131,20 @@
     <ClInclude Include="..\..\gameserver\slither\PlayerMng.h">
       <Filter>slither</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\protocol\slither_client.pb.h">
-      <Filter>protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\gameserver\slither\Factory.h">
       <Filter>slither</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gameserver\slither\SlitherMath.h">
       <Filter>slither</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_battle.pb.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_lobby.pb.h">
+      <Filter>protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\protocol\slither_player.pb.h">
+      <Filter>protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

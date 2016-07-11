@@ -39,7 +39,7 @@ private:
 	bool InitTables(); 
 
 private:
-	CMysqlConnection m_sqlConn;			// mysql连接对象
+	cputil::CMysqlConnection m_sqlConn;			// mysql连接对象
 	SqlTables m_sqlTables;				// 创建表
 
 	string m_strHostIp;					// Mysql IP

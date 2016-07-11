@@ -17,7 +17,7 @@ void ClientHandler::HandleDisconnect(IConnection* pConn, const BoostErrCode& err
 	TRACELOG("client " << pConn->GetRemoteIp() << " disconnect, conntion=[" << pConn << "]");
 	if (error)
 	{
-		ERRORLOG("handle disconnect error, error=[" << boost::system::system_error(error).what() << "]");
+		TRACELOG("handle disconnect error, error=[" << boost::system::system_error(error).what() << "]");
 	}
 	slither::PlayerMng::GetInstance()->PlayerDisconnect(pConn);
 }
@@ -70,9 +70,9 @@ void ClientHandler::_RegisterCmd(uint32_t uCmdId, pCmdFunc cmdFunc)
 void ClientHandler::_RegisterAllCmd()
 {
 	// 网络基本功能测试
-	//_RegisterCmd(ID_REQ_Test_PingPong,					&ClientHandler::_RequestTestPingPong);			// 测试使用的ping-pong协议, 简单的将数据包返回
 	_RegisterCmd(slither::REQ_ENTER_GAME,	&ClientHandler::_RequestEnterGame);
 	_RegisterCmd(slither::REQ_MOVE,			&ClientHandler::_RequestNewDirect);
+	_RegisterCmd(slither::REQ_GET_PING,		&ClientHandler::_RequestGetPing);
 	
 	return;
 }
@@ -93,7 +93,7 @@ void ClientHandler::_RequestEnterGame(IConnection* pConn, MessageHeader* pMsgHea
 	const char* pBuf = (const char*)pMsgHeader;
 	enterGameReq.ParseFromArray(pBuf + sizeof(MessageHeader), ntohs(pMsgHeader->uMsgSize) - sizeof(MessageHeader));
 
-	slither::gpGameRoomMng->EnterGame(pConn, enterGameReq.userid(), enterGameReq.nickname(), enterGameReq.skinid());
+	slither::gpGameRoomMng->EnterGame(pConn, enterGameReq.userid(), enterGameReq.nickname(), enterGameReq.skinid(), enterGameReq.gender(), enterGameReq.playername(), enterGameReq.roomid());
 	return;
 }
 
@@ -115,3 +115,16 @@ void ClientHandler::_RequestNewDirect(IConnection* pConn, MessageHeader* pMsgHea
 	return;
 }
 
+void ClientHandler::_RequestGetPing(IConnection* pConn, MessageHeader* pMsgHeader)
+{
+	if (!pConn || !pMsgHeader) {
+		return;
+	}
+
+	slither::GetPingAck pingAck;
+	pingAck.set_errorcode(1);
+
+	string strResponse;
+	cputil::BuildResponseProto(pingAck, strResponse, slither::REQ_GET_PING);
+	pConn->SendMsg(strResponse.c_str(), strResponse.size());
+}
